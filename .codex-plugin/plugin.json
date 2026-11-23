@@ -1,0 +1,41 @@
+{
+  "name": "mercy",
+  "version": "1.0.0",
+  "description": "Turns your AI agent into that one teacher who asks why. Understand your code, bring evidence, and walk into your viva ready to explain it.",
+  "author": {
+    "name": "Gurtejbir Singh",
+    "url": "https://github.com/Gurtejhundal"
+  },
+  "homepage": "https://Gurtejhundal.github.io/Mercy/",
+  "repository": "https://github.com/Gurtejhundal/Mercy",
+  "license": "MIT",
+  "keywords": [
+    "codebase-understanding",
+    "viva",
+    "education",
+    "agent-skills"
+  ],
+  "skills": "./plugin-skills/",
+  "interface": {
+    "displayName": "Mercy",
+    "shortDescription": "that one teacher we all know",
+    "longDescription": "Understand a repository with source citations, prepare a reviewed offline study notebook, and rehearse a project viva. Uses your coding agent model and a bundled local Python evidence toolkit. Static source analysis does not verify runtime behavior.",
+    "developerName": "Gurtejbir Singh",
+    "category": "Developer Tools",
+    "capabilities": [
+      "Codebase understanding",
+      "Source-grounded explanations",
+      "Offline study notebooks",
+      "Viva coaching"
+    ],
+    "websiteURL": "https://Gurtejhundal.github.io/Mercy/",
+    "defaultPrompt": [
+      "Explain this codebase with source citations.",
+      "Create a reviewed study notebook for this project.",
+      "Take my project viva, one question at a time."
+    ],
+    "brandColor": "#111111",
+    "composerIcon": "./public/Grumpy Inked Woman with Bun.png",
+    "logo": "./public/Grumpy Inked Woman with Bun.png"
+  }
+}

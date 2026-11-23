@@ -1,0 +1,4 @@
+interface:
+  display_name: "Mercy"
+  short_description: "that one teacher we all know"
+  default_prompt: "Use $mercy:mercy to explain this codebase with source citations and coach my project viva."

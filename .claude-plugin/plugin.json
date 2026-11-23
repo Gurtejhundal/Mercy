@@ -1,0 +1,19 @@
+{
+  "name": "mercy",
+  "version": "1.0.0",
+  "description": "Turns your AI agent into that one teacher who asks why. Understand your code, bring evidence, and walk into your viva ready to explain it.",
+  "author": {
+    "name": "Gurtejbir Singh",
+    "url": "https://github.com/Gurtejhundal"
+  },
+  "homepage": "https://Gurtejhundal.github.io/Mercy/",
+  "repository": "https://github.com/Gurtejhundal/Mercy",
+  "license": "MIT",
+  "keywords": [
+    "codebase-understanding",
+    "viva",
+    "education",
+    "agent-skills"
+  ],
+  "skills": "./plugin-skills/"
+}

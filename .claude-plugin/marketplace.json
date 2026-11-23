@@ -1,0 +1,15 @@
+{
+  "name": "mercy",
+  "owner": {
+    "name": "Gurtejbir Singh",
+    "url": "https://github.com/Gurtejhundal"
+  },
+  "plugins": [
+    {
+      "name": "mercy",
+      "description": "Turns your AI agent into that one teacher who asks why. Understand your code, bring evidence, and walk into your viva ready to explain it.",
+      "source": "./",
+      "category": "education"
+    }
+  ]
+}

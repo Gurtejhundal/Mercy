@@ -2,14 +2,13 @@
   <img src="public/assets/teacher.webp" width="220" alt="Mercy, the unimpressed ink-doodle teacher with glasses and a messy bun">
 </p>
 
-<h1 align="center">Mercy</h1>
-<h2 align="center">that one teacher we all know</h2>
+<h1 align="center">Mercy<br><sub>that one teacher we all know</sub></h1>
 
 <p align="center"><strong>You built it. Now explain it.</strong><br>
 A codebase teacher and viva coach inside Codex or Claude Code.</p>
 
 <p align="center">
-  <a href="#install">Install</a> · <a href="output-example/mercy-studio.html">Sample notebook file</a> · <a href="#how-it-works">How it works</a> · <a href="docs/ARCHITECTURE.md">Architecture</a>
+  <a href="#install">Install plugin</a> · <a href="output-example/mercy-studio.html">Sample notebook file</a> · <a href="#how-it-works">How it works</a> · <a href="docs/ARCHITECTURE.md">Architecture</a>
 </p>
 
 <p align="center"><sub>Python 3.10+ · Codex / Claude Code · Offline HTML notebook · MIT</sub></p>
@@ -38,6 +37,37 @@ Open the notebook on **Mind Map**. Expand a subject, pick a question, read the a
 
 The report is one self-contained HTML file. Its artwork, font and interactions are embedded. Keep the editable evidence JSON and Markdown companion beside it.
 
+## Three ways to call her
+
+**Understand.** “Walk me through the request handler. What calls the model, and what happens if it fails?” Mercy inspects the relevant source and separates what it can support from what still needs checking.
+
+**Prepare.** “Make a notebook for my project viva.” Mercy builds a starter bank, reviews it against your code, and turns the checked explanations into study material you can edit and regenerate.
+
+**Rehearse.** “Ask me about the architecture, one question at a time.” Answer in your own words. Mercy gives feedback, points back to the source and follows up on the part you missed.
+
+## Inside the notebook
+
+| Page | Use it for |
+|---|---|
+| **Mind Map** | Expand subjects into questions and follow a connected study path. |
+| **Architecture** | Inspect file nodes and resolved import links. |
+| **Flow Tracer** | Follow a static reference trail from a detected route or file. |
+| **Directory Atlas** | Explore indexed folders and files. |
+| **Viva Questions** | Search, filter, hide answers and rehearse. |
+| **Study Guide** | Review project signals, missing evidence and where to start. |
+
+**Keep your notes.** `mercy-evidence.json` holds the editable answers and evidence. `mercy render` rebuilds the notebook after your edits; the Markdown companion gives you a plain-text alternative.
+
+## What an evidence-backed answer looks like
+
+> **Question:** Where is retrieval implemented in the mini-rag example?
+>
+> **Source-supported:** `answer_question` sends the question straight to the chat-completions API in [`rag.py:5–11`](examples/mini-rag/rag.py#L5-L11). This function does not perform retrieval.
+>
+> **Not verified:** Whether the API call succeeds at runtime. Inspecting source does not execute it.
+
+That is the kind of distinction you need in a viva: a clear explanation, a location you can open, and an honest boundary.
+
 ## How it works
 
 **Investigate → review → render → rehearse.**
@@ -48,37 +78,42 @@ Mercy uses the model already inside **Codex or Claude Code**. The native workflo
 
 ## Install
 
-Clone this repository and install the local toolkit:
+Install the repository marketplace, then the Mercy plugin. Python 3.10+ is required; the evidence toolkit is bundled with the plugin.
+
+**Codex — terminal**
 
 ```bash
-git clone https://github.com/Gurtejhundal/Mercy.git
-cd Mercy
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -e .
+codex plugin marketplace add Gurtejhundal/Mercy
+codex plugin add mercy@mercy
 ```
 
-Install the skill into the project you want to understand:
-
-```bash
-mercy install --project /path/to/your/project --platform both
-```
-
-Open that project in your agent. Start a new host session if the skill isn't discovered yet.
-
-**Codex**
+Start a new Codex chat. Select **Mercy** from the plugin picker by typing `@`, or invoke its skill explicitly:
 
 ```text
-$mercy explain this codebase and help me prepare for my viva
+$mercy:mercy explain this codebase and help me prepare for my viva
 ```
 
-**Claude Code**
+The picker subtitle is **that one teacher we all know**. Picker availability depends on your Codex client; the namespaced skill is the explicit invocation.
+
+**Claude Code — send these as separate prompts**
 
 ```text
-/mercy explain this codebase and help me prepare for my viva
+/plugin marketplace add Gurtejhundal/Mercy
 ```
 
-She starts with **“Mercy — that one teacher we all know”**. Then the questions begin.
+```text
+/plugin install mercy@mercy
+```
+
+Then invoke:
+
+```text
+/mercy:mercy explain this codebase and help me prepare for my viva
+```
+
+No hooks or provider credentials are installed. The plugin reads source only when you ask it to work. Your host's privacy settings still apply.
+
+Prefer the standalone Python CLI or project-local `$mercy` / `/mercy` skills? The [full technical guide](#full-technical-guide) below preserves that installation path.
 
 ## What to ask her
 
@@ -125,6 +160,7 @@ Below. The installation options, evidence workflow, safety boundaries and comman
 
 ---
 
+<a id="full-technical-guide"></a>
 <details>
 <summary><strong>Full technical guide — setup, commands, safety, development and repository layout</strong></summary>
 
