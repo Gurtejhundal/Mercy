@@ -3,8 +3,7 @@
 </p>
 
 <h1 align="center">Mercy</h1>
-
-<p align="center"><em>that one teacher we all know</em></p>
+<h2 align="center">that one teacher we all know</h2>
 
 <p align="center"><strong>You built it. Now explain it.</strong><br>
 A codebase teacher and viva coach inside Codex or Claude Code.</p>
