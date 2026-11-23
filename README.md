@@ -1,18 +1,133 @@
-# Mercy
+<p align="center">
+  <img src="public/assets/teacher.webp" width="220" alt="Mercy, the unimpressed ink-doodle teacher with glasses and a messy bun">
+</p>
 
-### that one teacher we all know
+<h1 align="center">Mercy</h1>
 
-**From “I used AI to build this” to “I understand how this project works.”**
+<p align="center"><em>that one teacher we all know</em></p>
 
-[Website](https://Gurtejhundal.github.io/Mercy/) · [Sample notebook](https://Gurtejhundal.github.io/Mercy/demo.html)
+<p align="center"><strong>You built it. Now explain it.</strong><br>
+A codebase teacher and viva coach inside Codex or Claude Code.</p>
 
-<img src="public/assets/teacher.webp" width="220" alt="Mercy, an unimpressed ink-doodle teacher with a messy bun and glasses">
+<p align="center">
+  <a href="#install">Install</a> · <a href="output-example/mercy-studio.html">Sample notebook file</a> · <a href="#how-it-works">How it works</a> · <a href="docs/ARCHITECTURE.md">Architecture</a>
+</p>
 
-Mercy is an AI coaching workflow inside **Codex or Claude Code**, backed by a local Python evidence toolkit. The host model investigates source code, explains it with citations, improves a study notebook and conducts a mock viva. No separate model server or provider key is required. The HTML is a self-contained offline report, not a chat backend.
+<p align="center"><sub>Python 3.10+ · Codex / Claude Code · Offline HTML notebook · MIT</sub></p>
 
-It is designed for students who need a simple answer to: *Where is the backend? What connects to what? Where is the dataset? Did we train a model, or call somebody's API? What is RAG? Show me the actual code.*
+---
 
-> **Reality check:** Mercy does static analysis. Its visual links are **imports**, not verified runtime calls or a certified data-flow diagram. It cannot prove that a model was trained, that authentication works, or that a service is deployed simply by reading files.
+You know her. Glasses halfway down her nose. You finish explaining your project. She waits a second.
+
+**“Okay. Show me where that happens in the code.”**
+
+Mercy brings that teacher into your coding agent. She helps you understand the repository, turn source evidence into study notes, and practise defending the project one question at a time.
+
+<p align="center"><img src="docs/assets/the-lesson.svg" width="880" alt="Mercy's lesson: read the code, connect answers to source, practise explaining it. The host agent reasons and Mercy provides the evidence toolkit."></p>
+
+## The code gets a vote
+
+<p align="center"><img src="docs/assets/before-after.svg" width="880" alt="Included mini-rag example: a folder name suggests RAG, but rag.py lines 5-11 show a direct API prompt and no implemented retrieval."></p>
+
+The included [`mini-rag`](examples/mini-rag) example is deliberately misleading. Its [`rag.py`](examples/mini-rag/rag.py#L5-L11) sends a question to an API; it does not implement retrieval. Mercy's job is to make that distinction visible, with citations and explicit unknowns.
+
+## A notebook you can study
+
+<p align="center"><img src="docs/assets/mind-map.svg" width="880" alt="A study mind map connects your project to its purpose, source evidence and explanation practice."></p>
+
+Open the notebook on **Mind Map**. Expand a subject, pick a question, read the answer, then follow its source citation. Use the import graph, directory atlas and question bank when you need more context. The black-and-white notebook includes your teacher, ruled paper and handwritten headings.
+
+The report is one self-contained HTML file. Its artwork, font and interactions are embedded. Keep the editable evidence JSON and Markdown companion beside it.
+
+## How it works
+
+**Investigate → review → render → rehearse.**
+
+Your host agent reads bounded source excerpts with `mercy context`, checks and improves the answers, saves complete reviewed questions with `mercy review`, and rebuilds the notebook with `mercy render`. Then it coaches you through a mock viva.
+
+Mercy uses the model already inside **Codex or Claude Code**. The native workflow needs no separate model service or provider key. The host's own privacy and connectivity settings still apply.
+
+## Install
+
+Clone this repository and install the local toolkit:
+
+```bash
+git clone https://github.com/Gurtejhundal/Mercy.git
+cd Mercy
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -e .
+```
+
+Install the skill into the project you want to understand:
+
+```bash
+mercy install --project /path/to/your/project --platform both
+```
+
+Open that project in your agent. Start a new host session if the skill isn't discovered yet.
+
+**Codex**
+
+```text
+$mercy explain this codebase and help me prepare for my viva
+```
+
+**Claude Code**
+
+```text
+/mercy explain this codebase and help me prepare for my viva
+```
+
+She starts with **“Mercy — that one teacher we all know”**. Then the questions begin.
+
+## What to ask her
+
+| You say | Mercy helps you do |
+|---|---|
+| “Explain this codebase.” | Trace relevant files and explain what the source supports. |
+| “Make me a study notebook.” | Prepare questions, review grounded answers and render the HTML. |
+| “Where is the model trained?” | Look for evidence and say when training is not demonstrated. |
+| “Take my viva.” | Practise one question at a time with feedback tied to the project. |
+
+These are natural-language requests to the native skill, not extra CLI subcommands.
+
+## The toolkit
+
+| Command | Purpose |
+|---|---|
+| `mercy inspect --project .` | Inspect bounded repository metadata. |
+| `mercy context --project . --query "answer_question"` | Read numbered source matches. |
+| `mercy prepare --project .` | Create a starter notebook, evidence JSON and Markdown. |
+| `mercy review --project . --input mercy-output/mercy-evidence.json --review review.json` | Validate and merge complete reviewed questions. |
+| `mercy render --input mercy-output/mercy-evidence.json` | Rebuild after evidence edits. |
+
+## A few honest answers
+
+**Does it run my application?**
+
+Ordinary analysis reads source. It does not run your application, database or project tests.
+
+**Does the graph prove how requests flow?**
+
+Its architecture arrows are resolved imports. File groups are heuristic roles. Runtime behavior needs separate evidence.
+
+**Does it invent missing details?**
+
+It should label missing evidence and uncertainty. You still review the answers: a valid citation points to source; it does not guarantee every AI-written sentence is correct.
+
+**Can I use it without opening HTML?**
+
+Yes. Ask focused questions or practise in your agent. Generated reports also include an editable JSON file and a Markdown text companion.
+
+**Where are the full instructions?**
+
+Below. The installation options, evidence workflow, safety boundaries and command reference are preserved.
+
+---
+
+<details>
+<summary><strong>Full technical guide — setup, commands, safety, development and repository layout</strong></summary>
 
 ## Start Mercy in this workspace
 
@@ -203,3 +318,9 @@ Mercy distinguishes source clues, host reasoning and runtime proof. A citation v
 The teacher drawing was supplied by the project owner. Patrick Hand by Patrick Wagesreiter is included under the SIL Open Font License; see `mercy/assets/OFL.txt` and `public/assets/OFL.txt`.
 
 On native skill invocation Mercy starts with **“Mercy — that one teacher we all know”**. Human-readable CLI commands display the same line; `inspect` and `context` keep clean JSON output for tool callers.
+
+</details>
+
+## License
+
+[MIT](LICENSE). Teacher artwork supplied by the project owner; bundled font license: [SIL OFL](mercy/assets/OFL.txt).
