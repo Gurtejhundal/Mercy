@@ -32,3 +32,7 @@ The skill resolves the installed plugin root from its own location and runs `pyt
 The existing `mercy install --project ...` command is a separate project-local skill installer and remains supported. Avoid installing both adapters into the same host unless you want both invocation names.
 
 Official packaging references: [OpenAI](https://developers.openai.com/plugins/build/plugins), [Claude Code](https://code.claude.com/docs/en/plugins-reference).
+
+## Website publishing
+
+GitHub Pages uses **Deploy from a branch → main → / (root)**. The root `index.html` opens `public/`; `.nojekyll` disables Markdown/Jekyll transformations. The check workflow validates code and assets, while GitHub manages the branch deployment.

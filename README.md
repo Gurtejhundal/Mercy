@@ -348,7 +348,7 @@ Mercy distinguishes source clues, host reasoning and runtime proof. A citation v
 
 ## Website and notebook artwork
 
-`public/` is a buildless static website, deployed by `.github/workflows/pages.yml` to GitHub Pages. It introduces the native coaching workflow and links to `public/demo.html`, a real report generated from `examples/mini-rag`. The report exporter embeds its own font and teacher image; report files do not depend on website assets or a CDN.
+`public/` is a buildless static website. GitHub Pages publishes the `main` branch at `/ (root)`; the root `index.html` opens `public/`, and `.nojekyll` keeps the supplied files intact. `.github/workflows/pages.yml` checks the toolkit and website before you rely on them. It introduces the native coaching workflow and links to `public/demo.html`, a real report generated from `examples/mini-rag`. The report exporter embeds its own font and teacher image; report files do not depend on website assets or a CDN.
 
 The teacher drawing was supplied by the project owner. Patrick Hand by Patrick Wagesreiter is included under the SIL Open Font License; see `mercy/assets/OFL.txt` and `public/assets/OFL.txt`.
 
