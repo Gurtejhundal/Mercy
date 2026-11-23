@@ -1,0 +1,14 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+*.egg-info/
+dist/
+.venv/
+mercy-output/
+.env*
+!.env.example
+
+# Supplied reference bundle and obsolete previews stay local.
+mds/
+previews/
+.DS_Store

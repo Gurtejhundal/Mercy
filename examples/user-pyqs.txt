@@ -1,0 +1,4 @@
+1. Where did you get the dataset? Show it.
+2. Explain a RAG pipeline step by step.
+3. Is your API production-ready?
+4. What happens when the hosted model goes offline?

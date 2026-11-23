@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=65"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mercy-viva"
+version = "0.2.0"
+description = "Source-grounded codebase understanding and viva coaching for Codex and Claude"
+requires-python = ">=3.10"
+dependencies = []
+readme = "README.md"
+license = "MIT"
+
+[project.optional-dependencies]
+pdf = ["reportlab>=3.6"]
+
+[project.scripts]
+mercy = "mercy.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["mercy*"]
+
+[tool.setuptools.package-data]
+"mercy" = ["integrations/claude/SKILL.md", "integrations/codex/SKILL.md", "integrations/codex/openai.yaml", "assets/studio.html", "assets/notebook.ttf", "assets/teacher.webp", "assets/OFL.txt"]

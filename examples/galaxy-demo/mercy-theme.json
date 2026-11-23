@@ -1,0 +1,10 @@
+{
+  "primary": "#3f624b",
+  "secondary": "#b4825d",
+  "background": "#f8f9f5",
+  "panel": "#ffffff",
+  "text": "#242d27",
+  "muted": "#657066",
+  "font": "system",
+  "radius": 12
+}
