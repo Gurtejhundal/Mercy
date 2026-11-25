@@ -5,7 +5,7 @@ from pathlib import Path
 
 from mercy.questions import make_questions
 from mercy.scanner import scan_project
-from mercy.studio import build_atlas, export_studio
+from mercy.studio import build_atlas, export_studio, extract_theme
 
 
 def test_atlas_only_scanned_groups_and_import_edges(tmp_path):
@@ -48,6 +48,16 @@ def test_theme_fallback_when_no_style(tmp_path):
     atlas=build_atlas(report,make_questions(report),tmp_path)
     assert atlas['theme']['source_type']=='Mercy-fallback'
     assert atlas['theme']['primary']=='#40dbe6'
+
+
+def test_atlas_preserves_inspectable_symbols_and_framework_citations(tmp_path):
+    (tmp_path/'app.py').write_text('from fastapi import FastAPI\n' + '\n'.join(
+        f'def action_{i}(): return {i}' for i in range(15)))
+    report=scan_project(tmp_path)
+    atlas=build_atlas(report,make_questions(report))
+    assert len(atlas['files'][0]['symbols'])==15
+    assert atlas['framework_evidence']['FastAPI']==[{'path':'app.py','line':1}]
+    assert 'excerpt' not in atlas['framework_evidence']['FastAPI'][0]
 
 
 def test_optional_pdf_and_render_html(tmp_path):
@@ -144,3 +154,27 @@ def test_cli_greeting_preserves_json_tool_output(tmp_path):
     run=subprocess.run(base+['prepare','--project',str(tmp_path),'--out',str(tmp_path/'mercy-output')],capture_output=True,text=True)
     assert run.returncode==0,run.stderr
     assert run.stdout.startswith('Mercy — that one teacher we all know\n')
+
+
+def test_asset_markers_inside_reviewed_answers_are_preserved(tmp_path):
+    import re
+    (tmp_path/'app.py').write_text('def hello(): return True\n')
+    report=scan_project(tmp_path);questions=make_questions(report)
+    answer='Keep /* MERCY_NOTEBOOK_FONT */ and /* MERCY_MASCOT */ as literal text.'
+    questions[0]['answer']=answer
+    out=tmp_path/'report.html';export_studio(report,questions,out)
+    embedded=json.loads(re.search(r'id="atlas-data">([\s\S]*?)</script>',out.read_text()).group(1))
+    assert embedded['questions'][0]['answer']==answer
+
+
+def test_theme_refresh_skips_missing_and_outside_styles(tmp_path):
+    root=tmp_path/'project';root.mkdir()
+    outside=tmp_path/'outside';outside.mkdir()
+    (outside/'style.css').write_text('body { color: #ff22aa; }')
+    (root/'linked').symlink_to(outside,target_is_directory=True)
+    (root/'api-secret.css').write_text('body { color: #ff22aa; }')
+    report={'files':[{'path':name} for name in ['deleted.css','linked/style.css',
+        '../outside/style.css',str(outside/'style.css'),'api-secret.css']]}
+    theme=extract_theme(root,report)
+    assert theme['source']==[]
+    assert theme['source_type']=='Mercy-fallback'

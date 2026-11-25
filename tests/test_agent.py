@@ -8,8 +8,8 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from mercy.agent import apply_review, source_context, validate_questions
-from mercy.questions import make_questions
+from mercy.agent import apply_review, source_context, validate_questions, next_question, review_progress
+from mercy.questions import make_questions, make_guided_questions
 from mercy.scanner import scan_project
 
 
@@ -152,6 +152,75 @@ class AgentToolsTests(unittest.TestCase):
         result=subprocess.run([sys.executable,'-m','mercy','render','--input',str(self.source)],capture_output=True,text=True)
         self.assertNotEqual(result.returncode,0)
         self.assertFalse((self.out/'mercy-studio.html').exists())
+
+    def guided(self):
+        self.questions=make_guided_questions()
+        self.source.write_text(json.dumps({'report':self.report,'questions':self.questions,
+            'workflow':{'kind':'guided-v1','reviewed':{}}}))
+
+    def test_guided_tasks_are_bounded_and_untouched_starters_cannot_pass(self):
+        self.guided();task=next_question(self.source,self.root)
+        self.assertFalse(task['ready_to_render'])
+        self.assertEqual(task['progress']['reviewed'],0)
+        self.assertEqual(len(task['review_template']['questions']),1)
+        self.assertLessEqual(len(task['source_excerpts']),2)
+        self.assertTrue(all(len(e['lines'])<=40 for e in task['source_excerpts']))
+        returns=[line['text'] for e in task['source_excerpts'] for line in e['lines']
+                 if line['text'].lstrip().startswith('return ')]
+        self.assertTrue(returns)
+        self.assertTrue(all(line.startswith('    ') for line in returns))
+        self.assertEqual(len(task['progress']['pending']),10)
+        original=self.source.read_bytes();self.patch(self.questions[:1])
+        with self.assertRaisesRegex(ValueError,'starter explanations'):
+            apply_review(self.source,self.review,self.root)
+        self.assertEqual(self.source.read_bytes(),original)
+
+    def test_guided_completion_tracks_edits_and_preserves_unknowns_and_missing_topics(self):
+        self.guided()
+        for q in self.questions:
+            q['answer']='Inspected main.py and helper.py only; this fixture does not establish this topic.'
+            q['explain_like_im_10']='Two small files do not give enough information for this question.'
+            q['verify_next']='Inspect the implementation relevant to '+q['question']
+        self.patch(self.questions);apply_review(self.source,self.review,self.root)
+        task=next_question(self.source,self.root)
+        self.assertTrue(task['ready_to_render'])
+        self.assertEqual(task['progress']['not_verified'],10)
+        data=json.loads(self.source.read_text())
+        data['questions'][0]['answer']='A human has edited this explanation.'
+        data['questions'].pop()
+        self.source.write_text(json.dumps(data))
+        progress=review_progress(data)
+        self.assertEqual(progress['reviewed'],8)
+        self.assertEqual(progress['total'],10)
+        self.assertIn(self.questions[0]['id'],progress['pending'])
+        self.assertIn(self.questions[-1]['id'],progress['pending'])
+        (self.root/'helper.py').write_text('def answer():\n    return 43\n')
+        with self.assertRaisesRegex(ValueError,'Source changed'):
+            next_question(self.source,self.root)
+
+    def test_guided_cli_next_and_human_edit_render_preserve_tracking(self):
+        self.guided()
+        command=[sys.executable,'-m','mercy']
+        result=subprocess.run(command+['next','--input',str(self.source),'--project',str(self.root)],capture_output=True,text=True)
+        self.assertEqual(result.returncode,0,result.stderr)
+        self.assertEqual(json.loads(result.stdout)['progress']['state'],'needs_review')
+        data=json.loads(self.source.read_text());data['questions'][0]['answer']='An editable answer survives regeneration.'
+        self.source.write_text(json.dumps(data))
+        rendered=subprocess.run(command+['render','--input',str(self.source)],capture_output=True,text=True)
+        self.assertEqual(rendered.returncode,0,rendered.stderr)
+        self.assertEqual(json.loads(self.source.read_text())['workflow'],data['workflow'])
+        self.assertIn(data['questions'][0]['answer'],(self.out/'mercy-studio.html').read_text())
+        refused=subprocess.run(command+['prepare','--guided','--project',str(self.root),'--out',str(self.out)],capture_output=True,text=True)
+        self.assertNotEqual(refused.returncode,0)
+        self.assertIn('already exists',refused.stderr)
+
+    def test_review_respects_the_original_scan_budget(self):
+        report=scan_project(self.root,max_files=1)
+        questions=make_questions(report)
+        self.source.write_text(json.dumps({'report':report,'questions':questions}))
+        question=self.question();question['evidence']=[{'path':report['files'][0]['path'],'line':1}]
+        self.patch([question])
+        self.assertEqual(apply_review(self.source,self.review,self.root),1)
 
 
 if __name__=='__main__': unittest.main()

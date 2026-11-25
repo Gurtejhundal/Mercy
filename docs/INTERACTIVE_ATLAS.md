@@ -7,13 +7,13 @@ A source-grounded notebook accompanies Mercy's Codex/Claude coaching workflow. O
 ## Views
 
 1. **Mind Map:** project → subject → question branches. Expand with click or keyboard, read answers and citations beside the map, pan blank space, zoom, fit and collapse. Study branches are not implementation claims.
-2. **Study Guide:** technology clues, gaps and a guided study path.
+2. **Project Guide:** category-based table of contents, one full answer with previous/next controls, plain explanation, citations and next check. Expandable references include cited technology clues, scan coverage, all scanner notes, all answer follow-ups and a glossary.
 3. **Architecture:** actual resolved imports, keyboard-selectable file nodes, pan/zoom and source metadata inspection. File roles are heuristic.
-4. **Flow Tracer:** a declared route/file followed through up to seven static references, never a verified runtime pipeline.
+4. **Import Trails:** a declared route/file followed through up to seven static references, never a verified runtime pipeline.
 5. **Directory Atlas:** accessible folder hierarchy, proportionate folder/file tiles and module inspection.
-6. **Viva Questions:** search, filter, reveal answers, plain explanations, uncertainty and source citations.
+6. **Viva Questions:** search questions/answers/source paths, filter category and evidence level, reveal answers, plain explanations, uncertainty and source citations in one reading column.
 
-Citation selection opens the architecture inspector. Escape returns to the mind map. Source filenames remain text, never injected HTML.
+The opening Mind Map includes the first Start here answer (or first available answer), its evidence status and a compact summary of answer evidence. Citation selection opens and focuses the architecture inspector while preserving the cited line. Escape returns to the mind map. Source filenames remain text, never injected HTML. The glossary is an expandable reference in Project Guide rather than a wall of unrelated concepts under the map.
 
 ## Data model and design
 
@@ -22,7 +22,7 @@ Citation selection opens the architecture inspector. Escape returns to the mind 
 ## Accessibility and performance
 
 - Every section is available via ordinary buttons/navigation; canvas alternatives include a cluster list, file tree, filter lists and named graph nodes.
-- Motion can be paused; OS-level reduced-motion is honoured.
+- Short transitions honour OS-level reduced-motion.
 - Bounded scan of 400 files by default; no vendor or secret directories; large maps require scrolling/panning.
 - The HTML is self-contained. Interactions depend on modern Canvas, SVG and JavaScript, so the text Markdown report remains an alternative for older browsers or screen readers.
 - For large real projects, SVG graph crowding is a known limitation. A future release needs node aggregation, virtualized file lists, search and incremental layout.

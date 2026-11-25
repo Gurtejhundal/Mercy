@@ -82,6 +82,8 @@ def _discover(root: Path, max_files: int):
 def _local_imports(path: str, imports: list[dict], valid_paths: set[str]) -> list[dict]:
     results = []
     base = Path(path).parent
+    python_import = Path(path).suffix == '.py'
+    extensions = ('.py',) if python_import else ('.ts', '.tsx', '.js', '.jsx')
     for imported in imports:
         item = imported['name']
         line = imported['line']
@@ -99,10 +101,15 @@ def _local_imports(path: str, imports: list[dict], valid_paths: set[str]) -> lis
             raw = Path('src') / item[2:]
         elif '/' in item and not item.startswith('@'):
             continue
-        else:
+        elif python_import:
             raw = Path(*item.split('.'))
+        else:
+            continue
         candidates = [raw, raw / 'index', Path('src') / raw]
-        targets = [str(c) + ext for c in candidates for ext in ('.py', '.ts', '.tsx', '.js', '.jsx')]
+        targets = [str(raw)] if raw.suffix in extensions else []
+        if python_import:
+            targets += [str(raw / '__init__.py'), str(Path('src') / raw / '__init__.py')]
+        targets += [str(c) + ext for c in candidates for ext in extensions]
         for target in targets:
             norm = os.path.normpath(target).replace('\\', '/')
             if norm in valid_paths and norm != path:
@@ -137,12 +144,14 @@ def _django_routes(tree: ast.AST) -> list[dict]:
 
 
 def scan_project(root: str | Path, max_files: int = 400, max_bytes: int = 1_600_000) -> dict:
+    if type(max_files) is not int or type(max_bytes) is not int or max_files < 1 or max_bytes < 1:
+        raise ValueError('Scan limits must be positive integers.')
     root = Path(root).expanduser().resolve()
     if not root.is_dir():
         raise ValueError(f'Not a directory: {root}')
     file_paths = list(_discover(root, max_files))
-    known = {p.relative_to(root).as_posix() for p in file_paths}
-    report = {'project': root.name, 'files': [], 'signals': {},
+    report = {'project': root.name, 'scan_limits':{'max_files':max_files,'max_bytes':max_bytes},
+              'files': [], 'signals': {},
               'frameworks': {}, 'datasets': [], 'edges': [], 'environment_variables': [],
               'warnings': [], 'summary': {}, 'external_urls': []}
     consumed = 0
@@ -179,9 +188,11 @@ def scan_project(root: str | Path, max_files: int = 400, max_bytes: int = 1_600_
                             info['import_locations'].append({'name':a.name,'line':node.lineno})
                     elif isinstance(node, ast.ImportFrom):
                         prefix = '.' * node.level
-                        name = prefix + (node.module or '')
-                        info['imports'].append(name)
-                        info['import_locations'].append({'name':name,'line':node.lineno})
+                        names = [prefix + node.module] if node.module else [
+                            prefix + alias.name for alias in node.names if alias.name != '*']
+                        for name in names:
+                            info['imports'].append(name)
+                            info['import_locations'].append({'name':name,'line':node.lineno})
                     elif isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
                         if len(info['symbols']) < 32:
                             info['symbols'].append({'name': node.name, 'line': node.lineno})
@@ -220,6 +231,7 @@ def scan_project(root: str | Path, max_files: int = 400, max_bytes: int = 1_600_
                     if len(urls) < 20 and 'localhost' not in found and not SENSITIVE_LINE.search(found):
                         urls.add(found.rstrip('),;'))
         report['files'].append(info)
+    known = {f['path'] for f in report['files']}
     for f in report['files']:
         report['edges'] += _local_imports(f['path'], f['import_locations'], known)
     report['environment_variables'] = sorted(envs)

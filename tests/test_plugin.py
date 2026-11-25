@@ -59,6 +59,18 @@ class PluginTests(unittest.TestCase):
             self.assertIn(data['questions'][0]['answer'], notebook.read_text())
             self.assertTrue((project / 'mercy-output/mercy-viva.md').is_file())
 
+    def test_bundled_guided_prepare_and_next_work_from_a_learner_checkout(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            project=Path(tmp);(project/'app.py').write_text('def hello(): return "hi"\n')
+            command=[sys.executable,'-I',str(ROOT/'scripts/mercy.py')]
+            subprocess.run(command+['prepare','--guided','--project','.'],cwd=project,capture_output=True,text=True,check=True)
+            evidence=project/'mercy-output/mercy-evidence.json'
+            result=subprocess.run(command+['next','--project','.','--input',str(evidence)],cwd=project,capture_output=True,text=True,check=True)
+            task=json.loads(result.stdout)
+            self.assertEqual(task['progress']['total'],10)
+            self.assertFalse(task['ready_to_render'])
+            self.assertTrue(task['source_excerpts'])
+
 
 if __name__ == '__main__':
     unittest.main()

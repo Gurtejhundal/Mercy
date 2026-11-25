@@ -23,8 +23,12 @@ Validated `mercy-theme.json` tokens survive in evidence for compatibility, while
 
 ## Hierarchy
 
-- Compact repository title, one-line purpose and a flat metric strip.
-- Six persistent destinations: Mind Map, Study Guide, Architecture, Flow Tracer, Directory Atlas and Viva Questions.
+- Compact repository title and a small inline metric strip. Body copy uses system sans-serif for sustained reading; metadata keeps the typewriter face, and headings keep the handwritten face.
+- Mind Map remains the first view, with the first Start here answer, its evidence label, citations and coverage counts above the diagram. Missing answers have an explicit empty state.
+- Six persistent destinations: Mind Map, Project Guide, Architecture, Import Trails, Directory Atlas and Viva Questions.
+- Project Guide is a chapter contents list beside one complete answer, with previous/next controls. Technology evidence, scanner coverage, all scanner notes, question follow-up checks and glossary are expandable references below it.
+- The answer bank is the sole source for the project brief and chapter reader. There is no generated substitute for missing project analysis; citation counts are not accuracy or review-completion scores.
+- Viva Questions use a single reading column, category and evidence-level filters, source-path search and accessible answer toggles.
 - Evidence beside the selected item; short explanations distinguish grouping, imports and runtime proof.
 - Mobile navigation scrolls horizontally; panels stack. Maps have their own scroll/zoom surfaces instead of expanding page width.
 
@@ -32,7 +36,9 @@ Validated `mercy-theme.json` tokens survive in evidence for compatibility, while
 
 **Mind Map:** branching project → subject → question hierarchy. Expand/collapse subjects; select questions for answers, simple explanations, verification notes and source citations in an adjacent reading panel. Links express study organization, not implementation claims. Root/reset collapses subjects. Zoom, fit, scroll and background drag support exploration. Keyboard activation retains subject focus after redraw. Full labels remain in accessible names and SVG titles.
 
-**Architecture:** directed static imports and file inspection with pan/zoom. **Flow:** reference trails with explicit missing runtime proof. **Directory:** folder tree and proportionate file tiles.
+**Architecture:** directed static imports and file inspection with pan/zoom. Role headings explicitly say heuristic. Nodes have separate rows instead of overlapping in crowded columns. **Import Trails:** reference trails with explicit missing runtime proof. **Directory:** folder tree and proportionate file tiles.
+
+Citation selection preserves the selected path and line in the inspector and focuses that reading surface. Inspectors include available symbols, declared routes/imports, incoming and outgoing resolved imports and linked questions. They contain metadata, not source bodies. Technology clues link to their original pattern-match locations when available; older evidence still renders without the added atlas field.
 
 ## Motion and accessibility
 

@@ -2,15 +2,14 @@
 from __future__ import annotations
 import argparse
 import json
-import shutil
 import sys
 from importlib import resources
 from pathlib import Path
 
 from . import TAGLINE
 from .scanner import scan_project
-from .agent import source_context, validate_questions, apply_review
-from .questions import make_questions, import_user_pyqs
+from .agent import source_context, validate_questions, apply_review, next_question, review_progress
+from .questions import make_questions, make_guided_questions, import_user_pyqs
 from .renderer import export_json, export_markdown, export_pdf, export_architecture
 from .studio import export_studio, extract_theme
 
@@ -48,7 +47,12 @@ def _install(root: Path, platform: str, hooks: bool, force: bool):
             raise ValueError('Existing Claude settings contain invalid JSON; no changes made to settings.') from exc
         if not isinstance(existing,dict):
             raise ValueError('Claude settings JSON must be an object.')
-        records = existing.setdefault('hooks',{}).setdefault('SessionStart',[])
+        hooks_config = existing.setdefault('hooks',{})
+        if not isinstance(hooks_config,dict):
+            raise ValueError('Claude hooks settings must be an object.')
+        records = hooks_config.setdefault('SessionStart',[])
+        if not isinstance(records,list):
+            raise ValueError('Claude SessionStart settings must be an array.')
         entry={'hooks':[{'type':'command','command':'sh "${CLAUDE_PROJECT_DIR}/.claude/hooks/mercy-session.sh"'}]}
         if not any(entry == e for e in records): records.append(entry)
         settings.parent.mkdir(parents=True,exist_ok=True)
@@ -69,6 +73,7 @@ def main(argv=None):
     prep.add_argument('--model',default='gpt-4.1-mini',help='OpenAI chat-completions model for --ai')
     prep.add_argument('--pdf',action='store_true',help='Also create legacy printable PDF (HTML is the default)')
     prep.add_argument('--max-files',type=int,default=400)
+    prep.add_argument('--guided',action='store_true',help='Seed ten project topics for one-question-at-a-time host review')
     render=sub.add_parser('render',help='Rebuild HTML/Markdown after reviewing or refining evidence JSON')
     render.add_argument('--input',required=True,help='mercy-evidence.json (editable question answers)')
     render.add_argument('--out',default=None,help='Output directory; defaults to JSON directory')
@@ -87,17 +92,23 @@ def main(argv=None):
     review.add_argument('--input',required=True,help='Existing mercy-evidence.json')
     review.add_argument('--review',required=True,help='JSON containing complete questions to replace/add')
     review.add_argument('--project',required=True,help='Project source for checking current citations')
+    next_step=sub.add_parser('next',help='Return one guided review task with bounded source excerpts')
+    next_step.add_argument('--input',required=True,help='Evidence JSON created with prepare --guided')
+    next_step.add_argument('--project',required=True,help='Project source for checking the saved snapshot')
     install=sub.add_parser('install',help='Install local skills into an existing project')
     install.add_argument('--project',default='.')
     install.add_argument('--platform',choices=['claude','codex','both'],default='both')
     install.add_argument('--hooks',action='store_true',help='Explicitly enable an optional, read-only Claude SessionStart reminder')
     install.add_argument('--force',action='store_true',help='Overwrite existing Mercy skill files')
     args=parser.parse_args(argv)
-    if args.command not in {'context', 'inspect'}:
+    if args.command not in {'context', 'inspect', 'next'}:
         print('Mercy — '+TAGLINE)
     try:
         if args.command == 'context':
             print(json.dumps(source_context(args.project,query=args.query,path=args.path,start=args.start,limit=args.limit),indent=2,ensure_ascii=False))
+            return 0
+        if args.command == 'next':
+            print(json.dumps(next_question(args.input,args.project),indent=2,ensure_ascii=False))
             return 0
         if args.command == 'review':
             count=apply_review(args.input,args.review,args.project)
@@ -111,12 +122,14 @@ def main(argv=None):
             data=json.loads(source.read_text(encoding='utf-8'))
             audit,qs=data['report'],data['questions']
             validate_questions(audit,qs)
+            review_progress(data)
             if args.project: audit['studio_theme'] = extract_theme(args.project,audit)
             out=Path(args.out).expanduser().resolve() if args.out else source.parent
             out.mkdir(parents=True,exist_ok=True)
-            export_json(audit,qs,out/'mercy-evidence.json')
+            workflow=data.get('workflow')
+            export_json(audit,qs,out/'mercy-evidence.json',workflow=workflow)
             export_markdown(audit,qs,out/'mercy-viva.md')
-            export_studio(audit,qs,out/'mercy-studio.html',root=args.project)
+            export_studio(audit,qs,out/'mercy-studio.html',root=args.project,workflow=workflow)
             if args.pdf: export_pdf(audit,qs,out/'mercy-viva.pdf')
             export_architecture(audit,out/'mercy-architecture.md')
             print(f'Re-rendered {len(qs)} questions and interactive HTML into {out}')
@@ -126,11 +139,16 @@ def main(argv=None):
             return 0
         if args.max_files < 1 or args.limit < 0:
             parser.error('--max-files must be positive and --limit must be nonnegative.')
+        if args.guided and (args.limit or args.ai):
+            parser.error('--guided uses host review; omit --limit and --ai.')
         project=Path(args.project).expanduser().resolve()
         out=Path(args.out).expanduser().resolve() if args.out else project/'mercy-output'
+        if args.guided and (out/'mercy-evidence.json').exists():
+            raise ValueError('Guided evidence already exists. Resume with next, or use a fresh --out directory.')
         # Prevent writing to a source file directly; output directory is intentional.
         audit=scan_project(project,max_files=args.max_files)
-        qs=make_questions(audit)
+        qs=make_guided_questions() if args.guided else make_questions(audit)
+        workflow={'kind':'guided-v1','reviewed':{}} if args.guided else None
         if args.limit: qs=qs[:args.limit]
         if args.pyq: qs += import_user_pyqs(args.pyq, qs)
         if args.ai:
@@ -138,9 +156,9 @@ def main(argv=None):
             qs=enrich(audit,qs,model=args.model)
         audit['studio_theme'] = extract_theme(project,audit)
         out.mkdir(parents=True,exist_ok=True)
-        export_json(audit,qs,out/'mercy-evidence.json')
+        export_json(audit,qs,out/'mercy-evidence.json',workflow=workflow)
         export_markdown(audit,qs,out/'mercy-viva.md')
-        export_studio(audit,qs,out/'mercy-studio.html',root=project)
+        export_studio(audit,qs,out/'mercy-studio.html',root=project,workflow=workflow)
         if args.pdf: export_pdf(audit,qs,out/'mercy-viva.pdf')
         export_architecture(audit,out/'mercy-architecture.md')
         print(f'MERCY | {audit["project"]} | {len(qs)} questions | {audit["summary"]["read_files"]} files read')

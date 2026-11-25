@@ -3,6 +3,9 @@ from __future__ import annotations
 from html import escape
 from pathlib import Path
 import json
+import os
+import stat
+import tempfile
 
 
 def fmt_evidence(hits):
@@ -35,8 +38,28 @@ def export_markdown(report, questions, output):
     Path(output).write_text('\n'.join(lines).rstrip()+'\n', encoding='utf-8')
 
 
-def export_json(report, questions, output):
-    Path(output).write_text(json.dumps({'report':report,'questions':questions}, indent=2, ensure_ascii=False), encoding='utf-8')
+def export_json(report, questions, output, *, workflow=None):
+    output = Path(output)
+    if output.is_symlink():
+        raise ValueError('Evidence output must not be a symbolic link.')
+    data = {'report':report,'questions':questions}
+    if workflow is not None:
+        data['workflow'] = workflow
+    payload = json.dumps(data, indent=2, ensure_ascii=False)
+    temporary = None
+    try:
+        with tempfile.NamedTemporaryFile(mode='w', encoding='utf-8', dir=output.parent,
+                                         prefix='.mercy-evidence-', delete=False) as handle:
+            temporary = Path(handle.name)
+            handle.write(payload)
+            handle.flush()
+            os.fsync(handle.fileno())
+        if output.exists():
+            temporary.chmod(stat.S_IMODE(output.stat().st_mode))
+        os.replace(temporary, output)
+    finally:
+        if temporary is not None:
+            temporary.unlink(missing_ok=True)
 
 
 def _p(text):

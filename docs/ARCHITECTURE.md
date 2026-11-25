@@ -12,6 +12,8 @@ Codex or Claude Code is the model and orchestrator. Mercy does not start a model
 
 `prepare` is a deterministic seed generator, not AI reasoning. Its source hashes make later review detect same-length edits. Older reports still render but require a fresh scan before review. Existing reviewed answers are retained unless their IDs are explicitly replaced.
 
+For new host notebooks, `prepare --guided` seeds ten required project topics and top-level workflow bookkeeping. `next` verifies the bounded source snapshot, returns one pending question with bounded excerpts and a complete patch shape, and reports remaining work. `review` records content digests only after validation; manual edits make those questions pending again. `render` preserves this bookkeeping and shows draft/recorded-step status without blocking human edits. Completion measures submitted records, not semantic correctness. See `GUIDED_REVIEW.md`.
+
 ## Analysis and export pipeline
 
 ```mermaid
@@ -67,7 +69,7 @@ The above is **schema illustration only**, not a claim about any specific reposi
 
 Architecture nodes are indexed files grouped by heuristic role. The labels Interface, Backend, Intelligence, Data and Infrastructure are suggestions, not verified service boundaries. Architecture edges exist only for scan-resolved local imports. The mind map uses a different relation: project → study subject → question. It never claims those branches are runtime dependencies.
 
-**Flow Tracer** starts at a declared route or indexed file and follows the *first still-unseen* resolved import up to seven nodes. This is not full graph traversal and must never be called a verified execution pipeline. Real code-level call flow is future work.
+**Import Trails** starts at a declared route or indexed file and follows the *first still-unseen* resolved import up to seven nodes. This is not full graph traversal and must never be called a verified execution pipeline. Real code-level call flow is future work.
 
 ## Offline HTML security
 

@@ -7,6 +7,29 @@ def _loc(hits, limit=3):
     return [{'path': e['path'], 'line': e['line']} for e in (hits or [])[:limit]]
 
 
+GUIDE_TOPICS = [
+    ('PURPOSE', 'Start here', 'What does this project do, and for whom?', 'readme project purpose'),
+    ('ENTRY', 'Start here', 'How is this project started, and where does execution begin?', 'main cli manage app package pyproject'),
+    ('DEPENDENCIES', 'Architecture', 'Which dependencies matter, and where are they used?', 'requirements package pyproject imports'),
+    ('MODULES', 'Architecture', 'What are the important modules and their responsibilities?', 'src service core engine app'),
+    ('WORKFLOW', 'Architecture', 'Trace one source-supported path from input to output.', 'main route handler process render'),
+    ('VALIDATION', 'Data', 'How are inputs validated before use?', 'validate schema form input request'),
+    ('STORAGE', 'Data', 'What is stored or loaded, and where?', 'storage model database file save load'),
+    ('ERRORS', 'Quality', 'What happens when an operation fails?', 'error exception handler retry'),
+    ('INTEGRATIONS', 'Architecture', 'Which external integrations exist, and what remains unverified?', 'client api provider llm integration'),
+    ('LIMITS', 'Quality', 'What are the source-supported limits and verification gaps?', 'test limit warning safety'),
+]
+
+
+def make_guided_questions() -> list[dict]:
+    return [{'id':'GUIDE_'+topic, 'category':category, 'difficulty':'beginner',
+             'question':question, 'answer':'Not reviewed. Inspect source for this topic.',
+             'explain_like_im_10':'Not reviewed. Add a plain-language explanation.',
+             'status':'not_verified', 'evidence':[],
+             'verify_next':'Inspect the suggested files; record exact citations or a concrete evidence gap.'}
+            for topic,category,question,_ in GUIDE_TOPICS]
+
+
 def make_questions(r: dict) -> list[dict]:
     s = r['signals']; fs = r['frameworks']; summary = r['summary']
     questions = []

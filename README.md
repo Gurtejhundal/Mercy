@@ -51,10 +51,10 @@ The report is one self-contained HTML file. Its artwork, font and interactions a
 |---|---|
 | **Mind Map** | Expand subjects into questions and follow a connected study path. |
 | **Architecture** | Inspect file nodes and resolved import links. |
-| **Flow Tracer** | Follow a static reference trail from a detected route or file. |
+| **Import Trails** | Follow a static reference trail from a detected route or file. |
 | **Directory Atlas** | Explore indexed folders and files. |
 | **Viva Questions** | Search, filter, hide answers and rehearse. |
-| **Study Guide** | Review project signals, missing evidence and where to start. |
+| **Project Guide** | Read chapter-based explanations, source citations and every recorded next check. |
 
 **Keep your notes.** `mercy-evidence.json` holds the editable answers and evidence. `mercy render` rebuilds the notebook after your edits; the Markdown companion gives you a plain-text alternative.
 
@@ -75,6 +75,8 @@ That is the kind of distinction you need in a viva: a clear explanation, a locat
 Your host agent reads bounded source excerpts with `mercy context`, checks and improves the answers, saves complete reviewed questions with `mercy review`, and rebuilds the notebook with `mercy render`. Then it coaches you through a mock viva.
 
 Mercy uses the model already inside **Codex or Claude Code**. The native workflow needs no separate model service or provider key. The host's own privacy and connectivity settings still apply.
+
+For new notebooks, the skill uses a guided loop: ten required project topics, one review task at a time, bounded source excerpts and an exact JSON patch shape. This reduces the amount a smaller model must keep in mind. It detects unfinished or later-edited answers; it cannot guarantee correct reasoning or 100% accurate analysis. See [guided review](docs/GUIDED_REVIEW.md).
 
 ## Install
 
@@ -135,8 +137,12 @@ These are natural-language requests to the native skill, not extra CLI subcomman
 | `mercy inspect --project .` | Inspect bounded repository metadata. |
 | `mercy context --project . --query "answer_question"` | Read numbered source matches. |
 | `mercy prepare --project .` | Create a starter notebook, evidence JSON and Markdown. |
+| `mercy prepare --project . --guided` | Seed ten project topics for incremental host review. |
+| `mercy next --project . --input mercy-output/mercy-evidence.json` | Get the next guided task, source hints and a complete patch template. |
 | `mercy review --project . --input mercy-output/mercy-evidence.json --review review.json` | Validate and merge complete reviewed questions. |
 | `mercy render --input mercy-output/mercy-evidence.json` | Rebuild after evidence edits. |
+
+An existing guided notebook resumes with `next`; `prepare --guided` refuses to overwrite existing evidence. `next` reports `ready_to_render` only when all required topics and all current questions have matching review records against the saved source snapshot. A `not_verified` answer can complete a review step with a concrete next check; completion does not mean every feature was verified. Human-edited JSON still renders, and changed answers appear as pending review.
 
 ## A few honest answers
 
@@ -201,9 +207,9 @@ Open `output-example/mercy-studio.html` in any modern desktop browser. The examp
 
 | Area | Interaction | What it means |
 |---|---|---|
-| **Study Guide** | Read project signals, missing evidence and the three-step study path | Source snapshot only |
+| **Project Guide** | Read chapters in order; expand technology evidence, scan coverage and follow-up checks | Source snapshot only |
 | **Architecture** | Pan, zoom, select file nodes and inspect import arrows | A → B **means A imports B**, not a verified runtime call |
-| **Flow Tracer** | Select a detected route/file and follow a static dependency trail | Not a verified request-to-database pipeline |
+| **Import Trails** | Select a detected route/file and follow a static dependency trail | Not a verified request-to-database pipeline |
 | **Directory Atlas** | Expand folder tree; open a folder tile; click individual file tiles | Directory tree reflects indexed paths, not all files if scan was capped |
 | **Mind Map** | Expand subjects into questions; read answers and citations beside the map; pan, zoom and fit | General concepts are not automatically present in your project |
 | **Viva Questions** | Search, filter by subject, hide/reveal answers, click file:line evidence | Question bank contains real evidence references and explicit unknowns |
@@ -306,7 +312,7 @@ Mercy does **not** execute imported project code, launch a server, open database
 - File groups contain only indexed paths; no groups are fabricated.
 - File roles are heuristic (path, extension, source code clue), not guaranteed service boundaries.
 - Architecture links are statically resolved imports. Mind-map branches organize study topics and questions.
-- Flow Tracer is explicitly labelled as a **reference trail**, never a verified runtime data flow.
+- Import Trails is explicitly labelled as a **reference trail**, never a verified runtime data flow.
 - Dataset-like files and AI API libraries are **clues**, not proof of training, retrieval, accuracy or inference deployment.
 - The scanner is bounded and skips several high-risk/large files; the map may be incomplete.
 

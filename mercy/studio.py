@@ -13,6 +13,9 @@ import json
 import base64
 import re
 
+from .agent import _source, review_progress
+from .scanner import _ignore_name
+
 ROLE_LABELS = {
     'frontend': 'Interface',
     'backend': 'Backend',
@@ -90,12 +93,11 @@ def extract_theme(root: str | Path, report: dict) -> dict:
     candidates = [f['path'] for f in report['files'] if Path(f['path']).suffix.lower() in {'.css', '.scss', '.sass', '.html', '.vue', '.svelte'}]
     source = []
     for relative in candidates[:24]:
-        p = root / relative
-        if p.is_symlink() or p.stat().st_size > 90_000:
+        if _ignore_name(Path(relative).name):
             continue
         try:
-            raw = p.read_text(encoding='utf-8',errors='replace')[:45_000]
-        except OSError:
+            raw = _source(root, relative)[:45_000]
+        except (OSError, ValueError):
             continue
         source.append(relative)
         for value in re.findall(r'(?<![\w-])#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})(?![A-Fa-f0-9])', raw):
@@ -115,30 +117,31 @@ def extract_theme(root: str | Path, report: dict) -> dict:
     # Optional project-owned override, validated as data, never arbitrary CSS.
     # This file may be written by the user or (only with permission) a coding agent.
     config = root / 'mercy-theme.json'
-    if config.is_file() and not config.is_symlink() and config.stat().st_size <= 4096:
-        try:
+    try:
+        obj = None
+        if config.is_file() and not config.is_symlink() and config.stat().st_size <= 4096:
             obj = json.loads(config.read_text(encoding='utf-8'))
-        except (ValueError, OSError, UnicodeError):
-            obj = None
-        if isinstance(obj,dict):
-            valid = re.compile(r'^#[A-Fa-f0-9]{6}$')
-            for key in ('primary','secondary','background','panel','text','muted'):
-                value = obj.get(key)
-                if isinstance(value,str) and valid.fullmatch(value):
-                    theme[key] = value.lower()
-            if isinstance(obj.get('radius'),int) and not isinstance(obj.get('radius'),bool) and 5 <= obj['radius'] <= 28:
-                theme['radius'] = obj['radius']
-            if obj.get('font') in ('system','serif','mono'):
-                theme['font'] = obj['font']
-            # Check enough contrast against the supplied page colors, not a guarantee
-            # that *every* UI state satisfies WCAG.
-            if 'background' in theme and 'text' in theme and _contrast(theme['background'],theme['text']) < 4.5:
-                del theme['background']
-                del theme['text']
-                theme['note'] += ' Rejected low-contrast background/text override.'
-            theme['source_type'] = 'project-theme-file'
-            theme['source'] = ['mercy-theme.json']
-            theme['note'] += ' Explicit user theme tokens were validated, but layout remains Mercy Studio.'
+    except (ValueError, OSError, UnicodeError):
+        obj = None
+    if isinstance(obj,dict):
+        valid = re.compile(r'^#[A-Fa-f0-9]{6}$')
+        for key in ('primary','secondary','background','panel','text','muted'):
+            value = obj.get(key)
+            if isinstance(value,str) and valid.fullmatch(value):
+                theme[key] = value.lower()
+        if isinstance(obj.get('radius'),int) and not isinstance(obj.get('radius'),bool) and 5 <= obj['radius'] <= 28:
+            theme['radius'] = obj['radius']
+        if obj.get('font') in ('system','serif','mono'):
+            theme['font'] = obj['font']
+        # Check enough contrast against the supplied page colors, not a guarantee
+        # that *every* UI state satisfies WCAG.
+        if 'background' in theme and 'text' in theme and _contrast(theme['background'],theme['text']) < 4.5:
+            del theme['background']
+            del theme['text']
+            theme['note'] += ' Rejected low-contrast background/text override.'
+        theme['source_type'] = 'project-theme-file'
+        theme['source'] = ['mercy-theme.json']
+        theme['note'] += ' Explicit user theme tokens were validated, but layout remains Mercy Studio.'
     return theme
 
 def build_atlas(report: dict, questions: list[dict], root: str | Path | None = None) -> dict:
@@ -150,8 +153,8 @@ def build_atlas(report: dict, questions: list[dict], root: str | Path | None = N
     for f in report['files']:
         role = _role(f, report)
         files.append({'path':f['path'], 'role':role, 'language':f['language'], 'lines':f['lines'],
-                      'routes':f['routes'], 'symbols':f['symbols'][:10],
-                      'imports':f['imports'][:20], 'kind':'file'})
+                      'routes':f['routes'], 'symbols':f['symbols'],
+                      'imports':f['imports'], 'kind':'file'})
     for d in report['datasets']:
         files.append({'path': d['path'], 'role':'data', 'language':Path(d['path']).suffix.lstrip('.'),
                       'lines':0, 'routes':[], 'symbols':[], 'imports':[], 'kind':'data-candidate'})
@@ -180,6 +183,8 @@ def build_atlas(report: dict, questions: list[dict], root: str | Path | None = N
         'theme':theme, 'clusters':clusters, 'files':files, 'edges':edges,
         'crossings':[{'a':a,'b':b,'count':v} for (a,b),v in crossings.items()],
         'routes':routes, 'frameworks':sorted(report['frameworks'].keys()),
+        'framework_evidence':{name:[{'path':hit['path'], 'line':hit['line']} for hit in hits]
+                              for name,hits in report['frameworks'].items()},
         'questions':questions, 'glossary':[{**c,'detected':concept_status.get(c['term'],False)} for c in GLOSSARY],
         'signals':signals, 'datasets':report['datasets'],
         'disclaimers':[
@@ -191,8 +196,10 @@ def build_atlas(report: dict, questions: list[dict], root: str | Path | None = N
     }
 
 
-def export_studio(report: dict, questions: list[dict], output: str | Path, root: str | Path | None = None) -> dict:
+def export_studio(report: dict, questions: list[dict], output: str | Path, root: str | Path | None = None, *, workflow=None) -> dict:
     atlas = build_atlas(report, questions, root)
+    if workflow is not None:
+        atlas['review'] = review_progress({'questions':questions,'workflow':workflow})
     payload = json.dumps(atlas, ensure_ascii=False, separators=(',',':'))
     # The browser's HTML parser sees script closing tags even in application/json.
     # Escape dangerous delimiters and Unicode JS line separators; everything is inert JSON.
@@ -201,9 +208,9 @@ def export_studio(report: dict, questions: list[dict], output: str | Path, root:
     template = resources.files('mercy').joinpath('assets', 'studio.html').read_text(encoding='utf-8')
     if '/* MERCY_ATLAS_PAYLOAD */' not in template:
         raise RuntimeError('HTML template missing data marker.')
-    result = template.replace('/* MERCY_ATLAS_PAYLOAD */', payload)
     for marker, filename in [('MERCY_NOTEBOOK_FONT', 'notebook.ttf'), ('MERCY_MASCOT', 'teacher.webp')]:
         encoded = base64.b64encode(resources.files('mercy').joinpath('assets', filename).read_bytes()).decode('ascii')
-        result = result.replace('/* '+marker+' */', encoded)
+        template = template.replace('/* '+marker+' */', encoded)
+    result = template.replace('/* MERCY_ATLAS_PAYLOAD */', payload)
     Path(output).write_text(result, encoding='utf-8')
     return atlas

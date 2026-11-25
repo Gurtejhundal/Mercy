@@ -13,6 +13,7 @@ function mount(data=atlas,reduced=false){
     constructor(tag='div'){this.tagName=tag;this.children=[];this.attrs={};this.dataset={};this.style={setProperty(){}};this.value='';this.events={};this.className='';this._text='';this.clientWidth=760;this.scrollLeft=0;this.scrollTop=0;this.classList={contains:c=>this.className.split(' ').includes(c),toggle:(c,on)=>{const set=new Set(this.className.split(' ').filter(Boolean));if(on===undefined)on=!set.has(c);if(on)set.add(c);else set.delete(c);this.className=[...set].join(' ')},add:c=>this.classList.toggle(c,true),remove:c=>this.classList.toggle(c,false)};}
     setAttribute(k,v){this.attrs[k]=String(v);if(k==='class')this.className=String(v);if(k.startsWith('data-'))this.dataset[k.slice(5).replace(/-([a-z])/g,(_,c)=>c.toUpperCase())]=String(v)}
     getAttribute(k){return this.attrs[k]}
+    get parentElement(){return this.parent}
     removeAttribute(k){delete this.attrs[k]}
     set textContent(t){this._text=String(t);this.children=[]}
     get textContent(){return this._text+this.children.map(x=>typeof x==='string'?x:x.textContent).join('')}
@@ -66,4 +67,68 @@ test('map zoom, fit and background pan update the scroll surface',()=>{
 });
 test('architecture selection survives pointer capture while dragging does not select',()=>{
   const ui=mount();ui.run("showSection('architecture')");const svg=ui.nodes.get('arch-svg'),file=svg.querySelectorAll('.graph-file')[0],rect=file.children[0];svg.onpointerdown({target:rect,clientX:30,clientY:40,pointerId:1});svg.onpointerup();assert.equal(ui.run('lastFile'),file.dataset.path);ui.run('lastFile=null');svg.onpointerdown({target:rect,clientX:30,clientY:40,pointerId:2});svg.onpointermove({clientX:70,clientY:90});svg.onpointerup();assert.equal(ui.run('lastFile'),null);
+});
+
+test('project guide keeps complete answers, source lines and sequential reading',()=>{
+  const data=structuredClone(atlas);
+  const cited=data.questions.find(q=>q.evidence.length);
+  data.questions[0].answer='A project-specific explanation that must survive rendering.';
+  const ui=mount(data);
+  assert.ok(ui.nodes.get('project-purpose').textContent.includes(data.questions[0].answer));
+  assert.ok(ui.nodes.get('guide-reader').textContent.includes(data.questions[0].explain_like_im_10));
+  const chapters=ui.nodes.get('guide-contents').querySelectorAll('.chapter-question');
+  assert.equal(chapters.length,data.questions.length);
+  chapters.find(b=>b.dataset.question===cited.id).click();
+  assert.ok(ui.nodes.get('guide-reader').textContent.includes(cited.answer));
+  assert.equal(ui.document.activeElement,ui.nodes.get('guide-reader'));
+  ui.nodes.get('guide-reader').querySelectorAll('.evidence-button')[0].click();
+  assert.ok(ui.nodes.get('arch-detail').textContent.includes(cited.evidence[0].path+':'+cited.evidence[0].line));
+  ui.run('readGuide(0)');
+  const controls=ui.nodes.get('guide-reader').querySelectorAll('.tiny');
+  assert.equal(controls[0].disabled,true);
+  controls[1].click();
+  assert.equal(ui.run('guideIndex'),1);
+  assert.ok(ui.nodes.get('guide-reader').textContent.includes(data.questions[1].answer));
+});
+
+test('all gaps and scanner notes stay available, and symbol metadata is visible',()=>{
+  const data=structuredClone(atlas);
+  data.warnings=Array.from({length:9},(_,i)=>'Scan note '+i);
+  const ui=mount(data);
+  assert.ok(ui.nodes.get('warnings').textContent.includes('Scan note 8'));
+  assert.equal(ui.nodes.get('question-gaps').children.length,data.questions.filter(q=>q.verify_next||q.status==='not_verified').length);
+  const file=data.files.find(f=>f.symbols.length);
+  ui.run(`fileDetails(${JSON.stringify(file.path)})`);
+  assert.ok(ui.nodes.get('arch-detail').textContent.includes(file.symbols[0].name));
+  assert.ok(ui.nodes.get('arch-detail').textContent.includes('Heuristic role:'));
+});
+
+test('question evidence filter, source search and reveal state work together',()=>{
+  const ui=mount();const filter=ui.nodes.get('q-status');
+  filter.value='not_verified';filter.events.change();
+  assert.equal(ui.nodes.get('question-list').children.length,atlas.questions.filter(q=>q.status==='not_verified').length);
+  filter.value='all';const q=atlas.questions.find(q=>q.evidence.length);
+  ui.nodes.get('q-search').value=q.evidence[0].path;ui.nodes.get('q-search').events.input();
+  assert.ok(ui.nodes.get('question-list').children.length>0);
+  const toggle=ui.nodes.get('question-list').querySelectorAll('.tiny')[0];
+  assert.equal(toggle.getAttribute('aria-expanded'),'true');toggle.click();
+  assert.equal(toggle.getAttribute('aria-expanded'),'false');
+  assert.ok(toggle.getAttribute('aria-controls').startsWith('answer-'));
+});
+
+test('legacy and empty question banks render without new metadata',()=>{
+  const data=structuredClone(atlas);delete data.framework_evidence;
+  data.questions=[];const ui=mount(data);
+  assert.ok(ui.nodes.get('guide-reader').textContent.includes('No questions'));
+  assert.ok(ui.nodes.get('project-purpose').textContent.includes('No project explanation'));
+});
+
+test('guided report shows review records without promising correct answers',()=>{
+  const data=structuredClone(atlas);
+  data.review={state:'needs_review',reviewed:3,total:10};
+  const ui=mount(data);const banner=ui.nodes.get('review-state');
+  assert.equal(banner.hidden,false);
+  assert.ok(banner.textContent.includes('Guided draft'));
+  assert.ok(banner.textContent.includes('3/10'));
+  assert.ok(banner.textContent.includes('not correctness'));
 });

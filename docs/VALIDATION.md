@@ -1,3 +1,18 @@
+# Notebook information architecture — 2026-11-25
+
+Audit and guided-review additions: source fixes cover import resolution, skipped import targets, safe palette refresh, literal answer preservation, atomic evidence writes and hook-setting validation. Guided regression cases cover bounded next-task packets, incomplete/edited/missing records, unverified-answer counts, source freshness, custom scan limits, resume protection and render compatibility. These new cases have not been run locally while execution permission is pending. No external-model benchmark or guarantee of model accuracy is claimed. Codex/plugin skill validators passed. Claude frontmatter parses as YAML; the generic Codex validator rejects its existing Claude-specific keys, so that validator is not claimed as a Claude-host check.
+
+- Python source syntax parsing passed for the changed exporter and Python regression file. Node syntax checks passed for the template script and UI regression file. `git diff --check` passed.
+- Existing mini-rag and galaxy HTML previews were refreshed by applying the new template to their saved evidence with standard-library file operations, without invoking Mercy. Their 49 and 52 answers were retained. `public/demo.html` matches the refreshed mini-rag preview.
+- Static HTML inspection found no duplicate IDs, unresolved template markers or remote asset links in these three previews. Embedded atlas JSON parsed successfully.
+- Added regression coverage for chapter navigation, complete answers and citation lines, warning visibility, symbol inspection, source-path search, evidence filters, answer toggle state, legacy atlas data, empty answer banks and framework citations.
+- Project tests and CLI prepare/review/render execution were **not run**: explicit permission is required by this repository's instructions and has not yet been received. The added tests are not claimed to pass.
+- Browser policy rejected local-file preview. No workaround was attempted. Desktop/mobile pixels, real gestures and screen-reader behavior remain unverified.
+
+The records below describe earlier versions and are not fresh verification of this redesign.
+
+---
+
 # Native-agent foundation — 2026-11-23
 
 Current validation:

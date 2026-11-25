@@ -17,7 +17,7 @@ Untrusted repositories can contain malicious source text, fake architecture clai
 
 `context` operates on the scanner's indexed source paths only, rejects traversal/symlink paths, caps excerpts and redacts sensitive-looking lines. Returned repository text is untrusted data. Redaction is conservative pattern matching, not a guarantee that arbitrary source is free of private data. The selected Codex/Claude host receives the context under its own privacy settings.
 
-`review` accepts only a `questions` patch, validates IDs, proof labels and citation bounds against the scan and current files, and rejects source inventory or fingerprint changes. It cannot rewrite scan metadata. The evidence file is replaced atomically only after validation. Hashes do not prove an answer's semantics; the host must inspect and reason about each claim.
+`review` accepts only a `questions` patch, validates IDs, proof labels and citation bounds against the scan and current files, and rejects source inventory or fingerprint changes. It cannot rewrite scan metadata. The evidence file is replaced atomically only after validation. Prepare/render also stage evidence JSON beside its destination and replace it atomically; a failed write preserves the prior evidence file. Other report companions are separate writes. Hashes do not prove an answer's semantics; the host must inspect and reason about each claim.
 
 ## HTML output protections
 
@@ -34,7 +34,7 @@ Untrusted repositories can contain malicious source text, fake architecture clai
 2. File-role classification = **heuristic**, not a verified frontend/backend/AI boundary.
 3. Edge = scanner-resolved local **import**, with source file and line. A is not claimed to call B at runtime.
 4. Route = route **declaration** in code, not proof of a mounted endpoint or successful request.
-5. Flow Tracer = a *dependency trail*, not a real user-click or data-flow execution trace.
+5. Import Trails = a *dependency trail*, not a real user-click or data-flow execution trace.
 6. A model import, `fit()` marker, CSV file, retrieval-related term or deployment manifest cannot prove the feature works.
 7. If code evidence is absent, explain that the feature was *not established*, rather than saying it definitely does not exist.
 

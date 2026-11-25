@@ -155,3 +155,50 @@ def test_generated_snapshots_and_collected_assets_do_not_pollute_source_map(tmp_
     assert [f['path'] for f in r['files']]==['app.py']
     assert r['summary']['routes_found']==1
     assert r['files'][0]['routes'][0]['path']=='/current'
+
+
+def test_explicit_js_imports_resolve_without_turning_packages_into_local_files(tmp_path):
+    (tmp_path/'app.js').write_text('import {answer} from "./helper.js";\nimport React from "react";\n')
+    (tmp_path/'helper.js').write_text('export function answer() { return 42; }\n')
+    (tmp_path/'react.js').write_text('export const unrelated = true;\n')
+    report=scan_project(tmp_path)
+    assert [(e['source'],e['target'],e['line']) for e in report['edges']]==[
+        ('app.js','helper.js',1)]
+
+
+def test_python_packages_resolve_to_their_initializer(tmp_path):
+    (tmp_path/'app.py').write_text('import helpers\n')
+    (tmp_path/'helpers.py').write_text('not_the_package = True\n')
+    package=tmp_path/'helpers';package.mkdir()
+    (package/'__init__.py').write_text('answer = 42\n')
+    report=scan_project(tmp_path)
+    assert [(e['source'],e['target']) for e in report['edges']]==[('app.py','helpers/__init__.py')]
+
+
+def test_relative_python_submodule_imports_resolve(tmp_path):
+    package=tmp_path/'helpers';package.mkdir()
+    (package/'__init__.py').write_text('from . import answer\n')
+    (package/'answer.py').write_text('value = 42\n')
+    report=scan_project(tmp_path)
+    assert [(e['source'],e['target']) for e in report['edges']]==[
+        ('helpers/__init__.py','helpers/answer.py')]
+
+
+def test_invalid_hook_settings_fail_cleanly_without_rewriting_settings(tmp_path):
+    settings=tmp_path/'.claude/settings.local.json';settings.parent.mkdir()
+    for hooks in [[],{'SessionStart':'not an array'}]:
+        original=json.dumps({'hooks':hooks});settings.write_text(original)
+        result=subprocess.run([sys.executable,'-m','mercy','install','--project',str(tmp_path),'--hooks'],
+                              capture_output=True,text=True)
+        assert result.returncode==2
+        assert 'Traceback' not in result.stderr
+        assert settings.read_text()==original
+
+
+def test_skipped_sources_never_receive_resolved_import_edges(tmp_path):
+    (tmp_path/'app.py').write_text('import large\n')
+    (tmp_path/'large.py').write_text('# oversized\n' * 9000)
+    report=scan_project(tmp_path)
+    assert [f['path'] for f in report['files']]==['app.py']
+    assert report['edges']==[]
+    assert report['summary']['module_links']==0
