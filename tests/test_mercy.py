@@ -109,3 +109,38 @@ def test_user_supplied_pyqs_are_not_automatically_claimed_as_proven(tmp_path):
     assert len(extra)==2
     assert extra[1]['status']=='not_verified'
     assert not extra[1]['evidence']
+
+
+def test_django_literal_patterns_through_import_aliases(tmp_path):
+    (tmp_path/'urls.py').write_text(
+        'from django.urls import path as url, re_path\n'
+        'import django.urls as routes\n'
+        'urlpatterns = [\n'
+        '    url(\n'
+        '        "", views.home),\n'
+        '    routes.path("booking/", include("bookings.urls")),\n'
+        '    re_path(route=r"^status/(?P<ref>[^/]+)/$", view=views.status),\n'
+        '    url(dynamic_route, views.dynamic),\n'
+        ']\n'
+        'raise RuntimeError("must never execute")\n')
+    (tmp_path/'not_urls.py').write_text('path("not-a-django-route", view)\n')
+    r=scan_project(tmp_path)
+    f=next(f for f in r['files'] if f['path']=='urls.py')
+    assert f['routes']==[
+        {'path':'','line':4,'kind':'django-pattern'},
+        {'path':'booking/','line':6,'kind':'django-pattern'},
+        {'path':r'^status/(?P<ref>[^/]+)/$','line':7,'kind':'django-pattern'},
+    ]
+    assert r['summary']['routes_found']==3
+    from mercy.studio import build_atlas
+    atlas=build_atlas(r,make_questions(r))
+    assert atlas['routes'][1]['path']=='booking/'
+    assert atlas['routes'][1]['kind']=='django-pattern'
+    assert atlas['routes'][1]['file']=='urls.py'
+
+
+def test_next_js_is_not_inferred_from_control_flow_or_redirect_parameters(tmp_path):
+    (tmp_path/'views.py').write_text('item = next(iter(items))\nredirect_to = request.GET.get("next")\n')
+    assert 'Next.js' not in scan_project(tmp_path)['frameworks']
+    (tmp_path/'page.tsx').write_text('import Link from "next/link";\nexport default function Page() { return null; }\n')
+    assert scan_project(tmp_path)['frameworks']['Next.js'][0]['path']=='page.tsx'

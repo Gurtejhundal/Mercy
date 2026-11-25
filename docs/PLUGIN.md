@@ -49,3 +49,9 @@ codex plugin add mercy@mercy
 ```
 
 Start a new chat after updating. In Claude Code run `/plugin marketplace update mercy`, then `/plugin update mercy@mercy`, and restart the session if prompted.
+
+## Bare invocation
+
+Send `@Mercy` or `$mercy:mercy` alone in Codex, or `/mercy:mercy` alone in Claude Code. Mercy immediately investigates the current repository, replaces generic starter answers with reviewed project-specific explanations, renders the notebook and links the HTML. No second instruction or menu choice is required. A focused question or explicit text-only request still stays in chat. Host tool approvals and source-analysis limits remain in force.
+
+Django URL patterns are now detected through imported `path`/`re_path` aliases. They are displayed as local patterns, including empty prefixes and regular expressions, without claiming that `include` prefixes were resolved into live endpoints.

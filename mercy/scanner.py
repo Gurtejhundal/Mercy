@@ -31,7 +31,7 @@ SIGNALS = {
 }
 FRAMEWORKS = {
  'FastAPI': r'\bfastapi\b|\bFastAPI\s*\(', 'Flask': r'\bflask\b|\bFlask\s*\(',
- 'Django': r'\bdjango\b', 'Next.js': r'\bnext\b|from [\'\"]next/',
+ 'Django': r'\bdjango\b', 'Next.js': r'\bNext\.js\b|\b(?:from\s*|require\s*\(\s*|import\s*\(\s*)[\'\"]next(?:/[\w/-]+)?[\'\"]|^\s*import\s+[\'\"]next/',
  'React': r'\breact\b|from [\'\"]react[\'\"]', 'Express': r'\bexpress\b|\bexpress\s*\(',
  'PostgreSQL': r'\bpostgresql\b|\bpsycopg\b', 'MongoDB': r'\bmongodb\b|\bmongoose\b',
  'LangChain': r'\blangchain\b', 'LlamaIndex': r'\bllama_index\b', 'Chroma': r'\bchromadb\b|\bChroma\s*\(',
@@ -111,6 +111,31 @@ def _local_imports(path: str, imports: list[dict], valid_paths: set[str]) -> lis
     return results
 
 
+
+def _django_routes(tree: ast.AST) -> list[dict]:
+    """Extract literal URL patterns through Django imports without importing Django."""
+    names = set()
+    for node in ast.walk(tree):
+        if isinstance(node, ast.ImportFrom) and node.module == 'django.urls':
+            names.update(a.asname or a.name for a in node.names if a.name in {'path', 're_path'})
+        elif isinstance(node, ast.Import):
+            for alias in node.names:
+                if alias.name == 'django.urls':
+                    names.update((alias.asname or alias.name) + '.' + suffix for suffix in ('path', 're_path'))
+        elif isinstance(node, ast.ImportFrom) and node.module == 'django':
+            for alias in node.names:
+                if alias.name == 'urls':
+                    names.update((alias.asname or alias.name) + '.' + suffix for suffix in ('path', 're_path'))
+    routes = []
+    for node in ast.walk(tree):
+        if not isinstance(node, ast.Call) or ast.unparse(node.func) not in names:
+            continue
+        pattern = node.args[0] if node.args else next((k.value for k in node.keywords if k.arg == 'route'), None)
+        if isinstance(pattern, ast.Constant) and isinstance(pattern.value, str):
+            routes.append({'path': pattern.value, 'line': node.lineno, 'kind': 'django-pattern'})
+    return sorted(routes, key=lambda route: route['line'])[:40]
+
+
 def scan_project(root: str | Path, max_files: int = 400, max_bytes: int = 1_600_000) -> dict:
     root = Path(root).expanduser().resolve()
     if not root.is_dir():
@@ -146,6 +171,7 @@ def scan_project(root: str | Path, max_files: int = 400, max_bytes: int = 1_600_
         if p.suffix.lower() == '.py':
             try:
                 tree = ast.parse(src)
+                info['routes'] = _django_routes(tree)
                 for node in ast.walk(tree):
                     if isinstance(node, ast.Import):
                         for a in node.names:

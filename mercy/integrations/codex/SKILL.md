@@ -9,6 +9,10 @@ At the beginning of each invocation, display **Mercy — that one teacher we all
 
 Mercy runs using the host Codex/Claude model and tools. The Python CLI is its local evidence toolkit, not a second model or autonomous server. Do not request a provider key or start a model. The notebook is an offline report; it does not contain a chat backend.
 
+## Start immediately on a bare invocation
+
+Selecting Mercy, mentioning `@Mercy`, or invoking its skill without extra text is the request to analyze the current repository and produce the notebook. Do not ask what the user wants to do next, wait for another message, present a menu, or stop after acknowledging the invocation. Start the read-only workflow immediately. Ask only if there is no usable project directory or a concrete blocking requirement. Respect host tool approvals; a bare invocation does not authorize running the target application or contacting services.
+
 ## Choose the work from the request
 
 - **Broad project explanation / bare invocation:** requests such as "explain this codebase", "understand this project", "analyze my repository", or invoking Mercy without a narrower task default to a reviewed HTML notebook. Investigate the source, follow the notebook workflow below, and finish with a link to the actual generated `mercy-studio.html`. A chat-only overview does not complete this mode.
@@ -42,7 +46,17 @@ If no reviewed notebook exists:
 mercy prepare --project .
 ```
 
-This produces a deterministic starter question bank, not completed AI analysis. Inspect `mercy-output/mercy-evidence.json` and relevant source with `context`, then replace generic answers and add project-specific questions. If a notebook already exists, preserve reviewed answers. When source changed, prepare into a fresh subdirectory under `mercy-output`, then carry forward only answers whose evidence you rechecked; do not overwrite the old bank to refresh a scan.
+This produces a deterministic starter question bank, not completed AI analysis.
+
+### Improve the notebook data before rendering
+
+Review every retained starter answer. Replace generic placeholders with inspected, project-specific explanations; when a topic does not apply, explicitly say why, with the inspected scope and remaining uncertainty. Keep general AI/ML concepts in the glossary unless the source makes them relevant to this project. Do not pad a Django business website with unsupported training, RAG or accuracy claims.
+
+Cover the actual project purpose, entry points, dependencies and their roles, important modules, one source-traced user workflow, input validation, storage/model relationships, error handling, integrations, and meaningful limitations. Include a plain-language explanation and useful source citations for each answer. Where the scanner misses a framework pattern, inspect the source and explain the limitation rather than treating zero detected clues as absence. Adapt question count to the project's real complexity; do not limit a large project to a tiny generic bank merely to finish.
+
+If the default bank contains topics that do not belong, build a fresh relevant bank with `prepare --limit 1`, replace that starter and add complete reviewed questions through `review`. Only do this for a newly generated bank; preserve human-reviewed notebooks. Do not edit source fingerprints or invent review status. The `review` command validates citations, not the truth of the prose; you still need to read and check the implementation.
+
+ Inspect `mercy-output/mercy-evidence.json` and relevant source with `context`, then replace generic answers and add project-specific questions. If a notebook already exists, preserve reviewed answers. When source changed, prepare into a fresh subdirectory under `mercy-output`, then carry forward only answers whose evidence you rechecked; do not overwrite the old bank to refresh a scan.
 
 Write a review file inside the output directory with this structure:
 

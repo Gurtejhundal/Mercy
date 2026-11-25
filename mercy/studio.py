@@ -167,7 +167,7 @@ def build_atlas(report: dict, questions: list[dict], root: str | Path | None = N
               'target_role':role_by_path.get(e['target'], 'backend')} for e in report['edges']
              if e['source'] in role_by_path and e['target'] in role_by_path]
     crossings = Counter((e['source_role'], e['target_role']) for e in edges if e['source_role']!=e['target_role'])
-    routes = [{'path':r['path'], 'line':r['line'], 'file':f['path']} for f in report['files'] for r in f['routes']]
+    routes = [{**r, 'file':f['path']} for f in report['files'] for r in f['routes']]
     signals = {k:[{'path':p['path'],'line':p['line']} for p in vals] for k, vals in report['signals'].items()}
     concept_status = {}
     for term, tags in {'RAG':['rag'], 'Embedding':['embeddings'], 'Model training':['training'],
