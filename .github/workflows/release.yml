@@ -36,7 +36,7 @@ jobs:
           python -m venv /tmp/mercy-release-check
           /tmp/mercy-release-check/bin/pip install dist/*.whl
           cd /tmp
-          /tmp/mercy-release-check/bin/python -c 'import mercy; from importlib.resources import files; assert mercy.__version__ == "1.0.0"; assert files("mercy").joinpath("assets/teacher.webp").is_file(); assert files("mercy").joinpath("integrations/codex/SKILL.md").is_file()'
+          /tmp/mercy-release-check/bin/python -c 'import mercy; from importlib.resources import files; from importlib.metadata import version; assert mercy.__version__ == version("mercy-viva"); assert files("mercy").joinpath("assets/teacher.webp").is_file(); assert files("mercy").joinpath("integrations/codex/SKILL.md").is_file()'
           /tmp/mercy-release-check/bin/mercy --help
       - name: Publish versioned release
         env:

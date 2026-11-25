@@ -11,7 +11,8 @@ Mercy runs using the host Codex/Claude model and tools. The Python CLI is its lo
 
 ## Choose the work from the request
 
-- **Understand / investigate:** answer the user's codebase question with source references. Do not create a report merely to answer one question.
+- **Broad project explanation / bare invocation:** requests such as "explain this codebase", "understand this project", "analyze my repository", or invoking Mercy without a narrower task default to a reviewed HTML notebook. Investigate the source, follow the notebook workflow below, and finish with a link to the actual generated `mercy-studio.html`. A chat-only overview does not complete this mode.
+- **Focused question / explicit text only:** answer one specific code question with source references without generating a new report. Respect requests for text only or no files.
 - **Prepare / notebook:** investigate the project, improve the answer bank and generate the offline mind-map notebook.
 - **Mock viva:** use the reviewed bank if available. Ask one question at a time, wait for the learner, then explain what was right, what needs correction and the relevant source. Continue with a follow-up based on their answer. A score is coaching feedback, not certification.
 
@@ -39,7 +40,7 @@ Read entry points and relevant implementations. Follow actual source references 
 
 For a broad investigation, explain purpose and entry points, one source-traced path, important modules, and the largest evidence gaps. Adapt depth to the project and user. Do not produce generic answers just because a template question exists. For a focused question, inspect only enough to answer it accurately.
 
-## Build or improve a notebook when requested
+## Build or improve the notebook for broad explanations and notebook requests
 
 If no reviewed notebook exists:
 
@@ -75,6 +76,8 @@ mercy render --input mercy-output/mercy-evidence.json
 ```
 
 `review` validates IDs, proof labels and citations against the scan and current source fingerprints before atomically updating the evidence JSON. If the source snapshot is stale or predates fingerprints, create a fresh scan rather than forcing the review. `render` rebuilds the HTML and text companions. Keep agent explanations in the question bank; do not edit generated HTML to change an answer.
+
+Before finishing notebook mode, confirm the HTML exists, can be read, and contains the reviewed answers. Do not replace the file with an HTML code block, pasted prose, or an unreviewed starter bank. If generation fails, report the actual blocker and which artifacts exist; do not claim completion. Keep the final chat response short: link the notebook and companions, summarize coverage and evidence gaps.
 
 The deliverables are `mercy-studio.html` (mind map, architecture, reference trails, files, Q&A), `mercy-evidence.json`, `mercy-viva.md` and `mercy-architecture.md`. PDF is only added if explicitly requested. Link the actual generated file and state the biggest remaining uncertainties.
 

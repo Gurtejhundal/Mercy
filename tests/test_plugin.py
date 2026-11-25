@@ -42,5 +42,23 @@ class PluginTests(unittest.TestCase):
             self.assertFalse((project / 'mercy-output').exists())
 
 
+    def test_bundled_notebook_can_render_human_edited_evidence(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            project = Path(tmp)
+            (project / 'app.py').write_text('def hello():\n    return "hi"\n')
+            command = [sys.executable, '-I', str(ROOT / 'scripts/mercy.py')]
+            subprocess.run(command + ['prepare', '--project', '.', '--limit', '1'],
+                           cwd=project, capture_output=True, text=True, check=True)
+            evidence = project / 'mercy-output/mercy-evidence.json'
+            data = json.loads(evidence.read_text())
+            data['questions'][0]['answer'] = 'Reviewed explanation retained after regeneration.'
+            evidence.write_text(json.dumps(data))
+            subprocess.run(command + ['render', '--input', str(evidence)],
+                           cwd=project, capture_output=True, text=True, check=True)
+            notebook = project / 'mercy-output/mercy-studio.html'
+            self.assertIn(data['questions'][0]['answer'], notebook.read_text())
+            self.assertTrue((project / 'mercy-output/mercy-viva.md').is_file())
+
+
 if __name__ == '__main__':
     unittest.main()

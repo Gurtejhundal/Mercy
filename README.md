@@ -39,7 +39,7 @@ The report is one self-contained HTML file. Its artwork, font and interactions a
 
 ## Three ways to call her
 
-**Understand.** “Walk me through the request handler. What calls the model, and what happens if it fails?” Mercy inspects the relevant source and separates what it can support from what still needs checking.
+**Understand.** “Explain this codebase” generates a reviewed HTML notebook by default. For a focused answer in chat, ask “Walk me through the request handler. What calls the model, and what happens if it fails?” Mercy inspects the relevant source and separates what it can support from what still needs checking.
 
 **Prepare.** “Make a notebook for my project viva.” Mercy builds a starter bank, reviews it against your code, and turns the checked explanations into study material you can edit and regenerate.
 
@@ -119,7 +119,7 @@ Prefer the standalone Python CLI or project-local `$mercy` / `/mercy` skills? Th
 
 | You say | Mercy helps you do |
 |---|---|
-| “Explain this codebase.” | Trace relevant files and explain what the source supports. |
+| “Explain this codebase.” | Investigate the repository and generate a reviewed HTML study notebook. |
 | “Make me a study notebook.” | Prepare questions, review grounded answers and render the HTML. |
 | “Where is the model trained?” | Look for evidence and say when training is not demonstrated. |
 | “Take my viva.” | Practise one question at a time with feedback tied to the project. |

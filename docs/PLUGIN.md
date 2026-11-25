@@ -36,3 +36,16 @@ Official packaging references: [OpenAI](https://developers.openai.com/plugins/bu
 ## Website publishing
 
 GitHub Pages uses **Deploy from a branch → main → / (root)**. The root `index.html` opens `public/`; `.nojekyll` disables Markdown/Jekyll transformations. The check workflow validates code and assets, while GitHub manages the branch deployment.
+
+## Default output and updating
+
+Broad requests such as “explain this codebase”, “analyze this project”, or a bare Mercy invocation generate a reviewed `mercy-studio.html` notebook and link it in the final response. One focused question, an explicit text-only request, and mock-viva coaching stay in chat.
+
+Update an existing Codex installation:
+
+```bash
+codex plugin marketplace upgrade mercy
+codex plugin add mercy@mercy
+```
+
+Start a new chat after updating. In Claude Code run `/plugin marketplace update mercy`, then `/plugin update mercy@mercy`, and restart the session if prompted.
