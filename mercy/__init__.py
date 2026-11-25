@@ -1,4 +1,4 @@
 """Mercy: project evaluation preparation grounded in repository evidence."""
-__version__ = "1.0.2"
+__version__ = "1.0.3"
 
 TAGLINE = "that one teacher we all know"

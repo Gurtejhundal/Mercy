@@ -144,3 +144,14 @@ def test_next_js_is_not_inferred_from_control_flow_or_redirect_parameters(tmp_pa
     assert 'Next.js' not in scan_project(tmp_path)['frameworks']
     (tmp_path/'page.tsx').write_text('import Link from "next/link";\nexport default function Page() { return null; }\n')
     assert scan_project(tmp_path)['frameworks']['Next.js'][0]['path']=='page.tsx'
+
+
+def test_generated_snapshots_and_collected_assets_do_not_pollute_source_map(tmp_path):
+    for folder in ['output/playwright/old-checkout','outputs/backup','staticfiles/js','test-results','playwright-report']:
+        p=tmp_path/folder;p.mkdir(parents=True)
+        (p/'stale.py').write_text('from fastapi import FastAPI\napp=FastAPI()\n@app.get("/obsolete")\ndef old(): pass\n')
+    (tmp_path/'app.py').write_text('from fastapi import FastAPI\napp=FastAPI()\n@app.get("/current")\ndef current(): pass\n')
+    r=scan_project(tmp_path)
+    assert [f['path'] for f in r['files']]==['app.py']
+    assert r['summary']['routes_found']==1
+    assert r['files'][0]['routes'][0]['path']=='/current'

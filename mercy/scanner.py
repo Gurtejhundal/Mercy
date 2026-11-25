@@ -7,7 +7,7 @@ import os
 import re
 from pathlib import Path
 
-SKIP_DIRS = {'.git', '.venv', 'venv', 'node_modules', '__pycache__', '.next', '.nuxt', 'dist', 'build', 'target', 'coverage', '.idea', '.tox', '.mypy_cache', '.pytest_cache', '.turbo', 'vendor', 'mercy-output', 'output-example', 'output-galaxy'}
+SKIP_DIRS = {'.git', '.venv', 'venv', 'node_modules', '__pycache__', '.next', '.nuxt', 'dist', 'build', 'target', 'coverage', '.idea', '.tox', '.mypy_cache', '.pytest_cache', '.turbo', 'vendor', 'mercy-output', 'output-example', 'output-galaxy', 'output', 'outputs', 'staticfiles', 'test-results', 'playwright-report'}
 SKIP_FILES = {'.env', '.env.local', '.env.production', '.env.development', 'id_rsa', 'id_ed25519'}
 SENSITIVE_SUFFIX = {'.pem', '.key', '.p12', '.pfx', '.sqlite', '.sqlite3', '.db', '.ipynb', '.log'}
 CODE_SUFFIX = {'.py', '.js', '.jsx', '.ts', '.tsx', '.go', '.rs', '.java', '.cpp', '.c', '.h', '.hpp', '.php', '.rb', '.dart', '.kt', '.vue', '.svelte'}
