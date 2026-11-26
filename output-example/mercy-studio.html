@@ -66,7 +66,7 @@ function el(tag,text,className){const node=document.createElement(tag);if(text!=
 function button(text,action,className='tiny'){const node=el('button',text,className);node.addEventListener('click',action);return node}
 function shortQuestion(q){return q.viva_question||q.question}
 function shortAnswer(q){return q.viva_answer||(q.answer.split(/\s+/).length<=45?q.answer:q.explain_like_im_10)}
-function showSection(name){if(!['overview','questions','demo','flow','architecture','tree'].includes(name))return;currentSection=name;document.querySelectorAll('[data-section]').forEach(n=>{const active=n.dataset.section===name;n.classList.toggle('active',active);if(active)n.setAttribute('aria-current','page');else n.removeAttribute('aria-current')});document.querySelectorAll('.section').forEach(n=>n.classList.toggle('active',n.id==='section-'+name));}
+function showSection(name){if(!['overview','questions','demo','flow','architecture','tree'].includes(name))return;const changed=currentSection!==name;currentSection=name;document.querySelectorAll('[data-section]').forEach(n=>{const active=n.dataset.section===name;n.classList.toggle('active',active);if(active)n.setAttribute('aria-current','page');else n.removeAttribute('aria-current')});document.querySelectorAll('.section').forEach(n=>n.classList.toggle('active',n.id==='section-'+name));if(changed)window.scrollTo({top:0,left:0,behavior:'instant'});}
 function references(parent,refs){const box=el('div');(refs||[]).forEach(ref=>box.appendChild(button(ref.path+':'+ref.line,()=>fileDetails(ref.path,ref.line),'evidence-button')));parent.appendChild(box)}
 function details(q){const box=el('details',undefined,'details');box.appendChild(el('summary','Details'));box.appendChild(el('p',q.status==='supported'?'Source cited · execution not verified':'Not verified','muted'));if(q.answer!==shortAnswer(q))box.appendChild(el('p',q.answer));if(q.explain_like_im_10!==q.answer&&q.explain_like_im_10!==shortAnswer(q))box.appendChild(el('p',q.explain_like_im_10));box.appendChild(el('h4','Source'));references(box,q.evidence);if(!q.evidence.length)box.appendChild(el('p','No source reference recorded.','muted'));if(q.verify_next){box.appendChild(el('h4','Check'));box.appendChild(el('p',q.verify_next))}return box}
 function renderOverview(){
@@ -125,7 +125,7 @@ function folderDetails(path,focus=false){
   folder.files.slice(0,6).forEach(file=>{const row=el('li');row.appendChild(button(file.path.split('/').pop(),()=>fileDetails(file.path),'path-button'));contents.appendChild(row)});
   if(contents.children.length){box.appendChild(el('h4','Inside'));box.appendChild(contents);if(folder.files.length>6)box.appendChild(el('p',(folder.files.length-6)+' more files in Explorer.','muted'))}else box.appendChild(el('p','No files were indexed in this folder.','muted'));
   if(note){const proof=el('details',undefined,'details');proof.appendChild(el('summary','Source'));references(proof,note.evidence);box.appendChild(proof)}
-  showSection('tree');if(focus)box.focus();
+  showSection('tree');if(focus)box.focus({preventScroll:window.matchMedia('(min-width:761px)').matches});
 }
 function fileDetails(path,line){
   lastFile=path;selectExplorerRow(path);expandAncestors(path);
@@ -148,7 +148,7 @@ function fileDetails(path,line){
     const related=QUESTIONS.filter(q=>q.evidence.some(ref=>ref.path===path));
     if(related.length){proof.appendChild(el('h4','Related questions'));related.forEach(q=>proof.appendChild(button(shortQuestion(q),()=>{qCategory='All';$('q-search').value=q.viva_question||q.question;$('q-status').value='all';renderCategories();renderQuestions();showSection('questions')},'file-button')))}
   }
-  box.appendChild(proof);showSection('tree');box.focus();
+  box.appendChild(proof);showSection('tree');box.focus({preventScroll:window.matchMedia('(min-width:761px)').matches});
 }
 function renderFolders(){
   folders.clear();folderElements.clear();explorerRows.clear();

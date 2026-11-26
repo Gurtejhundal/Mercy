@@ -2,7 +2,7 @@ name: Build and publish release
 on:
   push:
     branches: [main]
-    paths: [pyproject.toml, .github/workflows/release.yml]
+    paths: [pyproject.toml, .github/workflows/release.yml, "docs/releases/**"]
   workflow_dispatch:
 permissions:
   contents: write

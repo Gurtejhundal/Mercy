@@ -26,6 +26,17 @@ class PluginTests(unittest.TestCase):
             source = catalog['plugins'][0]['source']
             self.assertEqual((ROOT / (source['path'] if isinstance(source, dict) else source)).resolve(), ROOT)
 
+    def test_release_version_has_notes_and_matching_plugin_manifests(self):
+        import re
+        from mercy import __version__
+        metadata=(ROOT/'pyproject.toml').read_text()
+        version=re.search(r'^version = "([^"]+)"',metadata,re.M).group(1)
+        self.assertEqual(version,__version__)
+        for path in ['.codex-plugin/plugin.json','.claude-plugin/plugin.json']:
+            self.assertEqual(json.loads((ROOT/path).read_text())['version'],version)
+        tag='v'+(version[:-2] if version.endswith('.0') else version)
+        self.assertTrue((ROOT/'docs/releases'/f'{tag}.md').is_file())
+
     def test_bundled_toolkit_runs_without_install_or_target_imports(self):
         with tempfile.TemporaryDirectory() as tmp:
             project = Path(tmp)
