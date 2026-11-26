@@ -38,6 +38,10 @@ jobs:
           cd /tmp
           /tmp/mercy-release-check/bin/python -c 'import mercy; from importlib.resources import files; from importlib.metadata import version; assert mercy.__version__ == version("mercy-viva"); assert files("mercy").joinpath("assets/teacher.webp").is_file(); assert files("mercy").joinpath("integrations/codex/SKILL.md").is_file()'
           /tmp/mercy-release-check/bin/mercy --help
+          mkdir /tmp/mercy-release-example
+          printf 'def hello(): return "hi"\n' > /tmp/mercy-release-example/app.py
+          /tmp/mercy-release-check/bin/mercy prepare --guided --project /tmp/mercy-release-example
+          test -s /tmp/mercy-release-example/mercy-output/mercy-studio.html
       - name: Publish versioned release
         env:
           GH_TOKEN: ${{ github.token }}

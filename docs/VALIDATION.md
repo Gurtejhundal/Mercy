@@ -116,3 +116,11 @@ Current local checks after the redesign:
 - Skill frontmatter validation passed. No new dependency was introduced.
 
 These are source, CLI and DOM checks. Browser local-file navigation was blocked earlier in this session; no alternate transport was used to bypass it. No fresh desktop/mobile pixel capture, physical trackpad/touch gesture check or full screen-reader audit was completed. Pinch handlers are checked as events, not calibrated hardware behavior. Source bounds and a completed review do not guarantee model reasoning accuracy.
+
+## Marker identity, explorer and model sources — 2026-11-26
+
+- Local standard-library suite: **31 cases passed**. Pytest-style function harness: **29 passed, one optional PDF case skipped** (ReportLab is not installed locally). Node: **12 checks passed**.
+- The checks cover technology/model-source field validation, safe HTTPS resources, indexed locations, embedded technology marks, nested native disclosures, selected folder/file explanations, source-line selection and parent expansion, focused component dependencies, inert labels, rehearsal and the preserved flowchart gestures/shapes.
+- The PeakCut report was backed up before editing. Its 18 short answers and workflow/demo data are retained. It now has seven technology/source entries, 99 file explanations and 16 folder descriptions. Two empty package-marker files use the explicit empty-source fallback. Model sources were traced in the local loaders and checked against upstream model cards/repositories; no model, provider or scanned application was executed.
+- Logos are bundled static Simple Icons SVGs. Generated reports remain self-contained; external resources are only explicit links. The release wheel smoke now generates a report to verify its packaged assets.
+- The browser again rejected access to the local report under its file-URL policy. No localhost server, alternate browser surface or other bypass was used. DOM checks do not establish physical gestures, screen-reader behavior or local pixel layout.

@@ -233,7 +233,53 @@
       ],
       "verify_next": "Source walkthrough only. Run the sample separately with explicit authorization to check runtime behavior.",
       "viva_question": "Which tools does it use?",
-      "viva_answer": "FastAPI defines the API. The OpenAI Python client sends the model request. Their installed versions and credentials still need checking."
+      "viva_answer": "FastAPI defines the API. The OpenAI Python client sends the model request. Their installed versions and credentials still need checking.",
+      "stack": [
+        {
+          "id": "api",
+          "kind": "backend",
+          "name": "Python + FastAPI",
+          "logo": "fastapi",
+          "description": "app.py defines the health endpoint and accepts questions at /ask. No frontend information is reviewed in this tiny API example.",
+          "paths": [
+            "app.py"
+          ],
+          "evidence": [
+            {
+              "path": "app.py",
+              "line": 9
+            }
+          ],
+          "resources": [
+            {
+              "label": "FastAPI documentation",
+              "url": "https://fastapi.tiangolo.com/"
+            }
+          ]
+        },
+        {
+          "id": "model",
+          "kind": "model",
+          "name": "Configured OpenAI model",
+          "description": "The helper names gpt-4.1-mini and sends it a question. Credentials, availability and response quality remain unverified.",
+          "origin": "An external OpenAI API call, not locally trained weights or a retrieval pipeline.",
+          "paths": [
+            "rag.py"
+          ],
+          "evidence": [
+            {
+              "path": "rag.py",
+              "line": 7
+            }
+          ],
+          "resources": [
+            {
+              "label": "OpenAI Python client",
+              "url": "https://github.com/openai/openai-python"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "GUIDE_MODULES",
@@ -286,7 +332,39 @@
           ]
         }
       ],
-      "directories": []
+      "directories": [],
+      "file_notes": [
+        {
+          "path": "README.md",
+          "description": "Introduces the sample and explains that its name does not establish RAG.",
+          "evidence": [
+            {
+              "path": "README.md",
+              "line": 1
+            }
+          ]
+        },
+        {
+          "path": "app.py",
+          "description": "Defines the health endpoint and passes questions to the model helper.",
+          "evidence": [
+            {
+              "path": "app.py",
+              "line": 1
+            }
+          ]
+        },
+        {
+          "path": "rag.py",
+          "description": "Sends the question directly to the OpenAI chat API and extracts the returned text.",
+          "evidence": [
+            {
+              "path": "rag.py",
+              "line": 1
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "GUIDE_WORKFLOW",
@@ -542,8 +620,8 @@
     "reviewed": {
       "GUIDE_PURPOSE": "6f24bf889c1ff9dd39a24041239e586b3c11b04c41e0f4fdea0eb551871e96a8",
       "GUIDE_ENTRY": "8a28645c369443e0accb9ab470667222f868623c5e6376681921b2a1ec113dec",
-      "GUIDE_DEPENDENCIES": "3f14fde9214aef2e09291d636806c97a476fa6e266f8ca296b1abb7e927c3548",
-      "GUIDE_MODULES": "38df09942994faed1c46afd77175cb7a373e4bba9ab8444b93f367d4d5fb7bf3",
+      "GUIDE_DEPENDENCIES": "b2f17786ea5a5171399ba16367c826037d8009d1ee19a3492354a43bb18d534e",
+      "GUIDE_MODULES": "d6175cb9678dc055878c3b0c408aae03d69ae607512b1b7e238df6e274c909ba",
       "GUIDE_WORKFLOW": "1e54adf5bbee0841774275dbca41f7c474aad163ef19ecac1f765b3da9478a5b",
       "GUIDE_VALIDATION": "eff0dbc1d53df984330398b69bb551e6470356115f1128b6f776704e492b75fb",
       "GUIDE_STORAGE": "e518381fff6a0d959c4886c758eab8687e9a6d18bd954e542de3f74de450189f",

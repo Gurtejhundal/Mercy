@@ -340,7 +340,81 @@
       ],
       "verify_next": "Source walkthrough only. Run the sample separately with explicit authorization to check runtime behavior.",
       "viva_question": "Which tools does it use?",
-      "viva_answer": "The backend uses FastAPI. The interface uses JSX components. The intelligence and storage helpers are simple Python placeholders."
+      "viva_answer": "The backend uses FastAPI. The interface uses JSX components. The intelligence and storage helpers are simple Python placeholders.",
+      "stack": [
+        {
+          "id": "ui",
+          "kind": "frontend",
+          "name": "JSX interface",
+          "logo": "javascript",
+          "description": "The ui folder contains a heading and a demo badge. These components do not call the status API.",
+          "paths": [
+            "ui"
+          ],
+          "evidence": [
+            {
+              "path": "ui/components/App.jsx",
+              "line": 1
+            }
+          ],
+          "resources": []
+        },
+        {
+          "id": "api",
+          "kind": "backend",
+          "name": "Python + FastAPI",
+          "logo": "fastapi",
+          "description": "The server folder defines a status endpoint that returns values from local helpers.",
+          "paths": [
+            "server"
+          ],
+          "evidence": [
+            {
+              "path": "server/main.py",
+              "line": 6
+            }
+          ],
+          "resources": [
+            {
+              "label": "FastAPI documentation",
+              "url": "https://fastapi.tiangolo.com/"
+            }
+          ]
+        },
+        {
+          "id": "demo",
+          "kind": "model",
+          "name": "Placeholder, not a model",
+          "description": "The intelligence helper returns a vector containing the text length. It does not download or run a trained model.",
+          "origin": "Hand-written educational Python code.",
+          "paths": [
+            "intelligence"
+          ],
+          "evidence": [
+            {
+              "path": "intelligence/embed.py",
+              "line": 2
+            }
+          ],
+          "resources": []
+        },
+        {
+          "id": "storage",
+          "kind": "storage",
+          "name": "Storage placeholder",
+          "description": "This function returns zero without reading or writing a database.",
+          "paths": [
+            "storage"
+          ],
+          "evidence": [
+            {
+              "path": "storage/db.py",
+              "line": 2
+            }
+          ],
+          "resources": []
+        }
+      ]
     },
     {
       "id": "GUIDE_MODULES",
@@ -499,6 +573,108 @@
           "evidence": [
             {
               "path": "infra/settings.py",
+              "line": 1
+            }
+          ]
+        }
+      ],
+      "file_notes": [
+        {
+          "path": "README.md",
+          "description": "Introduces the synthetic demo and explains what is deliberately not implemented.",
+          "evidence": [
+            {
+              "path": "README.md",
+              "line": 1
+            }
+          ]
+        },
+        {
+          "path": "ui/components/App.jsx",
+          "description": "Displays the Galaxy Demo heading and the demo status badge.",
+          "evidence": [
+            {
+              "path": "ui/components/App.jsx",
+              "line": 1
+            }
+          ]
+        },
+        {
+          "path": "ui/components/StatusBadge.jsx",
+          "description": "A small reusable label for a status value.",
+          "evidence": [
+            {
+              "path": "ui/components/StatusBadge.jsx",
+              "line": 1
+            }
+          ]
+        },
+        {
+          "path": "ui/style.css",
+          "description": "Defines the interface’s styles and colour tokens.",
+          "evidence": [
+            {
+              "path": "ui/style.css",
+              "line": 1
+            }
+          ]
+        },
+        {
+          "path": "server/main.py",
+          "description": "Creates the FastAPI application and returns status data from two helpers.",
+          "evidence": [
+            {
+              "path": "server/main.py",
+              "line": 1
+            }
+          ]
+        },
+        {
+          "path": "intelligence/pipeline.py",
+          "description": "Builds the demo answer with a placeholder vector and a clear no-model note.",
+          "evidence": [
+            {
+              "path": "intelligence/pipeline.py",
+              "line": 1
+            }
+          ]
+        },
+        {
+          "path": "intelligence/embed.py",
+          "description": "Returns the input text length as a single-number vector.",
+          "evidence": [
+            {
+              "path": "intelligence/embed.py",
+              "line": 1
+            }
+          ]
+        },
+        {
+          "path": "storage/db.py",
+          "description": "Returns a fixed count of zero; it does not connect to a database.",
+          "evidence": [
+            {
+              "path": "storage/db.py",
+              "line": 1
+            }
+          ]
+        },
+        {
+          "path": "infra/settings.py",
+          "description": "Imports the FastAPI application and sets the demo flag.",
+          "evidence": [
+            {
+              "path": "infra/settings.py",
+              "line": 1
+            }
+          ]
+        },
+        {
+          "path": "mercy-theme.json",
+          "description": "Example colour tokens for Mercy’s saved theme metadata.",
+          "evidence": [
+            {
+              "path": "mercy-theme.json",
               "line": 1
             }
           ]
@@ -755,8 +931,8 @@
     "reviewed": {
       "GUIDE_PURPOSE": "7f20aa76eca7c317a09a2746f7cdb3521a79a92a0d25557df1385ca4604df666",
       "GUIDE_ENTRY": "039de83777cdd997b3f65f173f31961e0a2d20c359126e15c8887b3b38ad1ba5",
-      "GUIDE_DEPENDENCIES": "e5c89340e6b7772ddacc95fb8ed2bf62a9f3bad7a5b6ebe4b67e4cc4660124b8",
-      "GUIDE_MODULES": "38685a7149f1c5cae78da5b436031385d2a5f0517e646ab59ce64d1ab64a4747",
+      "GUIDE_DEPENDENCIES": "734358790e6dd77adddbc15bf529f2a4bab305809592d9585fefc518ab44ed62",
+      "GUIDE_MODULES": "f6cc72c66be7eb6511053f6f56de9db0c206721957406f682c1b2208de31a247",
       "GUIDE_WORKFLOW": "4fe2798706edcb1a05f7091f207818d0fa6d5e2c34efac5e43ddbb1b08f790cf",
       "GUIDE_VALIDATION": "0a9ea9de561aef67aa26b05c5ccc92d087bb9167af76fd3f5c96b31cf18a884d",
       "GUIDE_STORAGE": "bc252667ae665adb53ca0ec27a3a3454717cdcc4448cf40ba8c3a6421bca00e9",

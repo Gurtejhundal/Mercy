@@ -2,6 +2,9 @@
 from __future__ import annotations
 
 import re
+from urllib.parse import urlsplit
+
+LOGOS = {'python', 'fastapi', 'html5', 'javascript', 'huggingface', 'nvidia', 'ffmpeg', 'sqlite', 'react'}
 
 
 def validate_presentation(question: dict, known: dict[str, int]) -> None:
@@ -48,6 +51,37 @@ def validate_presentation(question: dict, known: dict[str, int]) -> None:
             raise ValueError('Directory must contain indexed files.')
         text(item.get('description'), 'Directory description', 25)
         refs(item.get('evidence'))
+    for item in records(question.get('file_notes', []), 'file_notes', 400):
+        if not isinstance(item.get('path'), str) or item['path'] not in known:
+            raise ValueError('File explanations need an indexed source path.')
+        text(item.get('description'), 'File explanation', 45)
+        refs(item.get('evidence'))
+    for item in records(question.get('stack', []), 'stack', 20):
+        identifier(item.get('id'))
+        if not isinstance(item.get('kind'), str) or item['kind'] not in {'frontend', 'backend', 'model', 'storage', 'tool'}:
+            raise ValueError('Stack entries need a valid kind.')
+        text(item.get('name'), 'Technology name', 10)
+        text(item.get('description'), 'Technology description', 45)
+        if item.get('logo') is not None and (not isinstance(item['logo'], str) or item['logo'] not in LOGOS):
+            raise ValueError('Use a bundled technology logo.')
+        if 'origin' in item:
+            text(item['origin'], 'Technology origin', 35)
+        paths = item.get('paths')
+        if not isinstance(paths, list) or not paths:
+            raise ValueError('Technology entries need indexed files or folders.')
+        for path in paths:
+            if (not isinstance(path, str) or not path or path.startswith('/') or '..' in path.split('/')
+                    or not (path in known or any(p.startswith(path.rstrip('/') + '/') for p in known))):
+                raise ValueError('Technology location is outside the saved scan.')
+        refs(item.get('evidence'))
+        for resource in records(item.get('resources', []), 'resources', 6):
+            text(resource.get('label'), 'Resource label', 8)
+            url = resource.get('url')
+            if not isinstance(url, str) or len(url) > 2048 or re.search(r'[\s\\<>"\x00-\x1f]', url):
+                raise ValueError('Resources need a safe HTTPS URL.')
+            parsed = urlsplit(url)
+            if parsed.scheme != 'https' or not parsed.hostname or parsed.username or parsed.password:
+                raise ValueError('Resources need a safe HTTPS URL.')
     for item in records(question.get('demonstration', []), 'demonstration', 10):
         text(item.get('action'), 'Demo action', 20)
         text(item.get('expected'), 'Demo expectation', 30)
@@ -126,7 +160,13 @@ def study_aids(report: dict, questions: list[dict], clusters: list[dict]) -> dic
         a, b = membership.get(edge['source']), membership.get(edge['target'])
         if a and b and a != b:
             connections.setdefault((a,b), []).append(edge)
-    return {'components':components,
+    stack = [item for q in questions for item in q.get('stack', [])]
+    if len({item['id'] for item in stack}) != len(stack):
+        raise ValueError('Technology IDs must be unique across the report.')
+    notes = [item for q in questions for item in q.get('file_notes', [])]
+    if len({item['path'] for item in notes}) != len(notes):
+        raise ValueError('Use one explanation per source file.')
+    return {'components':components, 'stack':stack, 'file_notes':notes,
             'component_edges':[{'source':a, 'target':b, 'imports':edges} for (a,b),edges in connections.items()],
             'flows':[{'id':q['id'], 'name':q.get('viva_question', q['question']), **q['flow']}
                      for q in questions if q.get('flow')],

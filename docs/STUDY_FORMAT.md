@@ -59,3 +59,17 @@ A user flow tells what a person does and sees. Inspect handlers and call sites; 
 Demo steps have `action` (20 words), `expected` (30 words) and evidence. At most 10 steps. Describe actions the learner can demonstrate and the expected source behavior. This is a walkthrough, not proof of an executed application. Omit unsupported aids and explain the gap in the relevant answer. Never invent a workflow to fill an empty page.
 
 `mercy next` returns the answer contract and field shapes alongside one bounded review task, so installed plugins do not depend on the learner repository containing this document.
+
+## Project overview and explorer explanations
+
+Project Overview replaces the chapter reader. On the dependencies question, add a `stack` array. Each entry has:
+
+- `id`, unique across the report; `kind`: `frontend`, `backend`, `model`, `storage` or `tool`.
+- `name` (10 words), `description` (45 words), `paths` (indexed files or folders), and source `evidence`.
+- Optional `origin` (35 words): model author, conversion/package source and download location. Distinguish these and explain which source is established by code versus an upstream resource. Never infer training, active provider selection or successful downloads.
+- Optional `logo`: `python`, `fastapi`, `html5`, `javascript`, `huggingface`, `nvidia`, `ffmpeg`, `sqlite` or `react`. Use the technology/provider mark honestly; unknown marks use a text monogram.
+- `resources`: up to six `{label, url}` links. URLs must use HTTPS, have a hostname and contain no credentials, whitespace or backslashes. Use authoritative model cards, upstream repositories or documentation. The report only opens them when the learner chooses a link.
+
+On the module question, add `file_notes`: up to 400 `{path, description, evidence}` records. Paths must be indexed files and unique across the report; descriptions are at most 45 words. Explain what a file is about rather than repeating its name. Directory descriptions remain separate. Unreviewed files show their indexed symbols or an explicit gap; no purpose is fabricated from a filename.
+
+The Folders view has a nested explorer on the left and the selected item’s explanation on the right. Architecture focuses one component’s direct imports at a time. The user flowchart stays a separate source-traced user journey.

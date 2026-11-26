@@ -135,7 +135,7 @@ class AgentToolsTests(unittest.TestCase):
         self.assertIn(question['answer'],html)
         self.assertNotIn('<canvas',html)
         self.assertNotIn('Planetary Atlas',html)
-        self.assertIn('id="guide-reader"',html)
+        self.assertIn('id="file-tree"',html)
 
     def test_empty_source_is_not_a_fabricated_line_one_citation(self):
         (self.root/'main.py').write_text('')

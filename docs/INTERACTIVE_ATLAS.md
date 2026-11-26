@@ -1,13 +1,13 @@
 # Offline project guide
 
-`mercy-studio.html` embeds its CSS, JavaScript, font, artwork and escaped metadata. It opens on **Project Guide** and needs no server, CDN, browser storage or provider key. The host model’s own connectivity/privacy settings are separate.
+`mercy-studio.html` embeds its CSS, JavaScript, font, artwork and escaped metadata. It opens on **Project Overview** and needs no server, CDN, browser storage or provider key. The host model’s own connectivity/privacy settings are separate.
 
 - **Project Guide:** short questions and spoken answers; full explanation, evidence and checks behind Details.
 - **Questions:** search by question, answer or source path; filter and hide answers to rehearse.
 - **Demo:** source-traced user actions with expected outcomes, explicitly distinguished from an executed run.
 - **Flowchart:** reviewed user actions, decisions and retry paths. Not a chain of imports.
-- **Architecture:** components and aggregated resolved imports. Suggested fallback groups are heuristic, not verified tiers or runtime calls.
-- **Folders:** plain folder descriptions, expandable indexed file lists and source metadata inspection.
+- **Architecture:** one component and its direct resolved imports. Suggested fallback groups are heuristic, not verified tiers or runtime calls.
+- **Folders:** a nested explorer beside the selected folder/file explanation. Sources and technical metadata stay under Details.
 
 Scroll normally with a mouse wheel or two-finger trackpad. Ctrl+wheel or trackpad pinch zooms a diagram; +, − and Fit also work. Browser page zoom remains available outside diagram controls. Touch scrolling uses native overflow.
 

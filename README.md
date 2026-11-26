@@ -33,7 +33,7 @@ The included [`mini-rag`](examples/mini-rag) example is deliberately misleading.
 
 
 
-Open **Project Guide** for short questions and simple spoken answers. Expand **Details** for the full explanation and citations. Practise the source-traced demo, follow the user flowchart, then explain the component diagram. Soft colour highlights make the answers easier to scan.
+Open **Project Overview** to see the frontend, backend, model origins and resource links. Use **Questions** for short spoken answers. Expand **Details** for the full explanation and citations. Practise the source-traced demo, follow the user flowchart, then explain the component diagram. The original marker headings, ink borders and paper background stay, with one violet highlighter accent.
 
 The report is one self-contained HTML file. Its artwork, font and interactions are embedded. Keep the editable evidence JSON and Markdown companion beside it.
 
@@ -49,12 +49,12 @@ The report is one self-contained HTML file. Its artwork, font and interactions a
 
 | Page | Use it for |
 |---|---|
-| **Project Guide** | Read one short question and answer at a time. |
+| **Project Overview** | Locate frontend/backend code and understand model sources with logos and resources. |
 | **Questions** | Search, filter and hide answers to rehearse. |
 | **Demo** | Practise user actions and expected source behavior. |
 | **Flowchart** | Follow reviewed user actions and decisions. |
 | **Architecture** | Explain components and resolved import connections. |
-| **Folders** | Read plain directory descriptions and inspect files. |
+| **Folders** | Expand a nested explorer; read a folder or file explanation beside it. |
 
 **Keep your notes.** `mercy-evidence.json` holds the editable answers and evidence. `mercy render` rebuilds the notebook after your edits; the Markdown companion gives you a plain-text alternative.
 
@@ -207,14 +207,14 @@ Open `output-example/mercy-studio.html` in any modern desktop browser. The examp
 
 | Area | Interaction | What it means |
 |---|---|---|
-| **Project Guide** | Read short answers; expand Details for notes and citations | Source analysis, not runtime proof |
+| **Project Overview** | Find frontend/backend paths, model origins, logos and resources | Source analysis, not runtime proof |
 | **Questions** | Search, filter and rehearse with answer toggles | Reviewed content, with explicit unknowns |
 | **Demo** | Follow actions and expected results | A source walkthrough, not an executed recording |
 | **Flowchart** | Follow user steps and named decision branches | Authored from handlers and call sites, not imports |
-| **Architecture** | Select components and inspect their files/imports | A → B aggregates resolved imports; fallback groups are heuristic |
-| **Folders** | Read plain descriptions and expand indexed file lists | The scan may cover only part of the repository |
+| **Architecture** | Choose one component and follow its direct dependencies | A → B aggregates resolved imports; fallback groups are heuristic |
+| **Folders** | Open folders and files in an explorer with a right-hand explanation pane | The scan may cover only part of the repository |
 
-The responsive notebook keeps the teacher and embedded handwritten font, with a readable sans-serif body and restrained colour highlights. Ordinary wheel/two-finger trackpad scrolling moves diagrams; Ctrl+wheel and trackpad pinch zoom them. Buttons provide +, − and Fit. No CDN, browser storage or new dependency is required. Project colour sampling remains metadata rather than overriding legible study colours.
+The responsive notebook keeps the teacher and embedded handwritten font, with a readable sans-serif body and one violet highlighter accent. Ordinary wheel/two-finger trackpad scrolling moves diagrams; Ctrl+wheel and trackpad pinch zoom them. Buttons provide +, − and Fit. No CDN, browser storage or new dependency is required. Project colour sampling remains metadata rather than overriding legible study colours.
 
 Guided submissions use questions of at most 14 words and answers of at most 45 words. Full analysis remains editable under Details. See [the study format](docs/STUDY_FORMAT.md) for components, user flows, demonstrations and folder descriptions. Structural checks help smaller host models follow the contract; they cannot guarantee 100% accuracy.
 
@@ -233,7 +233,7 @@ Open `/path/to/your/repository/mercy-output/mercy-studio.html` **directly in you
 
 Generated files:
 
-- `mercy-studio.html` — **primary deliverable:** Project Guide, concise questions, demo, user flowchart, components and folders.
+- `mercy-studio.html` — **primary deliverable:** Project Overview, concise questions, demo, user flowchart, focused components and file explorer.
 - `mercy-evidence.json` — editable and machine-readable scan evidence + Q&A; source for regeneration.
 - `mercy-viva.md` — text alternative with the complete question answers.
 - `mercy-architecture.md` — reviewed components with Mermaid-style resolved import connections.

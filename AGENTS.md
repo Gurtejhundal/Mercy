@@ -16,7 +16,7 @@ Mercy is a source-grounded, beginner-first project evaluation agent. The primary
 
 ## Native host agent
 
-Mercy uses Codex/Claude as its model, with the local CLI as its evidence toolkit. `context` returns bounded source excerpts; `review` validates and atomically merges complete reviewed questions against source fingerprints; `render` rebuilds the notebook. No separate model service or provider credentials are required. The default report opens on Project Guide. Short viva fields and reviewed components, user flows, demos and directory descriptions follow `docs/STUDY_FORMAT.md`.
+Mercy uses Codex/Claude as its model, with the local CLI as its evidence toolkit. `context` returns bounded source excerpts; `review` validates and atomically merges complete reviewed questions against source fingerprints; `render` rebuilds the notebook. No separate model service or provider credentials are required. The default report opens on Project Overview. Short viva fields and reviewed components, user flows, demos and directory descriptions follow `docs/STUDY_FORMAT.md`.
 
 ## Typical task
 

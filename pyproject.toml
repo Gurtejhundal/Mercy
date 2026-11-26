@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "mercy-viva"
-version = "1.0.3"
+version = "1.0.4"
 description = "Source-grounded codebase understanding and viva coaching for Codex and Claude"
 requires-python = ">=3.10"
 dependencies = []
@@ -21,4 +21,4 @@ mercy = "mercy.cli:main"
 include = ["mercy*"]
 
 [tool.setuptools.package-data]
-"mercy" = ["integrations/claude/SKILL.md", "integrations/codex/SKILL.md", "integrations/codex/openai.yaml", "assets/studio.html", "assets/notebook.ttf", "assets/teacher.webp", "assets/OFL.txt"]
+"mercy" = ["integrations/claude/SKILL.md", "integrations/codex/SKILL.md", "integrations/codex/openai.yaml", "assets/studio.html", "assets/technology-logos.json", "assets/LOGOS.md", "assets/notebook.ttf", "assets/teacher.webp", "assets/OFL.txt"]

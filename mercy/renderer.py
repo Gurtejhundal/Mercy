@@ -48,6 +48,15 @@ def export_markdown(report, questions, output):
             lines += [f"- {labels[e['source']]} → {labels[e['target']]}" +
                       (f" ({e['label']})" if e.get('label') else '') +
                       f" — {fmt_evidence(e['evidence'])}" for e in q['flow']['edges']]
+        for technology in q.get('stack', []):
+            lines += [f"#### {technology['kind'].title()}: {technology['name']}", '', technology['description'], '']
+            if technology.get('origin'): lines += ['From: '+technology['origin'], '']
+            lines += ['Locations: '+', '.join(technology['paths']), '', 'Source: '+fmt_evidence(technology['evidence']), '']
+            lines += [f"- [{r['label']}]({r['url']})" for r in technology.get('resources', [])]
+        if q.get('file_notes'):
+            lines += ['', '<details>', '<summary>File explanations</summary>', '']
+            lines += [f"- **{item['path']}:** {item['description']} ({fmt_evidence(item['evidence'])})" for item in q['file_notes']]
+            lines += ['', '</details>', '']
         for component in q.get('components', []):
             lines += [f"- **{component['name']}:** {component['description']} ({fmt_evidence(component['evidence'])})"]
         for directory in q.get('directories', []):

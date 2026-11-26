@@ -79,6 +79,41 @@ The backend uses FastAPI. The interface uses JSX components. The intelligence an
 
 </details>
 
+#### Frontend: JSX interface
+
+The ui folder contains a heading and a demo badge. These components do not call the status API.
+
+Locations: ui
+
+Source: ui/components/App.jsx:1
+
+#### Backend: Python + FastAPI
+
+The server folder defines a status endpoint that returns values from local helpers.
+
+Locations: server
+
+Source: server/main.py:6
+
+- [FastAPI documentation](https://fastapi.tiangolo.com/)
+#### Model: Placeholder, not a model
+
+The intelligence helper returns a vector containing the text length. It does not download or run a trained model.
+
+From: Hand-written educational Python code.
+
+Locations: intelligence
+
+Source: intelligence/embed.py:2
+
+#### Storage: Storage placeholder
+
+This function returns zero without reading or writing a database.
+
+Locations: storage
+
+Source: storage/db.py:2
+
 ### GUIDE_MODULES. What are its main components?
 
 There are website components, an API, a placeholder intelligence helper, a storage placeholder and infrastructure settings. The website does not call the API.
@@ -93,6 +128,23 @@ There are website components, an API, a placeholder intelligence helper, a stora
 **Evidence level:** supported (source analysis; execution not verified)
 
 **Check:** Source walkthrough only. Run the sample separately with explicit authorization to check runtime behavior.
+
+</details>
+
+
+<details>
+<summary>File explanations</summary>
+
+- **README.md:** Introduces the synthetic demo and explains what is deliberately not implemented. (README.md:1)
+- **ui/components/App.jsx:** Displays the Galaxy Demo heading and the demo status badge. (ui/components/App.jsx:1)
+- **ui/components/StatusBadge.jsx:** A small reusable label for a status value. (ui/components/StatusBadge.jsx:1)
+- **ui/style.css:** Defines the interface’s styles and colour tokens. (ui/style.css:1)
+- **server/main.py:** Creates the FastAPI application and returns status data from two helpers. (server/main.py:1)
+- **intelligence/pipeline.py:** Builds the demo answer with a placeholder vector and a clear no-model note. (intelligence/pipeline.py:1)
+- **intelligence/embed.py:** Returns the input text length as a single-number vector. (intelligence/embed.py:1)
+- **storage/db.py:** Returns a fixed count of zero; it does not connect to a database. (storage/db.py:1)
+- **infra/settings.py:** Imports the FastAPI application and sets the demo flag. (infra/settings.py:1)
+- **mercy-theme.json:** Example colour tokens for Mercy’s saved theme metadata. (mercy-theme.json:1)
 
 </details>
 

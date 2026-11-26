@@ -1,23 +1,25 @@
-# Mercy study guide design
+# Mercy — marker notebook
 
-The report is a readable paper notebook with the existing teacher and handwritten headings. The body uses a system sans-serif. Quiet colour highlights separate answers, decisions and components; the page starts on Project Guide. The template is `mercy/assets/studio.html`; regenerate with `mercy render`.
+Preserve the original teacher, handwritten marker headings, cream paper, ink borders, typewriter controls and square corners. Use one violet accent for highlighter marks, selection and focus. Do not replace this identity with rounded dashboard cards or a multicolour palette.
+
+The template is `mercy/assets/studio.html`. Artwork, font and technology marks are bundled; `mercy render` produces a self-contained offline report.
 
 | Purpose | Colour |
 |---|---|
-| Paper / panels | `#faf9f5` / `#ffffff` |
-| Text / secondary text | `#243244` / `#586476` |
-| Focus and links | `#2458a0` |
-| Answers / start and end nodes | Mint `#e4f4ec` |
-| Selection / decisions | Yellow `#fff0b9` |
-| Navigation / action nodes | Blue `#e8f0ff` |
-| Folder and component accent | Pink `#f6e8f1` |
+| Paper / panels | `#fdfcf8` / `#fffefa` |
+| Ink / secondary text | `#20201e` / `#5d5c55` |
+| Rules and borders | `#cfcec5` |
+| Violet accent | `#68438d` |
+| Highlighter / wash | `#e9ddf4` / `#f3edf8` |
 
-Six destinations: Project Guide, Questions, Demo, Flowchart, Architecture and Folders. Guide shows one short question and answer with previous/next controls. Full explanations, evidence and follow-up checks sit under native Details disclosures. Review bookkeeping, glossary and scanner notes sit under About this report. No mind map, import trail, treemap or repeated answer taglines.
+Project Overview replaces Project Guide. It pairs the project purpose with frontend/backend locations, model authors/download sources, storage and tools. Technology marks identify the library or resource host; they do not prove configuration or endorsement. Resource links are explicit HTTPS links, never automatic requests. Missing reviewed information stays unknown.
 
-Questions have search, category/evidence filters and answer toggles for rehearsal. Demo steps pair user actions with expected source behavior. Folder cards show plain descriptions before expanding their file lists. Citations open a focused file inspector, preserving the selected line.
+Folders uses a VS Code-like arrangement: nested expandable folders and files on the left, one plain-language explanation on the right. Preserve native disclosure behavior and selected state. Source-line links open parent folders and select the cited file. Technical metadata stays under Details. A folder view shows a short contents preview; the explorer retains the complete indexed list.
 
-Flowcharts use rounded start/end nodes, process boxes and decision diamonds with named branches. Architecture shows reviewed components; edges aggregate real resolved imports. Name/type-based fallback groups remain explicitly heuristic. Ordinary wheel/two-finger trackpad scrolling moves the viewport. Ctrl+wheel and trackpad pinch zoom the diagram; +, − and Fit provide keyboard-accessible controls. Native scrolling remains available on touch devices.
+Architecture focuses on one component and its direct resolved import dependencies. A component chooser retains access to every component; it avoids drawing all crossing links simultaneously. Selecting a diagram node opens its explanation and evidence. This is an import view, not a fabricated runtime architecture.
 
-On mobile, navigation scrolls horizontally, the guide stacks, and diagrams stay inside scrollable viewports. Semantic buttons/disclosures, visible focus, current navigation state, a skip link, SVG accessible names and the Markdown companion support accessibility. No continuous animation or external assets. This is not a claim of complete screen-reader or physical-device verification.
+Keep the user flowchart’s actions, decisions, labelled branches, scroll and zoom behavior. Shapes return to ink/paper with the same violet accent. Ordinary wheel/two-finger trackpad scrolling moves diagrams; Ctrl+wheel or trackpad pinch zooms. +, − and Fit remain keyboard-accessible.
 
-DOM tests check navigation, concise answers, inert text, evidence, rehearsal, flow shapes/branches, component aggregation, scroll/zoom handlers and empty/legacy banks. They do not establish pixel layout or real hardware gesture behavior.
+Questions retain short answers, full notes under Details and rehearsal filters. Handwritten question headings match the notebook. Demo steps remain source walkthroughs rather than claims of a recorded run.
+
+On mobile, navigation scrolls horizontally, the explorer stacks above its explanation and diagrams remain inside scrollable viewports. Visible focus, native disclosures, live explanation panes, text alternatives and reduced-motion support remain. See VALIDATION.md for actual checks and limitations.

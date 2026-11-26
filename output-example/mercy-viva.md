@@ -75,6 +75,26 @@ FastAPI defines the API. The OpenAI Python client sends the model request. Their
 
 </details>
 
+#### Backend: Python + FastAPI
+
+app.py defines the health endpoint and accepts questions at /ask. No frontend information is reviewed in this tiny API example.
+
+Locations: app.py
+
+Source: app.py:9
+
+- [FastAPI documentation](https://fastapi.tiangolo.com/)
+#### Model: Configured OpenAI model
+
+The helper names gpt-4.1-mini and sends it a question. Credentials, availability and response quality remain unverified.
+
+From: An external OpenAI API call, not locally trained weights or a retrieval pipeline.
+
+Locations: rag.py
+
+Source: rag.py:7
+
+- [OpenAI Python client](https://github.com/openai/openai-python)
 ### GUIDE_MODULES. What are its main components?
 
 The API handles requests in app.py. The model helper in rag.py sends the question to OpenAI and extracts the returned text.
@@ -89,6 +109,16 @@ The API handles requests in app.py. The model helper in rag.py sends the questio
 **Evidence level:** supported (source analysis; execution not verified)
 
 **Check:** Source walkthrough only. Run the sample separately with explicit authorization to check runtime behavior.
+
+</details>
+
+
+<details>
+<summary>File explanations</summary>
+
+- **README.md:** Introduces the sample and explains that its name does not establish RAG. (README.md:1)
+- **app.py:** Defines the health endpoint and passes questions to the model helper. (app.py:1)
+- **rag.py:** Sends the question directly to the OpenAI chat API and extracts the returned text. (rag.py:1)
 
 </details>
 

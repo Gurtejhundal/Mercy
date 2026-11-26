@@ -75,6 +75,33 @@ class StudyFormatTests(unittest.TestCase):
         del flow['edges'][1]['label']
         with self.assertRaisesRegex(ValueError,'branches need labels'):validate_questions(self.report,[self.q])
 
+    def test_technology_sources_and_file_explanations_validate_and_survive_export(self):
+        self.q['stack']=[{'id':'model','kind':'model','name':'Example model',
+            'description':'Loads existing weights.', 'origin':'A named upstream project.',
+            'logo':'huggingface', 'paths':['web','helper.py'], 'evidence':[self.ref],
+            'resources':[{'label':'Model card','url':'https://huggingface.co/example/model'}]}]
+        self.q['file_notes']=[{'path':'helper.py','description':'Returns the fixed answer.','evidence':[{'path':'helper.py','line':1}]}]
+        validate_questions(self.report,[self.q]);atlas=build_atlas(self.report,[self.q])
+        self.assertEqual(atlas['stack'],self.q['stack'])
+        self.assertEqual(atlas['file_notes'],self.q['file_notes'])
+        variants=[]
+        def variant(edit):
+            q=copy.deepcopy(self.q);edit(q);variants.append(q)
+        for url in ['javascript:alert(1)','data:text/html,hello','file:///private','https://user:password@example.com','https://example.com/has space','https://example.com/\\evil']:
+            variant(lambda q,url=url:q['stack'][0]['resources'][0].update(url=url))
+        variant(lambda q:q['stack'][0].update(kind=[]))
+        variant(lambda q:q['stack'][0].update(logo=[]))
+        variant(lambda q:q['stack'][0].update(logo='unknown'))
+        variant(lambda q:q['stack'][0].update(paths=['../web']))
+        variant(lambda q:q['stack'][0].update(paths=['not-scanned']))
+        variant(lambda q:q['stack'][0].update(evidence=[]))
+        variant(lambda q:q['file_notes'][0].update(path='not-scanned.py'))
+        variant(lambda q:q['file_notes'][0].update(description='word '*46))
+        variant(lambda q:q['file_notes'].append(copy.deepcopy(q['file_notes'][0])))
+        variant(lambda q:q['stack'].append(copy.deepcopy(q['stack'][0])))
+        for q in variants:
+            with self.subTest(q=q),self.assertRaises(ValueError):validate_questions(self.report,[q])
+
     def test_components_cannot_overlap_across_questions(self):
         second=copy.deepcopy(self.q);second['id']='SECOND'
         with self.assertRaisesRegex(ValueError,'IDs must be unique across'):

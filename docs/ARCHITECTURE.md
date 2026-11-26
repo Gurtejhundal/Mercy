@@ -8,7 +8,7 @@ Codex or Claude Code is the model and orchestrator. Mercy does not start a model
 2. `inspect` finds bounded metadata; `context` supplies numbered, redacted source excerpts.
 3. The host reasons over real source, distinguishing inferred behavior from static evidence.
 4. For notebooks, `review` validates a complete question patch, checks source inventory/fingerprints and atomically merges it into the evidence JSON. Invalid/stale patches leave the file unchanged.
-5. `render` regenerates the offline Project Guide and companions. During a mock viva the host asks one question at a time and adapts to the learner.
+5. `render` regenerates the offline Project Overview and companions. During a mock viva the host asks one question at a time and adapts to the learner.
 
 `prepare` is a deterministic seed generator, not AI reasoning. Its source hashes make later review detect same-length edits. Older reports still render but require a fresh scan before review. Existing reviewed answers are retained unless their IDs are explicitly replaced.
 
@@ -37,7 +37,7 @@ flowchart LR
 - `mercy/scanner.py`: discover bounded, local regular files; skip symlinks, secret-prone names and dependency directories; parse Python AST for imports/symbols, detect supported routes and tech clues conservatively; export normalized `files`, `edges`, `signals`, `frameworks`, `datasets` and warnings.
 - `mercy/questions.py`: make the question bank with compact viva answers, fifth-grade explanations, `status`, `verify_next` and `file:line` citations. Optional user-provided question list is not certified as real PYQs.
 - `mercy/studio.py`: classify indexed files into heuristic roles, produce only populated clusters, preserve actual scanner import edges, sample CSS accent colors safely, serialize atlas JSON into an inert `application/json` script tag.
-- `mercy/assets/studio.html`: self-contained CSS + JS; Project Guide, concise question cards, source-traced demo/user flowcharts, component import diagram and plain folder cards. No external assets/network/browser storage.
+- `mercy/assets/studio.html`: self-contained CSS + JS; Project Overview, concise question cards, source-traced demo/user flowcharts, component import diagram and nested folder/file explorer. No external assets/network/browser storage.
 - `mercy/renderer.py`: JSON, Markdown, legacy optional PDF and static Mermaid architecture clues.
 - `mercy/llm.py`: optional external answer-language rewrite using a reduced metadata digest; invoked only with explicit `--ai`.
 - `mercy/cli.py`: `prepare`, `inspect`, `context`, `next`, `review`, `render`, `install`. `prepare` writes HTML by default; `--pdf` adds the old PDF, not a replacement.
@@ -93,4 +93,4 @@ The report exporter escapes `<`, `>`, `&` and Unicode separator sequences in JSO
 - Host-model reasoning is not automatically verified by citation bounds. Source hashes reject stale input, not semantic mistakes in an answer.
 
 
-Version 3 adds reviewed components, aggregated import connections, source-traced flows, demo steps and directory descriptions. These are validated in `mercy/presentation.py`; authoring fields are documented in `STUDY_FORMAT.md`. Guided review requires bounded `viva_question` and `viva_answer` fields. Old evidence still renders.
+Version 3 includes reviewed components, aggregated import connections, source-traced flows, demo steps, directory/file explanations and a technology/model-source overview. These are validated in `mercy/presentation.py`; authoring fields are documented in `STUDY_FORMAT.md`. Guided review requires bounded `viva_question` and `viva_answer` fields. Old evidence still renders.

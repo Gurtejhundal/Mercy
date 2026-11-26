@@ -83,8 +83,8 @@ def test_html_package_data_in_source_tree():
     assert '/* MERCY_ATLAS_PAYLOAD */' in template
     assert '<canvas' not in template
     assert 'drawSphere' not in template
-    assert 'id="guide-reader"' in template
-    assert 'id="folder-list"' in template
+    assert 'id="file-tree"' in template
+    assert 'id="stack-content"' in template
     assert 'id="question-list"' in template
 
 
@@ -143,6 +143,13 @@ def test_notebook_embeds_artwork_font_and_tagline(tmp_path):
     assert base64.b64decode(image)==resources.files('mercy').joinpath('assets','teacher.webp').read_bytes()
     assert base64.b64decode(font)==resources.files('mercy').joinpath('assets','notebook.ttf').read_bytes()
     assert '/* MERCY_MASCOT */' not in html and '/* MERCY_NOTEBOOK_FONT */' not in html
+    logos=json.loads(resources.files('mercy').joinpath('assets','technology-logos.json').read_text())
+    from mercy.presentation import LOGOS
+    assert set(logos)==LOGOS
+    assert '/* MERCY_TECH_LOGOS */' not in html
+    for uri in logos.values():
+        assert uri.startswith('data:image/svg+xml;base64,')
+        assert b'<svg' in base64.b64decode(uri.split(',',1)[1])
 
 
 def test_cli_greeting_preserves_json_tool_output(tmp_path):
@@ -160,7 +167,7 @@ def test_asset_markers_inside_reviewed_answers_are_preserved(tmp_path):
     import re
     (tmp_path/'app.py').write_text('def hello(): return True\n')
     report=scan_project(tmp_path);questions=make_questions(report)
-    answer='Keep /* MERCY_NOTEBOOK_FONT */ and /* MERCY_MASCOT */ as literal text.'
+    answer='Keep /* MERCY_NOTEBOOK_FONT */ and /* MERCY_MASCOT */ and /* MERCY_TECH_LOGOS */ as literal text.'
     questions[0]['answer']=answer
     out=tmp_path/'report.html';export_studio(report,questions,out)
     embedded=json.loads(re.search(r'id="atlas-data">([\s\S]*?)</script>',out.read_text()).group(1))

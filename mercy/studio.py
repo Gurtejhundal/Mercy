@@ -213,6 +213,8 @@ def export_studio(report: dict, questions: list[dict], output: str | Path, root:
     for marker, filename in [('MERCY_NOTEBOOK_FONT', 'notebook.ttf'), ('MERCY_MASCOT', 'teacher.webp')]:
         encoded = base64.b64encode(resources.files('mercy').joinpath('assets', filename).read_bytes()).decode('ascii')
         template = template.replace('/* '+marker+' */', encoded)
+    logos = resources.files('mercy').joinpath('assets', 'technology-logos.json').read_text(encoding='utf-8').strip()
+    template = template.replace('/* MERCY_TECH_LOGOS */', logos)
     result = template.replace('/* MERCY_ATLAS_PAYLOAD */', payload)
     Path(output).write_text(result, encoding='utf-8')
     return atlas
