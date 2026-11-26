@@ -131,7 +131,7 @@ def main(argv=None):
             export_markdown(audit,qs,out/'mercy-viva.md')
             export_studio(audit,qs,out/'mercy-studio.html',root=args.project,workflow=workflow)
             if args.pdf: export_pdf(audit,qs,out/'mercy-viva.pdf')
-            export_architecture(audit,out/'mercy-architecture.md')
+            export_architecture(audit,out/'mercy-architecture.md',qs)
             print(f'Re-rendered {len(qs)} questions and interactive HTML into {out}')
             return 0
         if args.command == 'inspect':
@@ -160,7 +160,7 @@ def main(argv=None):
         export_markdown(audit,qs,out/'mercy-viva.md')
         export_studio(audit,qs,out/'mercy-studio.html',root=project,workflow=workflow)
         if args.pdf: export_pdf(audit,qs,out/'mercy-viva.pdf')
-        export_architecture(audit,out/'mercy-architecture.md')
+        export_architecture(audit,out/'mercy-architecture.md',qs)
         print(f'MERCY | {audit["project"]} | {len(qs)} questions | {audit["summary"]["read_files"]} files read')
         for filename in (('mercy-studio.html','mercy-viva.md','mercy-architecture.md','mercy-evidence.json') + (('mercy-viva.pdf',) if args.pdf else ())):
             print(out / filename)

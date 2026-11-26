@@ -104,3 +104,15 @@ The prior build record above describes the supplied version, not a fresh browser
 - Seven Node tests pass with `node --test tests/studio_ui.test.cjs`. They execute template JavaScript with a DOM double: question branches and citations, retained focus, stale filter recovery, inert question text, map zoom/fit/pan, architecture selection after pointer capture, interpolated planet selection, import references, file lists, settled pause, reduced motion and empty/single-cluster reports.
 - Regenerated galaxy and mini-rag HTML from existing evidence. The source template and shared interactive demo use the same UI.
 - Local-file preview was rejected by the browser URL policy. No workaround was attempted. Desktop/mobile screenshots, real pointer gestures and screen-reader behavior remain unverified for this redesign. Existing preview images belong to the previous design.
+
+## Viva guide redesign — 2026-11-25
+
+Current local checks after the redesign:
+
+- **59 Python checks passed**, one optional PDF test skipped because ReportLab is not installed. Thirty standard-library unittest cases ran directly; the thirty pytest-style functions ran through an isolated temporary-directory fixture harness (29 passed, one skipped). Pytest itself is not installed locally.
+- **11 Node checks passed**: concise guide/default view, full notes behind Details, source-line inspection, ordinary wheel versus Ctrl+wheel/pinch handlers, decision/terminal shapes and branch labels, component nodes/import evidence, search/filter/rehearsal ARIA state, demos/folders, inert untrusted labels, scanner notes, and legacy/empty banks; plus the website checks.
+- CLI preparation, validated review and render regenerated both bundled sample banks. Their source snapshots still match. The saved PeakCut bank was backed up and reviewed before regeneration: 18 short answers, maximum 31 words, six components, one cited upload flow and five demonstration steps. Original detailed answers remain in JSON and Details. The scanned PeakCut app/tests and external providers were not run.
+- The exported example was copied to `public/demo.html`; source citations, embedded assets, local anchors and the no-network template checks passed. No PDF was generated.
+- Skill frontmatter validation passed. No new dependency was introduced.
+
+These are source, CLI and DOM checks. Browser local-file navigation was blocked earlier in this session; no alternate transport was used to bypass it. No fresh desktop/mobile pixel capture, physical trackpad/touch gesture check or full screen-reader audit was completed. Pinch handlers are checked as events, not calibrated hardware behavior. Source bounds and a completed review do not guarantee model reasoning accuracy.

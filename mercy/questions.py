@@ -8,16 +8,16 @@ def _loc(hits, limit=3):
 
 
 GUIDE_TOPICS = [
-    ('PURPOSE', 'Start here', 'What does this project do, and for whom?', 'readme project purpose'),
-    ('ENTRY', 'Start here', 'How is this project started, and where does execution begin?', 'main cli manage app package pyproject'),
-    ('DEPENDENCIES', 'Architecture', 'Which dependencies matter, and where are they used?', 'requirements package pyproject imports'),
-    ('MODULES', 'Architecture', 'What are the important modules and their responsibilities?', 'src service core engine app'),
-    ('WORKFLOW', 'Architecture', 'Trace one source-supported path from input to output.', 'main route handler process render'),
-    ('VALIDATION', 'Data', 'How are inputs validated before use?', 'validate schema form input request'),
-    ('STORAGE', 'Data', 'What is stored or loaded, and where?', 'storage model database file save load'),
-    ('ERRORS', 'Quality', 'What happens when an operation fails?', 'error exception handler retry'),
-    ('INTEGRATIONS', 'Architecture', 'Which external integrations exist, and what remains unverified?', 'client api provider llm integration'),
-    ('LIMITS', 'Quality', 'What are the source-supported limits and verification gaps?', 'test limit warning safety'),
+    ('PURPOSE', 'Start here', 'What does this project do?', 'readme project purpose'),
+    ('ENTRY', 'Start here', 'How do you start it?', 'main cli manage app package pyproject'),
+    ('DEPENDENCIES', 'Architecture', 'Which tools does it use?', 'requirements package pyproject imports'),
+    ('MODULES', 'Architecture', 'What are its main components?', 'src service core engine app'),
+    ('WORKFLOW', 'Architecture', 'How does a user get a result?', 'main route handler process render'),
+    ('VALIDATION', 'Data', 'How are inputs checked?', 'validate schema form input request'),
+    ('STORAGE', 'Data', 'Where is the data stored?', 'storage model database file save load'),
+    ('ERRORS', 'Quality', 'What happens if something fails?', 'error exception handler retry'),
+    ('INTEGRATIONS', 'Architecture', 'Which outside services does it use?', 'client api provider llm integration'),
+    ('LIMITS', 'Quality', 'What are its limitations?', 'test limit warning safety'),
 ]
 
 

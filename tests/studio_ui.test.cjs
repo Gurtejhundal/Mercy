@@ -11,7 +11,7 @@ const atlas=JSON.parse(sample.match(/<script type="application\/json" id="atlas-
 function mount(data=atlas,reduced=false){
   class Element{
     constructor(tag='div'){this.tagName=tag;this.children=[];this.attrs={};this.dataset={};this.style={setProperty(){}};this.value='';this.events={};this.className='';this._text='';this.clientWidth=760;this.scrollLeft=0;this.scrollTop=0;this.classList={contains:c=>this.className.split(' ').includes(c),toggle:(c,on)=>{const set=new Set(this.className.split(' ').filter(Boolean));if(on===undefined)on=!set.has(c);if(on)set.add(c);else set.delete(c);this.className=[...set].join(' ')},add:c=>this.classList.toggle(c,true),remove:c=>this.classList.toggle(c,false)};}
-    setAttribute(k,v){this.attrs[k]=String(v);if(k==='class')this.className=String(v);if(k.startsWith('data-'))this.dataset[k.slice(5).replace(/-([a-z])/g,(_,c)=>c.toUpperCase())]=String(v)}
+    setAttribute(k,v){this.attrs[k]=String(v);if(k==='class')this.className=String(v);if(k==='id')this.id=String(v);if(k.startsWith('data-'))this.dataset[k.slice(5).replace(/-([a-z])/g,(_,c)=>c.toUpperCase())]=String(v)}
     getAttribute(k){return this.attrs[k]}
     get parentElement(){return this.parent}
     removeAttribute(k){delete this.attrs[k]}
@@ -43,92 +43,13 @@ function mount(data=atlas,reduced=false){
   run(template.match(/<script>([\s\S]*?)<\/script>/)[1]);
   return {run,nodes,document,frames,flush(count=1){for(let i=0;i<count;i++){time+=16;const pending=[...frames.values()];frames.clear();pending.forEach(fn=>fn(time))}}};
 }
-test('mind map expands subjects into real questions, preserves focus, opens evidence',()=>{
-  const ui=mount();ui.run("showSection('keymap')");const svg=ui.nodes.get('knowledge-svg'),category=atlas.questions[0].category;
-  assert.equal(svg.querySelectorAll('.mind-node').length,new Set(atlas.questions.map(q=>q.category)).size+1);
-  const subject=svg.querySelectorAll('.mind-node').find(x=>x.dataset.mindKey===category);subject.click();
-  const expanded=svg.querySelectorAll('.mind-node').find(x=>x.dataset.mindKey===category);assert.equal(expanded.getAttribute('aria-expanded'),'true');assert.equal(ui.document.activeElement,expanded);
-  const question=svg.querySelectorAll('.mind-node').find(x=>x.dataset.mindKey===atlas.questions[0].id);question.click();assert.ok(ui.nodes.get('mind-detail').textContent.includes(atlas.questions[0].answer));
-  const cited=atlas.questions.find(q=>q.evidence.length);ui.run(`selectMindQuestion(ATLAS.questions.find(q=>q.id===${JSON.stringify(cited.id)}))`);ui.nodes.get('mind-detail').querySelectorAll('.evidence-button')[0].click();assert.equal(ui.run('lastFile'),cited.evidence[0].path);assert.equal(ui.run('currentSection'),'architecture');
-  ui.run("showSection('keymap')");ui.nodes.get('mind-reset').click();assert.equal(ui.run('MIND.expanded.size'),0);
-});
-test('question navigation clears stale categories and text stays inert',()=>{
-  const data=structuredClone(atlas);data.questions[0].question='<img src=x onerror=alert(1)>';const ui=mount(data);ui.run("qCategory='missing';renderCategories();renderQuestions();fileDetails(ATLAS.questions.find(q=>q.evidence.length).evidence[0].path)");
-  ui.nodes.get('arch-detail').querySelectorAll('.evidence-button').find(x=>x.textContent.startsWith('Q')).click();assert.equal(ui.run('qCategory'),'All');assert.ok(ui.nodes.get('question-list').children.length);
-  ui.run('selectMindQuestion(ATLAS.questions[0])');assert.ok(ui.nodes.get('mind-detail').textContent.includes(data.questions[0].question));assert.equal(ui.nodes.get('mind-detail').children.find(x=>x.tagName==='h3').children.length,0);
-});
-test('empty reports have working empty states without canvas animation',()=>{
-  const data=structuredClone(atlas);Object.assign(data,{files:[],clusters:[],edges:[],crossings:[],questions:[],routes:[]});const ui=mount(data);ui.flush();ui.run("showSection('keymap');showSection('architecture');showSection('flow')");assert.ok(ui.nodes.get('flow-canvas').textContent.includes('No scanned files'));
-  assert.equal(ui.run('currentSection'),'flow');assert.equal(ui.frames.size,0);
-});
-
-test('map zoom, fit and background pan update the scroll surface',()=>{
-  const ui=mount();ui.run("showSection('keymap')");const svg=ui.nodes.get('knowledge-svg'),before=Number(svg.getAttribute('width'));ui.nodes.get('mind-in').click();assert.ok(Number(svg.getAttribute('width'))>before);ui.nodes.get('mind-out').click();assert.equal(Number(svg.getAttribute('width')),before);ui.nodes.get('mind-fit').click();assert.ok(Number(svg.getAttribute('width'))<=760);const v=ui.nodes.get('mind-viewport');v.onpointerdown({target:svg,clientX:200,clientY:200,pointerId:1,preventDefault(){}});v.onpointermove({clientX:120,clientY:130});assert.equal(v.scrollLeft,80);assert.equal(v.scrollTop,70);v.onpointerup();
-});
-test('architecture selection survives pointer capture while dragging does not select',()=>{
-  const ui=mount();ui.run("showSection('architecture')");const svg=ui.nodes.get('arch-svg'),file=svg.querySelectorAll('.graph-file')[0],rect=file.children[0];svg.onpointerdown({target:rect,clientX:30,clientY:40,pointerId:1});svg.onpointerup();assert.equal(ui.run('lastFile'),file.dataset.path);ui.run('lastFile=null');svg.onpointerdown({target:rect,clientX:30,clientY:40,pointerId:2});svg.onpointermove({clientX:70,clientY:90});svg.onpointerup();assert.equal(ui.run('lastFile'),null);
-});
-
-test('project guide keeps complete answers, source lines and sequential reading',()=>{
-  const data=structuredClone(atlas);
-  const cited=data.questions.find(q=>q.evidence.length);
-  data.questions[0].answer='A project-specific explanation that must survive rendering.';
-  const ui=mount(data);
-  assert.ok(ui.nodes.get('project-purpose').textContent.includes(data.questions[0].answer));
-  assert.ok(ui.nodes.get('guide-reader').textContent.includes(data.questions[0].explain_like_im_10));
-  const chapters=ui.nodes.get('guide-contents').querySelectorAll('.chapter-question');
-  assert.equal(chapters.length,data.questions.length);
-  chapters.find(b=>b.dataset.question===cited.id).click();
-  assert.ok(ui.nodes.get('guide-reader').textContent.includes(cited.answer));
-  assert.equal(ui.document.activeElement,ui.nodes.get('guide-reader'));
-  ui.nodes.get('guide-reader').querySelectorAll('.evidence-button')[0].click();
-  assert.ok(ui.nodes.get('arch-detail').textContent.includes(cited.evidence[0].path+':'+cited.evidence[0].line));
-  ui.run('readGuide(0)');
-  const controls=ui.nodes.get('guide-reader').querySelectorAll('.tiny');
-  assert.equal(controls[0].disabled,true);
-  controls[1].click();
-  assert.equal(ui.run('guideIndex'),1);
-  assert.ok(ui.nodes.get('guide-reader').textContent.includes(data.questions[1].answer));
-});
-
-test('all gaps and scanner notes stay available, and symbol metadata is visible',()=>{
-  const data=structuredClone(atlas);
-  data.warnings=Array.from({length:9},(_,i)=>'Scan note '+i);
-  const ui=mount(data);
-  assert.ok(ui.nodes.get('warnings').textContent.includes('Scan note 8'));
-  assert.equal(ui.nodes.get('question-gaps').children.length,data.questions.filter(q=>q.verify_next||q.status==='not_verified').length);
-  const file=data.files.find(f=>f.symbols.length);
-  ui.run(`fileDetails(${JSON.stringify(file.path)})`);
-  assert.ok(ui.nodes.get('arch-detail').textContent.includes(file.symbols[0].name));
-  assert.ok(ui.nodes.get('arch-detail').textContent.includes('Heuristic role:'));
-});
-
-test('question evidence filter, source search and reveal state work together',()=>{
-  const ui=mount();const filter=ui.nodes.get('q-status');
-  filter.value='not_verified';filter.events.change();
-  assert.equal(ui.nodes.get('question-list').children.length,atlas.questions.filter(q=>q.status==='not_verified').length);
-  filter.value='all';const q=atlas.questions.find(q=>q.evidence.length);
-  ui.nodes.get('q-search').value=q.evidence[0].path;ui.nodes.get('q-search').events.input();
-  assert.ok(ui.nodes.get('question-list').children.length>0);
-  const toggle=ui.nodes.get('question-list').querySelectorAll('.tiny')[0];
-  assert.equal(toggle.getAttribute('aria-expanded'),'true');toggle.click();
-  assert.equal(toggle.getAttribute('aria-expanded'),'false');
-  assert.ok(toggle.getAttribute('aria-controls').startsWith('answer-'));
-});
-
-test('legacy and empty question banks render without new metadata',()=>{
-  const data=structuredClone(atlas);delete data.framework_evidence;
-  data.questions=[];const ui=mount(data);
-  assert.ok(ui.nodes.get('guide-reader').textContent.includes('No questions'));
-  assert.ok(ui.nodes.get('project-purpose').textContent.includes('No project explanation'));
-});
-
-test('guided report shows review records without promising correct answers',()=>{
-  const data=structuredClone(atlas);
-  data.review={state:'needs_review',reviewed:3,total:10};
-  const ui=mount(data);const banner=ui.nodes.get('review-state');
-  assert.equal(banner.hidden,false);
-  assert.ok(banner.textContent.includes('Guided draft'));
-  assert.ok(banner.textContent.includes('3/10'));
-  assert.ok(banner.textContent.includes('not correctness'));
-});
+function reviewed(){const data=structuredClone(atlas),ref={path:data.files[0].path,line:1};data.questions[0].evidence=[ref];data.questions[0].viva_question='What does it do?';data.questions[0].viva_answer='It shows a small demo.';data.questions[0].answer='A longer explanation kept under Details.';data.components=[{id:'screen',name:'Screen',description:'Shows the result.',files:[data.files[0].path],evidence:[ref]},{id:'server',name:'Server',description:'Handles requests.',files:[data.files[1].path],evidence:[ref]}];data.component_edges=[{source:'screen',target:'server',imports:[{source:ref.path,target:data.files[1].path,line:1}]}];data.flows=[{id:'main',name:'Main flow',nodes:[{id:'start',label:'Open app',kind:'start',evidence:[ref]},{id:'check',label:'Valid input?',kind:'decision',evidence:[ref]},{id:'edit',label:'Fix input',kind:'action',evidence:[ref]},{id:'end',label:'See result',kind:'end',evidence:[ref]}],edges:[{source:'start',target:'check',evidence:[ref]},{source:'check',target:'edit',label:'No',evidence:[ref]},{source:'check',target:'end',label:'Yes',evidence:[ref]},{source:'edit',target:'check',evidence:[ref]}]}];data.demonstrations=[{name:'Try it',steps:[{action:'Open the app',expected:'See the screen.',evidence:[ref]}]}];return data}
+test('guide opens first with concise answer and collapsed complete details',()=>{const data=reviewed(),ui=mount(data),reader=ui.nodes.get('guide-reader');assert.equal(ui.run('currentSection'),'overview');assert.equal(ui.nodes.get('section-overview').classList.contains('active'),true);assert.equal(reader.querySelectorAll('.answer-copy')[0].textContent,data.questions[0].viva_answer);const detail=reader.querySelectorAll('.details')[0];assert.ok(detail.textContent.includes(data.questions[0].answer));assert.notEqual(detail.open,true);assert.equal(ui.nodes.get('guide-contents').querySelectorAll('.chapter-question').length,data.questions.length);const controls=reader.querySelectorAll('.tiny');assert.equal(controls[0].disabled,true);controls[1].click();assert.equal(ui.run('guideIndex'),1);assert.equal(ui.document.activeElement,reader)});
+test('citations retain the selected line and inspect file symbols',()=>{const data=reviewed(),ui=mount(data);ui.nodes.get('guide-reader').querySelectorAll('.evidence-button')[0].click();assert.equal(ui.run('currentSection'),'tree');assert.ok(ui.nodes.get('file-detail').textContent.includes(data.questions[0].evidence[0].path+':'+data.questions[0].evidence[0].line));const f=data.files.find(f=>f.symbols.length);ui.run(`fileDetails(${JSON.stringify(f.path)})`);assert.ok(ui.nodes.get('file-detail').textContent.includes(f.symbols[0].name))});
+test('ordinary wheel is native scrolling while Ctrl wheel and pinch zoom',()=>{const ui=mount(reviewed());for(const prefix of ['arch','flow']){const view=ui.nodes.get(prefix+'-viewport'),svg=ui.nodes.get(prefix+'-svg');let prevented=false;const event={deltaY:-50,ctrlKey:false,clientX:100,clientY:100,preventDefault(){prevented=true}};const before=Number(svg.getAttribute('width'));view.events.wheel(event);assert.equal(prevented,false);assert.equal(Number(svg.getAttribute('width')),before);view.events.wheel({...event,ctrlKey:true});assert.equal(prevented,true);assert.ok(Number(svg.getAttribute('width'))>before);view.events.gesturestart({scale:1,preventDefault(){}});view.events.gesturechange({scale:1.5,preventDefault(){}});assert.ok(Number(svg.getAttribute('width'))>before*1.5);ui.nodes.get(prefix+'-fit').click();assert.ok(Number(svg.getAttribute('width'))<=760)}});
+test('flowchart uses decisions, labelled branches, rounded terminals and keyboard selection',()=>{const ui=mount(reviewed()),svg=ui.nodes.get('flow-svg'),nodes=svg.querySelectorAll('.diagram-node');assert.equal(nodes.length,4);const decision=nodes.find(n=>n.dataset.node==='check');assert.equal(decision.children[0].tagName,'polygon');assert.equal(nodes.find(n=>n.dataset.node==='start').children[0].getAttribute('rx'),'40');assert.ok(svg.textContent.includes('Yes'));assert.ok(svg.textContent.includes('No'));decision.events.keydown({key:'Enter',preventDefault(){}});assert.ok(ui.nodes.get('flow-detail').textContent.includes('Valid input?'));assert.ok(ui.nodes.get('flow-detail').querySelectorAll('.evidence-button').length)});
+test('architecture draws components rather than individual files and preserves import evidence',()=>{const data=reviewed(),ui=mount(data),nodes=ui.nodes.get('arch-svg').querySelectorAll('.diagram-node');assert.equal(nodes.length,2);assert.ok(!nodes[0].textContent.includes(data.files[0].path));nodes[0].click();assert.ok(ui.nodes.get('arch-detail').textContent.includes(data.files[0].path));assert.ok(ui.nodes.get('arch-detail').textContent.includes('Screen → Server'));assert.ok(ui.nodes.get('architecture-note').textContent.includes('resolved imports'))});
+test('question filters, source search, rehearsal toggle and ARIA state work',()=>{const ui=mount(reviewed()),filter=ui.nodes.get('q-status');filter.value='not_verified';filter.events.change();assert.equal(ui.nodes.get('question-list').querySelectorAll('.question-card').length,atlas.questions.filter(q=>q.status==='not_verified').length);filter.value='all';const q=atlas.questions.find(q=>q.evidence.length);ui.nodes.get('q-search').value=q.evidence[0].path;ui.nodes.get('q-search').events.input();const toggle=ui.nodes.get('question-list').querySelectorAll('.tiny')[0];assert.equal(toggle.getAttribute('aria-expanded'),'true');toggle.click();assert.equal(toggle.getAttribute('aria-expanded'),'false');assert.ok(toggle.getAttribute('aria-controls').startsWith('answer-'));ui.nodes.get('hide-answers').click();assert.equal(ui.nodes.get('hide-answers').getAttribute('aria-pressed'),'true')});
+test('demo expectations and folder descriptions have collapsible citations',()=>{const data=reviewed();const dir=data.files.find(f=>f.path.includes('/')).path.split('/')[0];data.directories=[{path:dir,description:'This folder contains the website.',evidence:[{path:data.files[0].path,line:1}]}];const ui=mount(data);assert.ok(ui.nodes.get('demo-content').textContent.includes('See the screen.'));assert.ok(ui.nodes.get('folder-list').textContent.includes(data.directories[0].description));assert.equal(ui.nodes.get('demo-content').querySelectorAll('.evidence-button').length,1)});
+test('untrusted labels remain text; all warnings stay available under report details',()=>{const data=reviewed();data.questions[0].viva_question='<img src=x onerror=alert(1)>';data.warnings=Array.from({length:9},(_,i)=>'Scan note '+i);data.review={reviewed:3,total:10};const ui=mount(data),heading=ui.nodes.get('guide-reader').children.find(c=>c.tagName==='h3');assert.equal(heading.textContent,data.questions[0].viva_question);assert.equal(heading.children.length,0);assert.ok(ui.nodes.get('report-notes').textContent.includes('Scan note 8'));assert.ok(ui.nodes.get('report-notes').textContent.includes('3/10'));assert.equal(ui.nodes.has('review-state'),false)});
+test('legacy and empty banks render without inventing a user flow or demo',()=>{const data=structuredClone(atlas);for(const k of ['components','component_edges','flows','demonstrations','directories'])delete data[k];data.questions=[];data.files=[];const ui=mount(data);assert.ok(ui.nodes.get('guide-reader').textContent.includes('No questions'));assert.ok(ui.nodes.get('flow-empty').textContent.includes('No user flow'));assert.ok(ui.nodes.get('demo-content').textContent.includes('No source-traced demo'));assert.ok(ui.nodes.get('arch-svg').textContent.includes('No components'));assert.equal(ui.frames.size,0)});

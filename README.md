@@ -31,9 +31,9 @@ The included [`mini-rag`](examples/mini-rag) example is deliberately misleading.
 
 ## A notebook you can study
 
-<p align="center"><img src="docs/assets/mind-map.svg" width="880" alt="A study mind map connects your project to its purpose, source evidence and explanation practice."></p>
 
-Open the notebook on **Mind Map**. Expand a subject, pick a question, read the answer, then follow its source citation. Use the import graph, directory atlas and question bank when you need more context. The black-and-white notebook includes your teacher, ruled paper and handwritten headings.
+
+Open **Project Guide** for short questions and simple spoken answers. Expand **Details** for the full explanation and citations. Practise the source-traced demo, follow the user flowchart, then explain the component diagram. Soft colour highlights make the answers easier to scan.
 
 The report is one self-contained HTML file. Its artwork, font and interactions are embedded. Keep the editable evidence JSON and Markdown companion beside it.
 
@@ -49,12 +49,12 @@ The report is one self-contained HTML file. Its artwork, font and interactions a
 
 | Page | Use it for |
 |---|---|
-| **Mind Map** | Expand subjects into questions and follow a connected study path. |
-| **Architecture** | Inspect file nodes and resolved import links. |
-| **Import Trails** | Follow a static reference trail from a detected route or file. |
-| **Directory Atlas** | Explore indexed folders and files. |
-| **Viva Questions** | Search, filter, hide answers and rehearse. |
-| **Project Guide** | Read chapter-based explanations, source citations and every recorded next check. |
+| **Project Guide** | Read one short question and answer at a time. |
+| **Questions** | Search, filter and hide answers to rehearse. |
+| **Demo** | Practise user actions and expected source behavior. |
+| **Flowchart** | Follow reviewed user actions and decisions. |
+| **Architecture** | Explain components and resolved import connections. |
+| **Folders** | Read plain directory descriptions and inspect files. |
 
 **Keep your notes.** `mercy-evidence.json` holds the editable answers and evidence. `mercy render` rebuilds the notebook after your edits; the Markdown companion gives you a plain-text alternative.
 
@@ -207,14 +207,16 @@ Open `output-example/mercy-studio.html` in any modern desktop browser. The examp
 
 | Area | Interaction | What it means |
 |---|---|---|
-| **Project Guide** | Read chapters in order; expand technology evidence, scan coverage and follow-up checks | Source snapshot only |
-| **Architecture** | Pan, zoom, select file nodes and inspect import arrows | A → B **means A imports B**, not a verified runtime call |
-| **Import Trails** | Select a detected route/file and follow a static dependency trail | Not a verified request-to-database pipeline |
-| **Directory Atlas** | Expand folder tree; open a folder tile; click individual file tiles | Directory tree reflects indexed paths, not all files if scan was capped |
-| **Mind Map** | Expand subjects into questions; read answers and citations beside the map; pan, zoom and fit | General concepts are not automatically present in your project |
-| **Viva Questions** | Search, filter by subject, hide/reveal answers, click file:line evidence | Question bank contains real evidence references and explicit unknowns |
+| **Project Guide** | Read short answers; expand Details for notes and citations | Source analysis, not runtime proof |
+| **Questions** | Search, filter and rehearse with answer toggles | Reviewed content, with explicit unknowns |
+| **Demo** | Follow actions and expected results | A source walkthrough, not an executed recording |
+| **Flowchart** | Follow user steps and named decision branches | Authored from handlers and call sites, not imports |
+| **Architecture** | Select components and inspect their files/imports | A → B aggregates resolved imports; fallback groups are heuristic |
+| **Folders** | Read plain descriptions and expand indexed file lists | The scan may cover only part of the repository |
 
-The user interface is **responsive** and uses accessible file trees and keyboard-selectable SVG nodes. It uses a black-and-white ink notebook: ruled paper, handwritten headings, the supplied teacher character, a branching mind map and source inspectors. The font and artwork are embedded in generated HTML for offline use. It **samples safe hex color hints from the analyzed project's CSS** as metadata; the notebook keeps a fixed black-and-white visual style. It cannot automatically understand a full product design system or infer branding from a JavaScript application without appropriate local style files.
+The responsive notebook keeps the teacher and embedded handwritten font, with a readable sans-serif body and restrained colour highlights. Ordinary wheel/two-finger trackpad scrolling moves diagrams; Ctrl+wheel and trackpad pinch zoom them. Buttons provide +, − and Fit. No CDN, browser storage or new dependency is required. Project colour sampling remains metadata rather than overriding legible study colours.
+
+Guided submissions use questions of at most 14 words and answers of at most 45 words. Full analysis remains editable under Details. See [the study format](docs/STUDY_FORMAT.md) for components, user flows, demonstrations and folder descriptions. Structural checks help smaller host models follow the contract; they cannot guarantee 100% accuracy.
 
 ## Install and run (Ubuntu/Linux/macOS)
 
@@ -231,10 +233,10 @@ Open `/path/to/your/repository/mercy-output/mercy-studio.html` **directly in you
 
 Generated files:
 
-- `mercy-studio.html` — **primary deliverable:** mind map, import graph, dependency trail, treemap and question lab.
+- `mercy-studio.html` — **primary deliverable:** Project Guide, concise questions, demo, user flowchart, components and folders.
 - `mercy-evidence.json` — editable and machine-readable scan evidence + Q&A; source for regeneration.
 - `mercy-viva.md` — text alternative with the complete question answers.
-- `mercy-architecture.md` — Mermaid-style static import clues and provenance hints.
+- `mercy-architecture.md` — reviewed components with Mermaid-style resolved import connections.
 
 A legacy PDF is **off by default** and ReportLab is not required for HTML. If you specifically want PDF, first install the optional extra from the Mercy checkout (`pip install -e '.[pdf]'`), then pass `--pdf`:
 
@@ -303,7 +305,7 @@ Mercy also supports an explicit and safe `mercy-theme.json` in the **analyzed pr
 Allowed colors are 6-digit hex strings; `font` can be `system`, `serif`, or `mono`; `radius` is an integer from 5 to 28. Mercy rejects low-contrast background/text combinations. The current ink notebook keeps a fixed visual style; validated tokens are retained in evidence for compatibility rather than applied to its surfaces. These design tokens are saved in the evidence JSON so `mercy render` preserves them even when you do not pass `--project` again. `examples/galaxy-demo/mercy-theme.json` demonstrates it.
 
 
-Mercy finds a bounded sample of **literal hex colors** from readable, non-symlink CSS/HTML/Vue/Svelte style files that were already indexed during the scan. It selects an accent palette from non-neutral colors. The notebook keeps a consistent black-ink style; sampled colors are retained as palette metadata. This is **palette adaptation, not visual cloning**: typography, component shapes, and contrast protections remain Mercy-specific. See [`docs/DESIGN_SYSTEM.md`](docs/DESIGN_SYSTEM.md) for the detailed rules and limitations.
+Mercy finds a bounded sample of **literal hex colors** from readable, non-symlink CSS/HTML/Vue/Svelte style files that were already indexed during the scan. It selects an accent palette from non-neutral colors. The notebook keeps a consistent paper-and-highlighter style; sampled colors are retained as palette metadata. This is **palette adaptation, not visual cloning**: typography, component shapes, and contrast protections remain Mercy-specific. See [`docs/DESIGN_SYSTEM.md`](docs/DESIGN_SYSTEM.md) for the detailed rules and limitations.
 
 ## Security and fidelity
 
@@ -311,8 +313,8 @@ Mercy does **not** execute imported project code, launch a server, open database
 
 - File groups contain only indexed paths; no groups are fabricated.
 - File roles are heuristic (path, extension, source code clue), not guaranteed service boundaries.
-- Architecture links are statically resolved imports. Mind-map branches organize study topics and questions.
-- Import Trails is explicitly labelled as a **reference trail**, never a verified runtime data flow.
+- Component links aggregate statically resolved imports; they do not prove runtime calls.
+- User flowcharts and demos require cited source traces, separate from import connections.
 - Dataset-like files and AI API libraries are **clues**, not proof of training, retrieval, accuracy or inference deployment.
 - The scanner is bounded and skips several high-risk/large files; the map may be incomplete.
 
@@ -336,7 +338,7 @@ Mercy/
 │   ├── scanner.py         # local, bounded code metadata scan
 │   ├── questions.py       # plain-language Q&A with evidence and uncertainty
 │   ├── studio.py          # atlas payload + color sampling + safe HTML embedding
-│   ├── assets/studio.html # single-file offline mind map, graph, tree and Q&A
+│   ├── assets/studio.html # offline guide, user flows, components and viva Q&A
 │   ├── renderer.py        # evidence JSON, Markdown, optional legacy PDF
 │   ├── cli.py             # prepare, inspect, context, review, render, install
 │   └── integrations/      # packaged native agent skill files

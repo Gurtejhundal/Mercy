@@ -1,6 +1,6 @@
 ---
 name: mercy
-description: Investigate a local codebase with source citations, create a reviewed mind-map study notebook, or coach a project viva. Use for understanding or defending code, not implementing features.
+description: Investigate a local codebase with source citations, create a reviewed viva study guide, or coach a project viva. Use for understanding or defending code, not implementing features.
 ---
 
 # Mercy — Codebase understanding and viva coach
@@ -49,7 +49,7 @@ Use this loop for new notebooks regardless of model size. It keeps each review t
    ```
 
    Read `progress`, `review_template`, `candidate_files` and `source_excerpts`. Use `context` to inspect missing function bodies, callers, configuration or schemas. The two suggested excerpts are a starting point, not the whole project. Trace inputs, transformations, outputs and failures in actual code.
-4. **Complete this question.** Copy the returned `review_template` into `mercy-output/review.json`; replace both starter explanations, keep the question ID, and supply every record field. Add only citations you inspected. For `supported`, attach real `{"path":"actual/file.py","line":12}` evidence. For `not_verified`, explain the inspected scope and write a concrete `verify_next` check. An honest unknown is better than an invented answer. Do not edit scan fingerprints, workflow metadata or review hashes.
+4. **Complete this question.** Copy the returned `review_template` into `mercy-output/review.json`; replace both starter explanations, add the concise viva fields below, keep the question ID, and supply every record field. Add only citations you inspected. For `supported`, attach real `{"path":"actual/file.py","line":12}` evidence. For `not_verified`, explain the inspected scope and write a concrete `verify_next` check. An honest unknown is better than an invented answer. Do not edit scan fingerprints, workflow metadata or review hashes.
 5. **Validate and advance:**
 
    ```bash
@@ -67,12 +67,20 @@ Use this loop for new notebooks regardless of model size. It keeps each review t
 
    Use the actual output paths throughout if a fresh subdirectory was chosen. Confirm the HTML exists, is readable and includes the reviewed explanations. A starter bank, raw HTML code block, or prose-only summary does not complete notebook mode. If a tool fails, identify the blocker and artifacts that actually exist.
 
-Keep explanations in the evidence JSON, not generated HTML. `render` remains available after human JSON edits; an unfinished guided report is visibly labelled a draft. Review metadata is editable progress bookkeeping, not proof of an independent reviewer.
+Keep explanations in the evidence JSON, not generated HTML. `render` remains available after human JSON edits; review progress is available under About this report. Review metadata is editable progress bookkeeping, not proof of an independent reviewer.
+
+## Viva writing and diagrams
+
+The report opens on Project Guide. Give each reviewed record `viva_question` (at most 14 words) and `viva_answer` (at most 45 words, normally 1–2 sentences). Ask one thing. Answer in simple spoken language; keep conditions that affect correctness. Keep implementation depth in `answer`, shown under Details. Do not pad with generic definitions or repeat the answer under multiple taglines.
+
+On the module question, add cited `components` and plain `directories` descriptions. On the workflow question, add a cited user `flow` and `demonstration` steps. `next` returns the exact field shapes and limits in `study_aid_fields`; follow those shapes. Components group source responsibilities, with arrows derived only from resolved imports. Flow nodes describe user actions/decisions and have start/end kinds; decisions need named branches. Demo steps pair an action with an expected result. Never derive a user flow from imports, pretend a walkthrough was executed, or fill missing evidence with invented features. Omit unsupported aids and explain the specific gap.
+
+Before rendering, read the short answers aloud: can a beginner say them naturally and defend each claim? Check the main user flow, failure path and demo against actual handlers/call sites. Long source notes belong in Details. No completion checklist guarantees factual correctness or viva success.
 
 ## Evidence rules
 
 - In conversation distinguish **source-supported**, **inferred** and **not verified**. The saved schema uses only `supported` and `not_verified`; keep inferred runtime behavior unverified.
-- File groups are heuristic roles. Graph edges are resolved imports, never runtime function calls. A trail is not a verified request pipeline.
+- File groups are heuristic roles. Graph edges are resolved imports, never runtime function calls. A user flow needs inspected handlers and call sites; imports alone cannot establish it.
 - Do not invent training runs, model weights, dataset provenance, accuracy, working authentication, deployment, RAG or endpoint behavior. An import or marker is not proof of execution. A missing marker does not prove absence.
 - Explain implemented behavior in plain words, then cite the exact inspected `relative/path:line`. General definitions belong in the glossary unless relevant to actual code.
 

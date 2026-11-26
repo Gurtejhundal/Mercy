@@ -15,6 +15,7 @@ import re
 
 from .agent import _source, review_progress
 from .scanner import _ignore_name
+from .presentation import study_aids
 
 ROLE_LABELS = {
     'frontend': 'Interface',
@@ -178,7 +179,8 @@ def build_atlas(report: dict, questions: list[dict], root: str | Path | None = N
                        'Backend':['backend'], 'Frontend':['frontend'], 'AI inference':['llm_api']}.items():
         concept_status[term] = any(report['signals'].get(t) for t in tags)
     return {
-        'format_version':2,
+        'format_version':3,
+        **study_aids(report, questions, clusters),
         'project':report['project'], 'summary':report['summary'], 'warnings':report['warnings'],
         'theme':theme, 'clusters':clusters, 'files':files, 'edges':edges,
         'crossings':[{'a':a,'b':b,'count':v} for (a,b),v in crossings.items()],

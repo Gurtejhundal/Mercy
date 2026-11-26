@@ -1,37 +1,16 @@
-# Interactive Atlas — Product and Interaction Specification
+# Offline project guide
 
-## Product
+`mercy-studio.html` embeds its CSS, JavaScript, font, artwork and escaped metadata. It opens on **Project Guide** and needs no server, CDN, browser storage or provider key. The host model’s own connectivity/privacy settings are separate.
 
-A source-grounded notebook accompanies Mercy's Codex/Claude coaching workflow. Opening the HTML requires no server, internet, model or provider key. All CSS, JavaScript and metadata are embedded. It opens on the Mind Map.
+- **Project Guide:** short questions and spoken answers; full explanation, evidence and checks behind Details.
+- **Questions:** search by question, answer or source path; filter and hide answers to rehearse.
+- **Demo:** source-traced user actions with expected outcomes, explicitly distinguished from an executed run.
+- **Flowchart:** reviewed user actions, decisions and retry paths. Not a chain of imports.
+- **Architecture:** components and aggregated resolved imports. Suggested fallback groups are heuristic, not verified tiers or runtime calls.
+- **Folders:** plain folder descriptions, expandable indexed file lists and source metadata inspection.
 
-## Views
+Scroll normally with a mouse wheel or two-finger trackpad. Ctrl+wheel or trackpad pinch zooms a diagram; +, − and Fit also work. Browser page zoom remains available outside diagram controls. Touch scrolling uses native overflow.
 
-1. **Mind Map:** project → subject → question branches. Expand with click or keyboard, read answers and citations beside the map, pan blank space, zoom, fit and collapse. Study branches are not implementation claims.
-2. **Project Guide:** category-based table of contents, one full answer with previous/next controls, plain explanation, citations and next check. Expandable references include cited technology clues, scan coverage, all scanner notes, all answer follow-ups and a glossary.
-3. **Architecture:** actual resolved imports, keyboard-selectable file nodes, pan/zoom and source metadata inspection. File roles are heuristic.
-4. **Import Trails:** a declared route/file followed through up to seven static references, never a verified runtime pipeline.
-5. **Directory Atlas:** accessible folder hierarchy, proportionate folder/file tiles and module inspection.
-6. **Viva Questions:** search questions/answers/source paths, filter category and evidence level, reveal answers, plain explanations, uncertainty and source citations in one reading column.
+Author study aids in the evidence JSON using [STUDY_FORMAT.md](STUDY_FORMAT.md), then render. The CLI validates paths, lines, word bounds, component membership and flow connectivity. Old banks without these optional aids still render; empty flow/demo states explain what needs review without fabricating content. Human edits can mark a review record pending but never block a valid render.
 
-The opening Mind Map includes the first Start here answer (or first available answer), its evidence status and a compact summary of answer evidence. Citation selection opens and focuses the architecture inspector while preserving the cited line. Escape returns to the mind map. Source filenames remain text, never injected HTML. The glossary is an expandable reference in Project Guide rather than a wall of unrelated concepts under the map.
-
-## Data model and design
-
-`studio.py` converts the bounded scan and reviewed questions into files, heuristic role groups, import edges, routes, questions, glossary and warnings. Only populated groups appear. Group names do not imply deployed tiers. The notebook uses one light minimalist design; explicit safe theme tokens remain supported. See `DESIGN_SYSTEM.md`.
-
-## Accessibility and performance
-
-- Every section is available via ordinary buttons/navigation; canvas alternatives include a cluster list, file tree, filter lists and named graph nodes.
-- Short transitions honour OS-level reduced-motion.
-- Bounded scan of 400 files by default; no vendor or secret directories; large maps require scrolling/panning.
-- The HTML is self-contained. Interactions depend on modern Canvas, SVG and JavaScript, so the text Markdown report remains an alternative for older browsers or screen readers.
-- For large real projects, SVG graph crowding is a known limitation. A future release needs node aggregation, virtualized file lists, search and incremental layout.
-
-## Truthfulness acceptance tests
-
-- A fake RAG claim in README does not establish a retrieval pipeline.
-- A source dependency graph A → B exists only if scanner resolves that import.
-- Files without an inspected role are placed in a heuristic default category; role confidence remains non-authoritative.
-- A complete user→database flow must **not** be drawn unless independently verified.
-- Page must open offline without `http`, `https`, CDN or external assets.
-- Script-breakout strings in project labels must remain inert text.
+The HTML contains source paths and metadata, not raw source bodies. Repository strings are added with textContent, not parsed as HTML. Pattern matches and source citations do not prove execution. The Markdown companion includes full notes and text versions of reviewed demo/flow/component information.

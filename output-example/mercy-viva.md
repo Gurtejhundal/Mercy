@@ -21,614 +21,202 @@
 
 ## Start here
 
-### Q01. What is this project?
+### GUIDE_PURPOSE. What does this project do?
 
-**Short viva answer:** The repository is called mini-rag. The exact business goal must be confirmed from the owner or documentation; the code scan alone does not prove user outcomes.
+This small API sends a question to an OpenAI model and returns its answer. Despite the folder name, it does not implement document retrieval or RAG.
 
-**Explain simply:** First explain the problem it solves, then who uses it, then what happens when they click a button.
+<details>
+<summary>Details</summary>
 
-**Evidence:** No repository proof located
+This small API sends a question to an OpenAI model and returns its answer. Despite the folder name, it does not implement document retrieval or RAG.
 
-**Proof level:** not_verified
+**Source:** README.md:3, rag.py:5
 
-**Verify:** Write a one-sentence problem statement and demonstrate the main feature.
+**Evidence level:** supported (source analysis; execution not verified)
 
-### Q02. What is your project tech stack?
+**Check:** Source walkthrough only. Run the sample separately with explicit authorization to check runtime behavior.
 
-**Short viva answer:** Found these technology signals: FastAPI, OpenAI SDK. A detected import does not prove a service is configured or used in production.
+</details>
 
-**Explain simply:** A tech stack is your toolbox: what builds the screen, what handles requests, and where data lives.
+### GUIDE_ENTRY. How do you start it?
 
-**Evidence:** app.py:1, rag.py:1
+app.py creates the FastAPI application and defines the routes. No startup command or dependency manifest is supplied in this tiny sample.
 
-**Proof level:** supported
+<details>
+<summary>Details</summary>
 
-**Verify:** Verify versions and running services in package manifests and deployment.
+app.py creates the FastAPI application and defines the routes. No startup command or dependency manifest is supplied in this tiny sample.
 
-### Q03. Show me where the application starts.
+**Source:** app.py:1, app.py:3
 
-**Short viva answer:** Likely starting files: app.py. Confirm the start command before claiming any one is the actual entry point.
+**Evidence level:** supported (source analysis; execution not verified)
 
-**Explain simply:** An entry point is the front door. It is the first file started when the app runs.
+**Check:** Source walkthrough only. Run the sample separately with explicit authorization to check runtime behavior.
 
-**Evidence:** app.py:1
-
-**Proof level:** supported
-
-**Verify:** Check README scripts or package.json and run the project.
-
-### Q04. Show the frontend and backend directories.
-
-**Short viva answer:** Files include: README.md, app.py, rag.py, requirements.txt. A folder name alone cannot prove which part runs on the server.
-
-**Explain simply:** Frontend is what users see. Backend is what responds to requests and talks to data.
-
-**Evidence:** README.md:1, app.py:1, rag.py:1
-
-**Proof level:** supported
-
-**Verify:** Trace one UI request to one server handler.
-
-### Q05. Explain your project workflow from opening the app to getting a result.
-
-**Short viva answer:** Observed 2 route declarations and 1 local module links. A full end-to-end workflow is not verified by static analysis alone.
-
-**Explain simply:** Tell the story: user -> screen -> request -> server -> database/model -> answer -> screen.
-
-**Evidence:** app.py:5, app.py:9
-
-**Proof level:** supported
-
-**Verify:** Run the app, click the main feature and watch its network requests.
+</details>
 
 
 ## Architecture
 
-### Q06. Show your software architecture.
+### GUIDE_DEPENDENCIES. Which tools does it use?
 
-**Short viva answer:** Likely technology components are FastAPI, OpenAI SDK. Use the import map and actual route handlers to draw confirmed arrows.
+FastAPI defines the API. The OpenAI Python client sends the model request. Their installed versions and credentials still need checking.
 
-**Explain simply:** Architecture is a map of the rooms in your application and the doors between them.
+<details>
+<summary>Details</summary>
 
-**Evidence:** app.py:1, rag.py:1
+FastAPI defines the API. The OpenAI Python client sends the model request. Their installed versions and credentials still need checking.
 
-**Proof level:** supported
+**Source:** app.py:1, rag.py:1
 
-**Verify:** Trace at least one complete user action and draw only confirmed connections.
+**Evidence level:** supported (source analysis; execution not verified)
 
-### Q07. Which module calls which other module?
+**Check:** Source walkthrough only. Run the sample separately with explicit authorization to check runtime behavior.
 
-**Short viva answer:** Local references found: app.py -> rag.py
+</details>
 
-**Explain simply:** An import means one file can use code from another. That is not always a runtime call.
+### GUIDE_MODULES. What are its main components?
 
-**Evidence:** app.py:2
+The API handles requests in app.py. The model helper in rag.py sends the question to OpenAI and extracts the returned text.
 
-**Proof level:** supported
+<details>
+<summary>Details</summary>
 
-**Verify:** Follow the imported function in the actual call sites.
+The API handles requests in app.py. The model helper in rag.py sends the question to OpenAI and extracts the returned text.
 
-### Q08. What are your API endpoints?
+**Source:** app.py:9, rag.py:5
 
-**Short viva answer:** Found routes: /health in app.py; /ask in app.py
+**Evidence level:** supported (source analysis; execution not verified)
 
-**Explain simply:** An endpoint is a door the frontend knocks on to ask the server for something.
+**Check:** Source walkthrough only. Run the sample separately with explicit authorization to check runtime behavior.
 
-**Evidence:** app.py:5, app.py:9
+</details>
 
-**Proof level:** supported
+- **Question API:** Accepts questions and returns JSON. (app.py:9)
+- **Model helper:** Sends a prompt to OpenAI and extracts the answer. (rag.py:5)
+### GUIDE_WORKFLOW. How does a user get a result?
 
-**Verify:** Inspect router registration and use a real HTTP request to verify these routes.
+Submit a question to /ask. The handler passes it to the model helper and returns the response as JSON.
 
-### Q09. What happens when the frontend sends a request?
+<details>
+<summary>Details</summary>
 
-**Short viva answer:** Found HTTP handlers in app.py
+Submit a question to /ask. The handler passes it to the model helper and returns the response as JSON.
 
-**Explain simply:** A request is like ordering food: the screen asks, the server prepares, then sends a response.
+**Source:** app.py:9, rag.py:7
 
-**Evidence:** app.py:5, app.py:9
+**Evidence level:** supported (source analysis; execution not verified)
 
-**Proof level:** supported
+**Check:** Source walkthrough only. Run the sample separately with explicit authorization to check runtime behavior.
 
-**Verify:** Open browser DevTools Network and trace one request to the backend.
+</details>
 
-### Q10. What is the difference between frontend and backend?
+#### Demo
 
-**Short viva answer:** Frontend builds the screens that people use. Backend handles server-side logic, data and API requests. Your exact code split still requires tracing.
+1. **Request /health from the running sample API.** The handler returns a JSON status of “ok”. (app.py:5)
 
-**Explain simply:** Frontend = shop counter; backend = kitchen.
+2. **Submit POST /ask?question=What%20is%20Python.** With a working provider setup, the handler sends the question to the model and returns answer text. (app.py:9, rag.py:7)
 
-**Evidence:** No repository proof located
+3. **Explain why this is not RAG.** The helper sends the question directly to the model. It does not retrieve project documents. (rag.py:5, README.md:3)
 
-**Proof level:** not_verified
+#### User flow (source trace)
 
-**Verify:** Identify two files from each side, if both exist.
-
-### Q11. Where are business rules written?
-
-**Short viva answer:** Look for functions that validate inputs, calculate values, or decide outcomes. Static import names cannot prove which functions contain the core rules.
-
-**Explain simply:** Business logic is the rulebook, not the paint on the screen.
-
-**Evidence:** app.py:6, rag.py:5
-
-**Proof level:** supported
-
-**Verify:** Follow one important function from input to return value.
-
-### Q12. What breaks if a service is down?
-
-**Short viva answer:** Failure handling and deployed dependencies are not confirmed by static scanning.
-
-**Explain simply:** If the kitchen is closed, the shop should tell the customer instead of crashing.
-
-**Evidence:** No repository proof located
-
-**Proof level:** not_verified
-
-**Verify:** Disconnect the API or database in a test environment and record the result.
-
+- Prepare a question → Submit to /ask — app.py:9
+- Submit to /ask → Read the returned answer — app.py:9
+- Read the returned answer → Finish — app.py:9
 
 ## Data
 
-### Q13. Where is your database?
+### GUIDE_VALIDATION. How are inputs checked?
 
-**Short viva answer:** No database connection was proven in the inspected code.
+The question parameter is declared as text. These handlers do not show extra checks such as minimum length or content rules.
 
-**Explain simply:** A database is the app’s organized notebook. An SDK import is not the same as a running database.
+<details>
+<summary>Details</summary>
 
-**Evidence:** No repository proof located
+The question parameter is declared as text. These handlers do not show extra checks such as minimum length or content rules.
 
-**Proof level:** not_verified
+**Source:** app.py:10
 
-**Verify:** Locate connection config, schema, migrations and deployment provider.
+**Evidence level:** supported (source analysis; execution not verified)
 
-### Q14. Show your database tables or collections.
+**Check:** Source walkthrough only. Run the sample separately with explicit authorization to check runtime behavior.
 
-**Short viva answer:** The scanner does not execute migrations or query databases, so it cannot establish the live schema.
+</details>
 
-**Explain simply:** Tables are like named pages in a notebook; columns are the headings.
+### GUIDE_STORAGE. Where is the data stored?
 
-**Evidence:** No repository proof located
+The inspected request path sends the question to the provider and returns the response. It does not save the conversation or read a document store.
 
-**Proof level:** not_verified
+<details>
+<summary>Details</summary>
 
-**Verify:** Open migrations/schema and compare with the actual database.
+The inspected request path sends the question to the provider and returns the response. It does not save the conversation or read a document store.
 
-### Q15. How does data travel through your system?
+**Source:** rag.py:5, README.md:3
 
-**Short viva answer:** The scan located 2 routes, 0 data-shaped files and 1 module links. These are clues, not a verified complete data pipeline.
+**Evidence level:** supported (source analysis; execution not verified)
 
-**Explain simply:** Follow one piece of data from where it enters until you see the result.
+**Check:** Source walkthrough only. Run the sample separately with explicit authorization to check runtime behavior.
 
-**Evidence:** app.py:5, app.py:9
-
-**Proof level:** supported
-
-**Verify:** Trace and document one real input all the way through.
-
-### Q16. How do you validate user input?
-
-**Short viva answer:** Input validation is not established by a basic repository scan.
-
-**Explain simply:** Validation is checking a form before accepting it, like rejecting an impossible age.
-
-**Evidence:** No repository proof located
-
-**Proof level:** not_verified
-
-**Verify:** Show the exact schema or condition and test invalid input.
-
-### Q17. How do you handle errors and bad requests?
-
-**Short viva answer:** Error handling must be checked in actual route handlers and through tests.
-
-**Explain simply:** When something fails, the program should say what went wrong instead of dying.
-
-**Evidence:** No repository proof located
-
-**Proof level:** not_verified
-
-**Verify:** Try missing fields, invalid IDs and unavailable services.
-
-### Q18. How do you prevent SQL injection?
-
-**Short viva answer:** The audit does not certify that queries are parameterized or safe.
-
-**Explain simply:** Never glue untrusted user text into a database command.
-
-**Evidence:** No repository proof located
-
-**Proof level:** not_verified
-
-**Verify:** Inspect query construction and verify parameterized queries or safe ORM calls.
-
-
-## AI/ML
-
-### Q19. Did you train the model yourself?
-
-**Short viva answer:** I did not find direct model-training steps in the inspected code. Do not claim the model was trained here.
-
-**Explain simply:** Calling an AI API is like using someone else’s already-trained calculator. Training means teaching a model with data.
-
-**Evidence:** No repository proof located
-
-**Proof level:** not_verified
-
-**Verify:** Find actual training script, data split, trained weights and run logs if claiming training.
-
-### Q20. Where did you get the dataset? Show it.
-
-**Short viva answer:** No local dataset file was found in the inspected files. It might be remote, generated or absent; verify before answering.
-
-**Explain simply:** A dataset is examples a model learns from or looks things up in. One CSV file does not automatically mean training.
-
-**Evidence:** No repository proof located
-
-**Proof level:** not_verified
-
-**Verify:** Identify the precise dataset source, license, sample rows and where it is loaded.
-
-### Q21. Where is the model saved?
-
-**Short viva answer:** Static inspection did not verify a trained model checkpoint or the hosted model behind any API.
-
-**Explain simply:** A model file is like a saved brain; an API can use a brain hosted on someone else’s computer.
-
-**Evidence:** No repository proof located
-
-**Proof level:** not_verified
-
-**Verify:** Find a real model checkpoint, model name or provider configuration.
-
-### Q22. What is an AI model?
-
-**Short viva answer:** An AI model is a program whose behaviour is shaped by learned patterns or parameters, rather than only hard-coded rules.
-
-**Explain simply:** Think of a model like a student who learned from many examples.
-
-**Evidence:** No repository proof located
-
-**Proof level:** not_verified
-
-**Verify:** Ask the project owner and check README, deployment, or external services.
-
-### Q23. Are you using an AI API or your own ML model?
-
-**Short viva answer:** Found API/SDK usage in rag.py. This suggests externally provided model access, not proof of self-training.
-
-**Explain simply:** API = you send a question to someone else’s service. Local model = the model runs in your own system.
-
-**Evidence:** rag.py:7
-
-**Proof level:** supported
-
-**Verify:** Check model initialization and where inference actually executes.
-
-### Q24. What is inference?
-
-**Short viva answer:** Inference means using an already-prepared model to produce a prediction or response.
-
-**Explain simply:** Training is studying; inference is answering the exam.
-
-**Evidence:** No repository proof located
-
-**Proof level:** not_verified
-
-**Verify:** Ask the project owner and check README, deployment, or external services.
-
-### Q25. What is RAG? Does your project use it?
-
-**Short viva answer:** RAG was not established from this repository scan. Do not claim RAG simply because an LLM is present.
-
-**Explain simply:** RAG = look up relevant notes first, then ask an AI to answer using those notes.
-
-**Evidence:** No repository proof located
-
-**Proof level:** not_verified
-
-**Verify:** Show a retrieval step AND where its results enter the model prompt.
-
-### Q26. Explain a RAG pipeline step by step.
-
-**Short viva answer:** A typical RAG flow is: load documents -> split text -> create embeddings -> store vectors -> retrieve useful chunks -> include chunks in a prompt -> generate an answer. Actual steps depend on the project.
-
-**Explain simply:** It is an open-book test: find pages, read them, then answer. Do not call this your implemented flow until you prove each step.
-
-**Evidence:** No repository proof located
-
-**Proof level:** not_verified
-
-**Verify:** Locate the exact implementation of each stage or mark it not implemented.
-
-### Q27. What are embeddings?
-
-**Short viva answer:** No embedding pipeline was confirmed.
-
-**Explain simply:** An embedding turns text into a list of numbers so similar meanings can be compared.
-
-**Evidence:** No repository proof located
-
-**Proof level:** not_verified
-
-**Verify:** Find the exact embedding model and vector dimension if used.
-
-### Q28. What is a vector database? Do you use one?
-
-**Short viva answer:** No vector store was proven by this scan.
-
-**Explain simply:** A vector database is a special library shelf that finds meaning-similar notes.
-
-**Evidence:** No repository proof located
-
-**Proof level:** not_verified
-
-**Verify:** Name the actual store, collection, persistence and retrieval call.
-
-### Q29. What is chunking and why use it?
-
-**Short viva answer:** No explicit document chunking step was confirmed.
-
-**Explain simply:** Chunking means cutting a long book into smaller pages, so finding the right part is easier.
-
-**Evidence:** No repository proof located
-
-**Proof level:** not_verified
-
-**Verify:** Show chunk size, overlap, and why these values were chosen.
-
-### Q30. How do you reduce hallucinations in the AI answer?
-
-**Short viva answer:** No reliability evaluation was verified. RAG and citations can help grounding but do not guarantee correct answers.
-
-**Explain simply:** A hallucination is when AI confidently makes something up. Make it show the source.
-
-**Evidence:** No repository proof located
-
-**Proof level:** not_verified
-
-**Verify:** Test a set of answerable and unanswerable questions and measure grounded correctness.
-
-### Q31. How do you evaluate model accuracy?
-
-**Short viva answer:** No evaluation metrics were located. Do not invent accuracy percentages.
-
-**Explain simply:** Accuracy asks: out of many known-answer questions, how many answers were right?
-
-**Evidence:** No repository proof located
-
-**Proof level:** not_verified
-
-**Verify:** Provide a held-out test set, metric definition and reproducible result.
-
-### Q32. What is overfitting?
-
-**Short viva answer:** Overfitting happens when a model learns the training examples too specifically and performs worse on new examples.
-
-**Explain simply:** Like memorizing exam answers but not understanding the subject.
-
-**Evidence:** No repository proof located
-
-**Proof level:** not_verified
-
-**Verify:** Ask the project owner and check README, deployment, or external services.
-
-### Q33. What is fine-tuning versus prompting?
-
-**Short viva answer:** Prompting changes the instructions sent to a model. Fine-tuning updates model parameters through training. Neither is confirmed without evidence.
-
-**Explain simply:** Prompting tells the student what to do; fine-tuning gives the student extra lessons.
-
-**Evidence:** No repository proof located
-
-**Proof level:** not_verified
-
-**Verify:** Ask the project owner and check README, deployment, or external services.
-
-
-## Security
-
-### Q34. Where is authentication implemented?
-
-**Short viva answer:** No clear authentication implementation was confirmed.
-
-**Explain simply:** Authentication checks who you are. Authorization checks what you may access.
-
-**Evidence:** No repository proof located
-
-**Proof level:** not_verified
-
-**Verify:** Show login, token/session validation and a protected endpoint.
-
-### Q35. Where are secrets and API keys stored?
-
-**Short viva answer:** No environment variable names detected in scanned source; secrets were not read.
-
-**Explain simply:** Secrets are house keys. Do not put them in a public repository or a viva PDF.
-
-**Evidence:** No repository proof located
-
-**Proof level:** not_verified
-
-**Verify:** Verify secrets are server-side and not checked into version control.
-
-### Q36. Can one user read another user’s data?
-
-**Short viva answer:** Object-level authorization cannot be proven without tracing identity checks at each data-access route.
-
-**Explain simply:** Knowing the house address does not mean someone should get the key.
-
-**Evidence:** No repository proof located
-
-**Proof level:** not_verified
-
-**Verify:** Test access to another user’s ID in a controlled test environment.
-
-### Q37. What happens if an attacker sends malicious input?
-
-**Short viva answer:** No penetration test was run by Mercy. Treat security as unverified until tested.
-
-**Explain simply:** Bad input should be rejected or treated as plain text, not followed as instructions.
-
-**Evidence:** No repository proof located
-
-**Proof level:** not_verified
-
-**Verify:** Review input boundaries and test with safe invalid inputs.
+</details>
 
 
 ## Quality
 
-### Q38. How many tests does this project have?
+### GUIDE_ERRORS. What happens if something fails?
 
-**Short viva answer:** Found 0 files with test-like names. This is not a test pass result or a coverage percentage.
+There is no custom exception handling around the model call in these two files. Provider failure behavior needs a separate runtime check.
 
-**Explain simply:** Tests are practice questions for your software. Counting them does not tell you if it passed.
+<details>
+<summary>Details</summary>
 
-**Evidence:** No repository proof located
+There is no custom exception handling around the model call in these two files. Provider failure behavior needs a separate runtime check.
 
-**Proof level:** not_verified
+**Source:** rag.py:7, app.py:11
 
-**Verify:** Run the project test command and save the result.
+**Evidence level:** supported (source analysis; execution not verified)
 
-### Q39. What are the limitations of your project?
+**Check:** Source walkthrough only. Run the sample separately with explicit authorization to check runtime behavior.
 
-**Short viva answer:** Known verification gaps: No direct training-loop evidence found; do not claim this model was trained here.; No dataset files or loaders located in the inspected source.. There may be other runtime limitations not visible in code.
+</details>
 
-**Explain simply:** A limitation is something your current project cannot reliably do yet.
 
-**Evidence:** No repository proof located
+## Architecture
 
-**Proof level:** not_verified
+### GUIDE_INTEGRATIONS. Which outside services does it use?
 
-**Verify:** Write down three issues observed in real usage, not guesses.
+The helper calls OpenAI chat completions with the configured model name. A source call does not prove credentials, network access or model availability.
 
-### Q40. How do you handle performance or high traffic?
+<details>
+<summary>Details</summary>
 
-**Short viva answer:** No load or latency benchmark was run. Architecture alone does not prove scaling ability.
+The helper calls OpenAI chat completions with the configured model name. A source call does not prove credentials, network access or model availability.
 
-**Explain simply:** Can the kitchen handle 100 orders at once? Measure instead of guessing.
+**Source:** rag.py:7
 
-**Evidence:** No repository proof located
+**Evidence level:** supported (source analysis; execution not verified)
 
-**Proof level:** not_verified
+**Check:** Source walkthrough only. Run the sample separately with explicit authorization to check runtime behavior.
 
-**Verify:** Run a small controlled load test and record latency, error rate and resource use.
+</details>
 
 
-## Deployment
+## Quality
 
-### Q41. Where is the project deployed?
+### GUIDE_LIMITS. What are its limitations?
 
-**Short viva answer:** No deployed service was confirmed.
+This sample has no retrieval, embedding store, training pipeline or accuracy measurement. It also lacks custom error handling and a complete runnable setup.
 
-**Explain simply:** Deployment means putting the app on a computer/server where others can open it.
+<details>
+<summary>Details</summary>
 
-**Evidence:** No repository proof located
+This sample has no retrieval, embedding store, training pipeline or accuracy measurement. It also lacks custom error handling and a complete runnable setup.
 
-**Proof level:** not_verified
+**Source:** README.md:3, rag.py:5
 
-**Verify:** Show the real deployed URL, hosting dashboard and production start command.
+**Evidence level:** supported (source analysis; execution not verified)
 
-### Q42. How does a new change reach production?
+**Check:** Source walkthrough only. Run the sample separately with explicit authorization to check runtime behavior.
 
-**Short viva answer:** No confirmed deployment pipeline was executed. Check CI configuration and actual production settings.
-
-**Explain simply:** A deployment pipeline is the delivery route from your laptop to a live website.
-
-**Evidence:** No repository proof located
-
-**Proof level:** not_verified
-
-**Verify:** Walk through an actual commit, build, test and deploy log.
-
-### Q43. What would you improve next?
-
-**Short viva answer:** Prioritize measured limitations, missing tests and unclear architecture before adding unnecessary features.
-
-**Explain simply:** Fix broken doors before building another floor.
-
-**Evidence:** No repository proof located
-
-**Proof level:** not_verified
-
-**Verify:** Pick a real observed limitation and explain how you would verify the fix.
-
-
-## Defense
-
-### Q44. Which part did you personally implement?
-
-**Short viva answer:** Personal contribution cannot be established from repository code or Git history alone.
-
-**Explain simply:** Say what you wrote, what a tool generated, and what you tested. Do not claim someone else’s work.
-
-**Evidence:** No repository proof located
-
-**Proof level:** not_verified
-
-**Verify:** Select two pieces of code you can explain line by line.
-
-### Q45. If you remove the LLM, what still works?
-
-**Short viva answer:** This requires a runtime dependency test; any detected AI SDK only gives a clue.
-
-**Explain simply:** Pretend the AI service is offline. What parts of the app still work?
-
-**Evidence:** rag.py:7
-
-**Proof level:** supported
-
-**Verify:** Disable external AI access in a local test and observe which features fail.
-
-### Q46. Can you change one feature now and show exactly where?
-
-**Short viva answer:** Use the dependency map to locate the responsible function, then explain how it is called and tested.
-
-**Explain simply:** Showing a real small change proves you understand the project better than memorizing a speech.
-
-**Evidence:** app.py:6, rag.py:5
-
-**Proof level:** supported
-
-**Verify:** Pick a small input/label/validation rule and practice modifying it safely.
-
-
-## Code-specific follow-ups
-
-### Q47. Where is endpoint /health implemented, and what does it do?
-
-**Short viva answer:** /health is declared in app.py:5; the likely handler is health. Its full behavior still requires reading the function body.
-
-**Explain simply:** An endpoint is a door. Find the person standing behind that door and ask what happens next.
-
-**Evidence:** app.py:5, app.py:6
-
-**Proof level:** supported
-
-**Verify:** Follow calls inside the handler and verify the real response.
-
-### Q48. Where is endpoint /ask implemented, and what does it do?
-
-**Short viva answer:** /ask is declared in app.py:9; the likely handler is ask. Its full behavior still requires reading the function body.
-
-**Explain simply:** An endpoint is a door. Find the person standing behind that door and ask what happens next.
-
-**Evidence:** app.py:9, app.py:10
-
-**Proof level:** supported
-
-**Verify:** Follow calls inside the handler and verify the real response.
-
-### Q49. Why does app.py import rag.py?
-
-**Short viva answer:** app.py:2 imports rag, which resolves to rag.py. This proves a reference, not that every exported function is called.
-
-**Explain simply:** One file borrows a tool from another file. Point at the borrowing line and find where the tool is actually used.
-
-**Evidence:** app.py:2
-
-**Proof level:** supported
-
-**Verify:** Find the exact call site and show the input and output.
+</details>

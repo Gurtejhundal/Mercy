@@ -135,7 +135,7 @@ class AgentToolsTests(unittest.TestCase):
         self.assertIn(question['answer'],html)
         self.assertNotIn('<canvas',html)
         self.assertNotIn('Planetary Atlas',html)
-        self.assertIn('id="knowledge-svg"',html)
+        self.assertIn('id="guide-reader"',html)
 
     def test_empty_source_is_not_a_fabricated_line_one_citation(self):
         (self.root/'main.py').write_text('')
@@ -175,10 +175,29 @@ class AgentToolsTests(unittest.TestCase):
             apply_review(self.source,self.review,self.root)
         self.assertEqual(self.source.read_bytes(),original)
 
+    def test_guided_submissions_require_a_concise_spoken_answer(self):
+        self.guided()
+        q=self.question('GUIDE_PURPOSE')
+        original=self.source.read_bytes()
+        self.patch([q])
+        with self.assertRaisesRegex(ValueError,'viva_question'):
+            apply_review(self.source,self.review,self.root)
+        self.assertEqual(self.source.read_bytes(),original)
+        q.update(viva_question='What does it do?',viva_answer='word '*46)
+        self.patch([q])
+        with self.assertRaisesRegex(ValueError,'45 words'):
+            apply_review(self.source,self.review,self.root)
+        self.assertEqual(self.source.read_bytes(),original)
+        q['viva_answer']='It returns the helper result.'
+        self.patch([q]);apply_review(self.source,self.review,self.root)
+        self.assertEqual(next_question(self.source,self.root)['progress']['reviewed'],1)
+
     def test_guided_completion_tracks_edits_and_preserves_unknowns_and_missing_topics(self):
         self.guided()
         for q in self.questions:
             q['answer']='Inspected main.py and helper.py only; this fixture does not establish this topic.'
+            q['viva_question']=q['question']
+            q['viva_answer']='The two inspected files do not establish this topic.'
             q['explain_like_im_10']='Two small files do not give enough information for this question.'
             q['verify_next']='Inspect the implementation relevant to '+q['question']
         self.patch(self.questions);apply_review(self.source,self.review,self.root)

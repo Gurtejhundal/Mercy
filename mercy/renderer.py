@@ -29,12 +29,29 @@ def export_markdown(report, questions, output):
     for q in questions:
         if q['category'] != last:
             lines += ['', f'## {q["category"]}', '']; last=q['category']
-        lines += [f'### {q["id"]}. {q["question"]}', '',
-                  f'**Short viva answer:** {q["answer"]}', '',
-                  f'**Explain simply:** {q["explain_like_im_10"]}', '',
-                  f'**Evidence:** {fmt_evidence(q["evidence"])}', '',
-                  f'**Proof level:** {q["status"]}', '']
-        if q.get('verify_next'): lines += [f'**Verify:** {q["verify_next"]}', '']
+        answer = q.get('viva_answer') or (q['answer'] if len(q['answer'].split()) <= 45 else q['explain_like_im_10'])
+        lines += [f"### {q['id']}. {q.get('viva_question', q['question'])}", '', answer, '',
+                  '<details>', '<summary>Details</summary>', '', q['answer'], '',
+                  f"**Source:** {fmt_evidence(q['evidence'])}", '',
+                  f"**Evidence level:** {q['status']} (source analysis; execution not verified)", '']
+        if q['explain_like_im_10'] not in {answer, q['answer']}:
+            lines += [q['explain_like_im_10'], '']
+        if q.get('verify_next'): lines += [f"**Check:** {q['verify_next']}", '']
+        lines += ['</details>', '']
+        if q.get('demonstration'):
+            lines += ['#### Demo', '']
+            for i, step in enumerate(q['demonstration'], 1):
+                lines += [f"{i}. **{step['action']}** {step['expected']} ({fmt_evidence(step['evidence'])})", '']
+        if q.get('flow'):
+            lines += ['#### User flow (source trace)', '']
+            labels = {n['id']:n['label'] for n in q['flow']['nodes']}
+            lines += [f"- {labels[e['source']]} → {labels[e['target']]}" +
+                      (f" ({e['label']})" if e.get('label') else '') +
+                      f" — {fmt_evidence(e['evidence'])}" for e in q['flow']['edges']]
+        for component in q.get('components', []):
+            lines += [f"- **{component['name']}:** {component['description']} ({fmt_evidence(component['evidence'])})"]
+        for directory in q.get('directories', []):
+            lines += [f"- **{directory['path']}/:** {directory['description']} ({fmt_evidence(directory['evidence'])})"]
     Path(output).write_text('\n'.join(lines).rstrip()+'\n', encoding='utf-8')
 
 
@@ -108,8 +125,8 @@ def export_pdf(report, questions, output):
     for q in questions:
         if q['category'] != last:
             story.append(Paragraph(_p(q['category']),st['MercyHeading'])); last=q['category']
-        block=[Paragraph(_p(f"{q['id']} [{q['difficulty']}] {q['question']}"), st['MercyQuestion']),
-             Paragraph('<b>Say this:</b> '+_p(q['answer']),st['MercyBody']),
+        block=[Paragraph(_p(f"{q['id']} {q.get('viva_question', q['question'])}"), st['MercyQuestion']),
+             Paragraph('<b>Say this:</b> '+_p(q.get('viva_answer', q['answer'])),st['MercyBody']),
              Paragraph('<b>In simple words:</b> '+_p(q['explain_like_im_10']),st['MercyBody']),
              Paragraph('Evidence: '+_p(fmt_evidence(q['evidence'])),st['MercyNote'])]
         if q.get('verify_next'):
@@ -126,37 +143,26 @@ def export_pdf(report, questions, output):
     doc.build(story, onFirstPage=footer, onLaterPages=footer)
 
 
-def export_architecture(report, output):
-    """Conservative architecture map: import edges do not imply runtime calls."""
-    def q(s):
-        return str(s).replace('"','\'').replace('[','(').replace(']',')')[:110]
-    paths=sorted({e['source'] for e in report['edges']} | {e['target'] for e in report['edges']})[:36]
-    names={p:f'N{i}' for i,p in enumerate(paths)}
-    lines=[f'# Mercy architecture clues: {report["project"]}', '',
-           '> **Caution:** imports are dependency clues, not verified runtime data flow.', '',
-           '## Local module imports', '', '```mermaid', 'flowchart LR']
-    lines += [f'    {name}["{q(p)}"]' for p,name in names.items()]
-    lines += [f'    {names[e["source"]]} --> {names[e["target"]]}' for e in report['edges']
-              if e['source'] in names and e['target'] in names][:65]
-    if not paths: lines.append('    X["No resolved local imports"]')
-    lines += ['```','', '## Detected routes', '', '| Endpoint | Source |', '|---|---|']
-    for f in report['files']:
-        for route in f['routes']:
-            lines.append(f'| `{route["path"]}` | `{f["path"]}:{route["line"]}` |')
-    if not report['summary']['routes_found']: lines.append('| No route declarations verified | - |')
-    lines += ['', '## Technology hints', '', '| Tech | Evidence |', '|---|---|']
-    for fw, entries in sorted(report['frameworks'].items()):
-        lines.append(f'| {fw} | {fmt_evidence(entries[:3])} |')
-    if not report['frameworks']: lines.append('| Not identified | - |')
-    lines += ['', '## Dataset and model provenance', '']
-    lines += [f'- Data-shaped file candidate: `{d["path"]}` — purpose not verified.' for d in report['datasets']] or ['- No local dataset file confirmed.']
-    lines += ['- Training steps found: '+str(len(report['signals'].get('training',[])))+' (code markers; not proof of a completed run).',
-              '- AI API markers found: '+str(len(report['signals'].get('llm_api',[])))+'.',
-              '- Retrieval markers found: '+str(len(report['signals'].get('rag',[])))+' (not a complete RAG proof).','',
-              '## What to trace manually', '',
-              '1. One user action and the actual frontend call.',
-              '2. The exact API handler and its input/output schema.',
-              '3. The database query or model call, if any.',
-              '4. What happens on failure and how errors reach the user.',
-              '5. Training evidence: data provenance, experiment logs, model weights, and evaluation metrics (if the project trains a model).', '']
-    Path(output).write_text('\n'.join(lines),encoding='utf-8')
+def export_architecture(report, output, questions=()):
+    """Component dependencies remain resolved imports, never runtime calls."""
+    from .presentation import study_aids
+    aids = study_aids(report, list(questions), [])
+    def label(value):
+        return str(value).replace('"', "'").replace('[', '(').replace(']', ')').replace('`', "'").replace('\n', ' ')[:110]
+    components = aids['components']
+    names = {c['id']:f'N{i}' for i,c in enumerate(components)}
+    lines = [f'# Architecture: {report["project"]}', '',
+             '> Source analysis. Arrows aggregate resolved imports, not runtime calls.', '',
+             '```mermaid', 'flowchart LR']
+    lines += [f'    {names[c["id"]]}["{label(c["name"])}"]' for c in components]
+    lines += [f'    {names[e["source"]]} --> {names[e["target"]]}' for e in aids['component_edges']]
+    if not components:
+        lines += ['    X["No reviewed components; add components to the module question"]']
+    lines += ['```', '']
+    for c in components:
+        lines += [f'## {c["name"]}', '', c['description'], '',
+                  f'Source: {fmt_evidence(c["evidence"])}', '']
+    for edge in aids['component_edges']:
+        lines += [f'- `{e["source"]}:{e["line"]}` imports `{e["target"]}`'
+                  for e in edge['imports']]
+    Path(output).write_text('\n'.join(lines).rstrip()+'\n', encoding='utf-8')

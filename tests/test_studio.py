@@ -83,8 +83,8 @@ def test_html_package_data_in_source_tree():
     assert '/* MERCY_ATLAS_PAYLOAD */' in template
     assert '<canvas' not in template
     assert 'drawSphere' not in template
-    assert 'id="knowledge-svg"' in template
-    assert 'id="treemap"' in template
+    assert 'id="guide-reader"' in template
+    assert 'id="folder-list"' in template
     assert 'id="question-list"' in template
 
 

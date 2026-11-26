@@ -52,7 +52,7 @@ def test_cli_generates_html_and_md_by_default(tmp_path):
     assert p.returncode==0,p.stderr
     html=(out/'mercy-studio.html').read_text()
     assert '<canvas' not in html
-    assert 'aria-label="Mind Map"' in html
+    assert 'aria-label="Project Guide"' in html
     assert not (out/'mercy-viva.pdf').exists()
     assert (out/'mercy-architecture.md').exists()
     evidence=json.loads((out/'mercy-evidence.json').read_text())

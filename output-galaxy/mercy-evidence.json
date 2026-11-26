@@ -1,9 +1,14 @@
 {
   "report": {
     "project": "galaxy-demo",
+    "scan_limits": {
+      "max_files": 400,
+      "max_bytes": 1600000
+    },
     "files": [
       {
         "path": "README.md",
+        "sha256": "9324a0be973e55d5a168841b305c5bee90550d06026f1c6a48da5d52ad3d3fde",
         "language": "md",
         "lines": 3,
         "imports": [],
@@ -13,6 +18,7 @@
       },
       {
         "path": "mercy-theme.json",
+        "sha256": "764335731146bc87573f23e769dcb6c2ae6b525daefc4bcfc949c64199c748df",
         "language": "json",
         "lines": 10,
         "imports": [],
@@ -22,6 +28,7 @@
       },
       {
         "path": "infra/settings.py",
+        "sha256": "9e66c188f723ade9a9f9d6185a8ba2f0bfe765d7919914393791bda848f39753",
         "language": "py",
         "lines": 2,
         "imports": [
@@ -38,6 +45,7 @@
       },
       {
         "path": "intelligence/embed.py",
+        "sha256": "d466a10636dca1ed12f894368e15ae1e1dc0a40012207680a08112e266a4ab8a",
         "language": "py",
         "lines": 2,
         "imports": [],
@@ -52,6 +60,7 @@
       },
       {
         "path": "intelligence/pipeline.py",
+        "sha256": "a572a0f5f63584cc54bee495aa53da29cf4db87d5bfc19fd6c1820c37bbc5cb1",
         "language": "py",
         "lines": 4,
         "imports": [
@@ -73,6 +82,7 @@
       },
       {
         "path": "server/main.py",
+        "sha256": "625dd7d4ee4dee39b1a1a9a88fd502bce6c5e1cb7c077df7952bb0414460e3a5",
         "language": "py",
         "lines": 8,
         "imports": [
@@ -109,6 +119,7 @@
       },
       {
         "path": "storage/db.py",
+        "sha256": "64fac5b3f613acc4e0017999ea698cab5441e0ff8d32884956118dd8d17bddf7",
         "language": "py",
         "lines": 2,
         "imports": [],
@@ -123,6 +134,7 @@
       },
       {
         "path": "ui/style.css",
+        "sha256": "93cd22a666efce302e4cebf083b20efefaf9e5b34bcab30d1fc0a7b8c9cc41ba",
         "language": "css",
         "lines": 2,
         "imports": [],
@@ -132,6 +144,7 @@
       },
       {
         "path": "ui/components/App.jsx",
+        "sha256": "a2a0645c211b091ce8417302fba0ff35b45f3a5c2dfa77046e1b261848470d27",
         "language": "jsx",
         "lines": 2,
         "imports": [
@@ -153,6 +166,7 @@
       },
       {
         "path": "ui/components/StatusBadge.jsx",
+        "sha256": "d3ee14ba27362d7ad7d7c378dbda9b3912e01e59fff687adddc1dd86aa82e97e",
         "language": "jsx",
         "lines": 1,
         "imports": [],
@@ -267,707 +281,488 @@
   },
   "questions": [
     {
-      "id": "Q01",
+      "id": "GUIDE_PURPOSE",
       "category": "Start here",
-      "difficulty": "Basic",
-      "question": "What is this project?",
-      "answer": "The repository is called galaxy-demo. The exact business goal must be confirmed from the owner or documentation; the code scan alone does not prove user outcomes.",
-      "explain_like_im_10": "First explain the problem it solves, then who uses it, then what happens when they click a button.",
-      "evidence": [],
-      "status": "not_verified",
-      "verify_next": "Write a one-sentence problem statement and demonstrate the main feature."
-    },
-    {
-      "id": "Q02",
-      "category": "Start here",
-      "difficulty": "Basic",
-      "question": "What is your project tech stack?",
-      "answer": "Found these technology signals: FastAPI. A detected import does not prove a service is configured or used in production.",
-      "explain_like_im_10": "A tech stack is your toolbox: what builds the screen, what handles requests, and where data lives.",
-      "evidence": [
-        {
-          "path": "server/main.py",
-          "line": 1
-        }
-      ],
+      "difficulty": "beginner",
+      "question": "What does this project do?",
+      "answer": "Galaxy Demo is a tiny teaching example for Mercy. It shows source files and imports; it has no connected website-to-server flow, real database or trained model.",
+      "explain_like_im_10": "Galaxy Demo is a tiny teaching example for Mercy. It shows source files and imports; it has no connected website-to-server flow, real database or trained model.",
       "status": "supported",
-      "verify_next": "Verify versions and running services in package manifests and deployment."
-    },
-    {
-      "id": "Q03",
-      "category": "Start here",
-      "difficulty": "Basic",
-      "question": "Show me where the application starts.",
-      "answer": "Likely starting files: server/main.py. Confirm the start command before claiming any one is the actual entry point.",
-      "explain_like_im_10": "An entry point is the front door. It is the first file started when the app runs.",
-      "evidence": [
-        {
-          "path": "server/main.py",
-          "line": 1
-        }
-      ],
-      "status": "supported",
-      "verify_next": "Check README scripts or package.json and run the project."
-    },
-    {
-      "id": "Q04",
-      "category": "Start here",
-      "difficulty": "Basic",
-      "question": "Show the frontend and backend directories.",
-      "answer": "Files include: README.md, mercy-theme.json, infra/settings.py, intelligence/embed.py, intelligence/pipeline.py, server/main.py, storage/db.py, ui/style.css, ui/components/App.jsx. A folder name alone cannot prove which part runs on the server.",
-      "explain_like_im_10": "Frontend is what users see. Backend is what responds to requests and talks to data.",
       "evidence": [
         {
           "path": "README.md",
-          "line": 1
-        },
-        {
-          "path": "mercy-theme.json",
-          "line": 1
-        },
-        {
-          "path": "infra/settings.py",
-          "line": 1
+          "line": 3
         }
       ],
-      "status": "supported",
-      "verify_next": "Trace one UI request to one server handler."
+      "verify_next": "Source walkthrough only. Run the sample separately with explicit authorization to check runtime behavior.",
+      "viva_question": "What does this project do?",
+      "viva_answer": "Galaxy Demo is a tiny teaching example for Mercy. It shows source files and imports; it has no connected website-to-server flow, real database or trained model."
     },
     {
-      "id": "Q05",
+      "id": "GUIDE_ENTRY",
       "category": "Start here",
-      "difficulty": "Basic",
-      "question": "Explain your project workflow from opening the app to getting a result.",
-      "answer": "Observed 1 route declarations and 5 local module links. A full end-to-end workflow is not verified by static analysis alone.",
-      "explain_like_im_10": "Tell the story: user -> screen -> request -> server -> database/model -> answer -> screen.",
-      "evidence": [
-        {
-          "path": "server/main.py",
-          "line": 6
-        }
-      ],
+      "difficulty": "beginner",
+      "question": "How do you start it?",
+      "answer": "The backend application is defined in server/main.py. This sample has no startup script; a runnable setup still needs to be supplied.",
+      "explain_like_im_10": "The backend application is defined in server/main.py. This sample has no startup script; a runnable setup still needs to be supplied.",
       "status": "supported",
-      "verify_next": "Run the app, click the main feature and watch its network requests."
-    },
-    {
-      "id": "Q06",
-      "category": "Architecture",
-      "difficulty": "Basic",
-      "question": "Show your software architecture.",
-      "answer": "Likely technology components are FastAPI. Use the import map and actual route handlers to draw confirmed arrows.",
-      "explain_like_im_10": "Architecture is a map of the rooms in your application and the doors between them.",
       "evidence": [
         {
           "path": "server/main.py",
           "line": 1
         }
       ],
-      "status": "supported",
-      "verify_next": "Trace at least one complete user action and draw only confirmed connections."
+      "verify_next": "Source walkthrough only. Run the sample separately with explicit authorization to check runtime behavior.",
+      "viva_question": "How do you start it?",
+      "viva_answer": "The backend application is defined in server/main.py. This sample has no startup script; a runnable setup still needs to be supplied."
     },
     {
-      "id": "Q07",
+      "id": "GUIDE_DEPENDENCIES",
       "category": "Architecture",
-      "difficulty": "Intermediate",
-      "question": "Which module calls which other module?",
-      "answer": "Local references found: infra/settings.py -> server/main.py; intelligence/pipeline.py -> intelligence/embed.py; server/main.py -> intelligence/pipeline.py; server/main.py -> storage/db.py; ui/components/App.jsx -> ui/components/StatusBadge.jsx",
-      "explain_like_im_10": "An import means one file can use code from another. That is not always a runtime call.",
+      "difficulty": "beginner",
+      "question": "Which tools does it use?",
+      "answer": "The backend uses FastAPI. The interface uses JSX components. The intelligence and storage helpers are simple Python placeholders.",
+      "explain_like_im_10": "The backend uses FastAPI. The interface uses JSX components. The intelligence and storage helpers are simple Python placeholders.",
+      "status": "supported",
       "evidence": [
         {
-          "path": "infra/settings.py",
+          "path": "server/main.py",
           "line": 1
         },
         {
-          "path": "intelligence/pipeline.py",
+          "path": "ui/components/App.jsx",
           "line": 1
         },
-        {
-          "path": "server/main.py",
-          "line": 2
-        }
-      ],
-      "status": "supported",
-      "verify_next": "Follow the imported function in the actual call sites."
-    },
-    {
-      "id": "Q08",
-      "category": "Architecture",
-      "difficulty": "Intermediate",
-      "question": "What are your API endpoints?",
-      "answer": "Found routes: /status in server/main.py",
-      "explain_like_im_10": "An endpoint is a door the frontend knocks on to ask the server for something.",
-      "evidence": [
-        {
-          "path": "server/main.py",
-          "line": 6
-        }
-      ],
-      "status": "supported",
-      "verify_next": "Inspect router registration and use a real HTTP request to verify these routes."
-    },
-    {
-      "id": "Q09",
-      "category": "Architecture",
-      "difficulty": "Intermediate",
-      "question": "What happens when the frontend sends a request?",
-      "answer": "Found HTTP handlers in server/main.py",
-      "explain_like_im_10": "A request is like ordering food: the screen asks, the server prepares, then sends a response.",
-      "evidence": [
-        {
-          "path": "server/main.py",
-          "line": 6
-        }
-      ],
-      "status": "supported",
-      "verify_next": "Open browser DevTools Network and trace one request to the backend."
-    },
-    {
-      "id": "Q10",
-      "category": "Architecture",
-      "difficulty": "Intermediate",
-      "question": "What is the difference between frontend and backend?",
-      "answer": "Frontend builds the screens that people use. Backend handles server-side logic, data and API requests. Your exact code split still requires tracing.",
-      "explain_like_im_10": "Frontend = shop counter; backend = kitchen.",
-      "evidence": [],
-      "status": "not_verified",
-      "verify_next": "Identify two files from each side, if both exist."
-    },
-    {
-      "id": "Q11",
-      "category": "Architecture",
-      "difficulty": "Intermediate",
-      "question": "Where are business rules written?",
-      "answer": "Look for functions that validate inputs, calculate values, or decide outcomes. Static import names cannot prove which functions contain the core rules.",
-      "explain_like_im_10": "Business logic is the rulebook, not the paint on the screen.",
-      "evidence": [
         {
           "path": "intelligence/embed.py",
           "line": 1
-        },
-        {
-          "path": "intelligence/pipeline.py",
-          "line": 3
-        },
-        {
-          "path": "server/main.py",
-          "line": 7
         }
       ],
-      "status": "supported",
-      "verify_next": "Follow one important function from input to return value."
+      "verify_next": "Source walkthrough only. Run the sample separately with explicit authorization to check runtime behavior.",
+      "viva_question": "Which tools does it use?",
+      "viva_answer": "The backend uses FastAPI. The interface uses JSX components. The intelligence and storage helpers are simple Python placeholders."
     },
     {
-      "id": "Q12",
+      "id": "GUIDE_MODULES",
       "category": "Architecture",
-      "difficulty": "Advanced",
-      "question": "What breaks if a service is down?",
-      "answer": "Failure handling and deployed dependencies are not confirmed by static scanning.",
-      "explain_like_im_10": "If the kitchen is closed, the shop should tell the customer instead of crashing.",
-      "evidence": [],
-      "status": "not_verified",
-      "verify_next": "Disconnect the API or database in a test environment and record the result."
-    },
-    {
-      "id": "Q13",
-      "category": "Data",
-      "difficulty": "Basic",
-      "question": "Where is your database?",
-      "answer": "No database connection was proven in the inspected code.",
-      "explain_like_im_10": "A database is the app’s organized notebook. An SDK import is not the same as a running database.",
-      "evidence": [],
-      "status": "not_verified",
-      "verify_next": "Locate connection config, schema, migrations and deployment provider."
-    },
-    {
-      "id": "Q14",
-      "category": "Data",
-      "difficulty": "Intermediate",
-      "question": "Show your database tables or collections.",
-      "answer": "The scanner does not execute migrations or query databases, so it cannot establish the live schema.",
-      "explain_like_im_10": "Tables are like named pages in a notebook; columns are the headings.",
-      "evidence": [],
-      "status": "not_verified",
-      "verify_next": "Open migrations/schema and compare with the actual database."
-    },
-    {
-      "id": "Q15",
-      "category": "Data",
-      "difficulty": "Intermediate",
-      "question": "How does data travel through your system?",
-      "answer": "The scan located 1 routes, 0 data-shaped files and 5 module links. These are clues, not a verified complete data pipeline.",
-      "explain_like_im_10": "Follow one piece of data from where it enters until you see the result.",
-      "evidence": [
-        {
-          "path": "server/main.py",
-          "line": 6
-        }
-      ],
+      "difficulty": "beginner",
+      "question": "What are its main components?",
+      "answer": "There are website components, an API, a placeholder intelligence helper, a storage placeholder and infrastructure settings. The website does not call the API.",
+      "explain_like_im_10": "There are website components, an API, a placeholder intelligence helper, a storage placeholder and infrastructure settings. The website does not call the API.",
       "status": "supported",
-      "verify_next": "Trace and document one real input all the way through."
-    },
-    {
-      "id": "Q16",
-      "category": "Data",
-      "difficulty": "Intermediate",
-      "question": "How do you validate user input?",
-      "answer": "Input validation is not established by a basic repository scan.",
-      "explain_like_im_10": "Validation is checking a form before accepting it, like rejecting an impossible age.",
-      "evidence": [],
-      "status": "not_verified",
-      "verify_next": "Show the exact schema or condition and test invalid input."
-    },
-    {
-      "id": "Q17",
-      "category": "Data",
-      "difficulty": "Intermediate",
-      "question": "How do you handle errors and bad requests?",
-      "answer": "Error handling must be checked in actual route handlers and through tests.",
-      "explain_like_im_10": "When something fails, the program should say what went wrong instead of dying.",
-      "evidence": [],
-      "status": "not_verified",
-      "verify_next": "Try missing fields, invalid IDs and unavailable services."
-    },
-    {
-      "id": "Q18",
-      "category": "Data",
-      "difficulty": "Advanced",
-      "question": "How do you prevent SQL injection?",
-      "answer": "The audit does not certify that queries are parameterized or safe.",
-      "explain_like_im_10": "Never glue untrusted user text into a database command.",
-      "evidence": [],
-      "status": "not_verified",
-      "verify_next": "Inspect query construction and verify parameterized queries or safe ORM calls."
-    },
-    {
-      "id": "Q19",
-      "category": "AI/ML",
-      "difficulty": "Basic",
-      "question": "Did you train the model yourself?",
-      "answer": "I did not find direct model-training steps in the inspected code. Do not claim the model was trained here.",
-      "explain_like_im_10": "Calling an AI API is like using someone else’s already-trained calculator. Training means teaching a model with data.",
-      "evidence": [],
-      "status": "not_verified",
-      "verify_next": "Find actual training script, data split, trained weights and run logs if claiming training."
-    },
-    {
-      "id": "Q20",
-      "category": "AI/ML",
-      "difficulty": "Basic",
-      "question": "Where did you get the dataset? Show it.",
-      "answer": "No local dataset file was found in the inspected files. It might be remote, generated or absent; verify before answering.",
-      "explain_like_im_10": "A dataset is examples a model learns from or looks things up in. One CSV file does not automatically mean training.",
-      "evidence": [],
-      "status": "not_verified",
-      "verify_next": "Identify the precise dataset source, license, sample rows and where it is loaded."
-    },
-    {
-      "id": "Q21",
-      "category": "AI/ML",
-      "difficulty": "Intermediate",
-      "question": "Where is the model saved?",
-      "answer": "Static inspection did not verify a trained model checkpoint or the hosted model behind any API.",
-      "explain_like_im_10": "A model file is like a saved brain; an API can use a brain hosted on someone else’s computer.",
-      "evidence": [],
-      "status": "not_verified",
-      "verify_next": "Find a real model checkpoint, model name or provider configuration."
-    },
-    {
-      "id": "Q22",
-      "category": "AI/ML",
-      "difficulty": "Basic",
-      "question": "What is an AI model?",
-      "answer": "An AI model is a program whose behaviour is shaped by learned patterns or parameters, rather than only hard-coded rules.",
-      "explain_like_im_10": "Think of a model like a student who learned from many examples.",
-      "evidence": [],
-      "status": "not_verified",
-      "verify_next": "Ask the project owner and check README, deployment, or external services."
-    },
-    {
-      "id": "Q23",
-      "category": "AI/ML",
-      "difficulty": "Basic",
-      "question": "Are you using an AI API or your own ML model?",
-      "answer": "No clear AI API call was identified. This does not prove there is no model: look for wrappers and external services.",
-      "explain_like_im_10": "API = you send a question to someone else’s service. Local model = the model runs in your own system.",
-      "evidence": [],
-      "status": "not_verified",
-      "verify_next": "Check model initialization and where inference actually executes."
-    },
-    {
-      "id": "Q24",
-      "category": "AI/ML",
-      "difficulty": "Intermediate",
-      "question": "What is inference?",
-      "answer": "Inference means using an already-prepared model to produce a prediction or response.",
-      "explain_like_im_10": "Training is studying; inference is answering the exam.",
-      "evidence": [],
-      "status": "not_verified",
-      "verify_next": "Ask the project owner and check README, deployment, or external services."
-    },
-    {
-      "id": "Q25",
-      "category": "AI/ML",
-      "difficulty": "Intermediate",
-      "question": "What is RAG? Does your project use it?",
-      "answer": "RAG was not established from this repository scan. Do not claim RAG simply because an LLM is present.",
-      "explain_like_im_10": "RAG = look up relevant notes first, then ask an AI to answer using those notes.",
-      "evidence": [],
-      "status": "not_verified",
-      "verify_next": "Show a retrieval step AND where its results enter the model prompt."
-    },
-    {
-      "id": "Q26",
-      "category": "AI/ML",
-      "difficulty": "Intermediate",
-      "question": "Explain a RAG pipeline step by step.",
-      "answer": "A typical RAG flow is: load documents -> split text -> create embeddings -> store vectors -> retrieve useful chunks -> include chunks in a prompt -> generate an answer. Actual steps depend on the project.",
-      "explain_like_im_10": "It is an open-book test: find pages, read them, then answer. Do not call this your implemented flow until you prove each step.",
-      "evidence": [
-        {
-          "path": "intelligence/embed.py",
-          "line": 2
-        }
-      ],
-      "status": "supported",
-      "verify_next": "Locate the exact implementation of each stage or mark it not implemented."
-    },
-    {
-      "id": "Q27",
-      "category": "AI/ML",
-      "difficulty": "Intermediate",
-      "question": "What are embeddings?",
-      "answer": "Embedding-related code markers exist; check where vectors are generated and stored.",
-      "explain_like_im_10": "An embedding turns text into a list of numbers so similar meanings can be compared.",
-      "evidence": [
-        {
-          "path": "intelligence/embed.py",
-          "line": 2
-        }
-      ],
-      "status": "supported",
-      "verify_next": "Find the exact embedding model and vector dimension if used."
-    },
-    {
-      "id": "Q28",
-      "category": "AI/ML",
-      "difficulty": "Intermediate",
-      "question": "What is a vector database? Do you use one?",
-      "answer": "No vector store was proven by this scan.",
-      "explain_like_im_10": "A vector database is a special library shelf that finds meaning-similar notes.",
-      "evidence": [],
-      "status": "not_verified",
-      "verify_next": "Name the actual store, collection, persistence and retrieval call."
-    },
-    {
-      "id": "Q29",
-      "category": "AI/ML",
-      "difficulty": "Intermediate",
-      "question": "What is chunking and why use it?",
-      "answer": "No explicit document chunking step was confirmed.",
-      "explain_like_im_10": "Chunking means cutting a long book into smaller pages, so finding the right part is easier.",
-      "evidence": [],
-      "status": "not_verified",
-      "verify_next": "Show chunk size, overlap, and why these values were chosen."
-    },
-    {
-      "id": "Q30",
-      "category": "AI/ML",
-      "difficulty": "Advanced",
-      "question": "How do you reduce hallucinations in the AI answer?",
-      "answer": "No reliability evaluation was verified. RAG and citations can help grounding but do not guarantee correct answers.",
-      "explain_like_im_10": "A hallucination is when AI confidently makes something up. Make it show the source.",
-      "evidence": [],
-      "status": "not_verified",
-      "verify_next": "Test a set of answerable and unanswerable questions and measure grounded correctness."
-    },
-    {
-      "id": "Q31",
-      "category": "AI/ML",
-      "difficulty": "Advanced",
-      "question": "How do you evaluate model accuracy?",
-      "answer": "No evaluation metrics were located. Do not invent accuracy percentages.",
-      "explain_like_im_10": "Accuracy asks: out of many known-answer questions, how many answers were right?",
-      "evidence": [],
-      "status": "not_verified",
-      "verify_next": "Provide a held-out test set, metric definition and reproducible result."
-    },
-    {
-      "id": "Q32",
-      "category": "AI/ML",
-      "difficulty": "Advanced",
-      "question": "What is overfitting?",
-      "answer": "Overfitting happens when a model learns the training examples too specifically and performs worse on new examples.",
-      "explain_like_im_10": "Like memorizing exam answers but not understanding the subject.",
-      "evidence": [],
-      "status": "not_verified",
-      "verify_next": "Ask the project owner and check README, deployment, or external services."
-    },
-    {
-      "id": "Q33",
-      "category": "AI/ML",
-      "difficulty": "Advanced",
-      "question": "What is fine-tuning versus prompting?",
-      "answer": "Prompting changes the instructions sent to a model. Fine-tuning updates model parameters through training. Neither is confirmed without evidence.",
-      "explain_like_im_10": "Prompting tells the student what to do; fine-tuning gives the student extra lessons.",
-      "evidence": [],
-      "status": "not_verified",
-      "verify_next": "Ask the project owner and check README, deployment, or external services."
-    },
-    {
-      "id": "Q34",
-      "category": "Security",
-      "difficulty": "Intermediate",
-      "question": "Where is authentication implemented?",
-      "answer": "No clear authentication implementation was confirmed.",
-      "explain_like_im_10": "Authentication checks who you are. Authorization checks what you may access.",
-      "evidence": [],
-      "status": "not_verified",
-      "verify_next": "Show login, token/session validation and a protected endpoint."
-    },
-    {
-      "id": "Q35",
-      "category": "Security",
-      "difficulty": "Intermediate",
-      "question": "Where are secrets and API keys stored?",
-      "answer": "No environment variable names detected in scanned source; secrets were not read.",
-      "explain_like_im_10": "Secrets are house keys. Do not put them in a public repository or a viva PDF.",
-      "evidence": [],
-      "status": "not_verified",
-      "verify_next": "Verify secrets are server-side and not checked into version control."
-    },
-    {
-      "id": "Q36",
-      "category": "Security",
-      "difficulty": "Advanced",
-      "question": "Can one user read another user’s data?",
-      "answer": "Object-level authorization cannot be proven without tracing identity checks at each data-access route.",
-      "explain_like_im_10": "Knowing the house address does not mean someone should get the key.",
-      "evidence": [],
-      "status": "not_verified",
-      "verify_next": "Test access to another user’s ID in a controlled test environment."
-    },
-    {
-      "id": "Q37",
-      "category": "Security",
-      "difficulty": "Advanced",
-      "question": "What happens if an attacker sends malicious input?",
-      "answer": "No penetration test was run by Mercy. Treat security as unverified until tested.",
-      "explain_like_im_10": "Bad input should be rejected or treated as plain text, not followed as instructions.",
-      "evidence": [],
-      "status": "not_verified",
-      "verify_next": "Review input boundaries and test with safe invalid inputs."
-    },
-    {
-      "id": "Q38",
-      "category": "Quality",
-      "difficulty": "Basic",
-      "question": "How many tests does this project have?",
-      "answer": "Found 0 files with test-like names. This is not a test pass result or a coverage percentage.",
-      "explain_like_im_10": "Tests are practice questions for your software. Counting them does not tell you if it passed.",
-      "evidence": [],
-      "status": "not_verified",
-      "verify_next": "Run the project test command and save the result."
-    },
-    {
-      "id": "Q39",
-      "category": "Quality",
-      "difficulty": "Intermediate",
-      "question": "What are the limitations of your project?",
-      "answer": "Known verification gaps: No direct training-loop evidence found; do not claim this model was trained here.; No dataset files or loaders located in the inspected source.. There may be other runtime limitations not visible in code.",
-      "explain_like_im_10": "A limitation is something your current project cannot reliably do yet.",
-      "evidence": [],
-      "status": "not_verified",
-      "verify_next": "Write down three issues observed in real usage, not guesses."
-    },
-    {
-      "id": "Q40",
-      "category": "Quality",
-      "difficulty": "Intermediate",
-      "question": "How do you handle performance or high traffic?",
-      "answer": "No load or latency benchmark was run. Architecture alone does not prove scaling ability.",
-      "explain_like_im_10": "Can the kitchen handle 100 orders at once? Measure instead of guessing.",
-      "evidence": [],
-      "status": "not_verified",
-      "verify_next": "Run a small controlled load test and record latency, error rate and resource use."
-    },
-    {
-      "id": "Q41",
-      "category": "Deployment",
-      "difficulty": "Basic",
-      "question": "Where is the project deployed?",
-      "answer": "No deployed service was confirmed.",
-      "explain_like_im_10": "Deployment means putting the app on a computer/server where others can open it.",
-      "evidence": [],
-      "status": "not_verified",
-      "verify_next": "Show the real deployed URL, hosting dashboard and production start command."
-    },
-    {
-      "id": "Q42",
-      "category": "Deployment",
-      "difficulty": "Intermediate",
-      "question": "How does a new change reach production?",
-      "answer": "No confirmed deployment pipeline was executed. Check CI configuration and actual production settings.",
-      "explain_like_im_10": "A deployment pipeline is the delivery route from your laptop to a live website.",
-      "evidence": [],
-      "status": "not_verified",
-      "verify_next": "Walk through an actual commit, build, test and deploy log."
-    },
-    {
-      "id": "Q43",
-      "category": "Deployment",
-      "difficulty": "Advanced",
-      "question": "What would you improve next?",
-      "answer": "Prioritize measured limitations, missing tests and unclear architecture before adding unnecessary features.",
-      "explain_like_im_10": "Fix broken doors before building another floor.",
-      "evidence": [],
-      "status": "not_verified",
-      "verify_next": "Pick a real observed limitation and explain how you would verify the fix."
-    },
-    {
-      "id": "Q44",
-      "category": "Defense",
-      "difficulty": "Intermediate",
-      "question": "Which part did you personally implement?",
-      "answer": "Personal contribution cannot be established from repository code or Git history alone.",
-      "explain_like_im_10": "Say what you wrote, what a tool generated, and what you tested. Do not claim someone else’s work.",
-      "evidence": [],
-      "status": "not_verified",
-      "verify_next": "Select two pieces of code you can explain line by line."
-    },
-    {
-      "id": "Q45",
-      "category": "Defense",
-      "difficulty": "Advanced",
-      "question": "If you remove the LLM, what still works?",
-      "answer": "This requires a runtime dependency test; any detected AI SDK only gives a clue.",
-      "explain_like_im_10": "Pretend the AI service is offline. What parts of the app still work?",
-      "evidence": [],
-      "status": "not_verified",
-      "verify_next": "Disable external AI access in a local test and observe which features fail."
-    },
-    {
-      "id": "Q46",
-      "category": "Defense",
-      "difficulty": "Advanced",
-      "question": "Can you change one feature now and show exactly where?",
-      "answer": "Use the dependency map to locate the responsible function, then explain how it is called and tested.",
-      "explain_like_im_10": "Showing a real small change proves you understand the project better than memorizing a speech.",
-      "evidence": [
-        {
-          "path": "intelligence/embed.py",
-          "line": 1
-        },
-        {
-          "path": "intelligence/pipeline.py",
-          "line": 3
-        },
-        {
-          "path": "server/main.py",
-          "line": 7
-        }
-      ],
-      "status": "supported",
-      "verify_next": "Pick a small input/label/validation rule and practice modifying it safely."
-    },
-    {
-      "id": "Q47",
-      "category": "Code-specific follow-ups",
-      "difficulty": "Intermediate",
-      "question": "Where is endpoint /status implemented, and what does it do?",
-      "answer": "/status is declared in server/main.py:6; the likely handler is status. Its full behavior still requires reading the function body.",
-      "explain_like_im_10": "An endpoint is a door. Find the person standing behind that door and ask what happens next.",
-      "evidence": [
-        {
-          "path": "server/main.py",
-          "line": 6
-        },
-        {
-          "path": "server/main.py",
-          "line": 7
-        }
-      ],
-      "status": "supported",
-      "verify_next": "Follow calls inside the handler and verify the real response."
-    },
-    {
-      "id": "Q48",
-      "category": "Code-specific follow-ups",
-      "difficulty": "Intermediate",
-      "question": "Why does infra/settings.py import server/main.py?",
-      "answer": "infra/settings.py:1 imports server.main, which resolves to server/main.py. This proves a reference, not that every exported function is called.",
-      "explain_like_im_10": "One file borrows a tool from another file. Point at the borrowing line and find where the tool is actually used.",
-      "evidence": [
-        {
-          "path": "infra/settings.py",
-          "line": 1
-        }
-      ],
-      "status": "supported",
-      "verify_next": "Find the exact call site and show the input and output."
-    },
-    {
-      "id": "Q49",
-      "category": "Code-specific follow-ups",
-      "difficulty": "Intermediate",
-      "question": "Why does intelligence/pipeline.py import intelligence/embed.py?",
-      "answer": "intelligence/pipeline.py:1 imports intelligence.embed, which resolves to intelligence/embed.py. This proves a reference, not that every exported function is called.",
-      "explain_like_im_10": "One file borrows a tool from another file. Point at the borrowing line and find where the tool is actually used.",
-      "evidence": [
-        {
-          "path": "intelligence/pipeline.py",
-          "line": 1
-        }
-      ],
-      "status": "supported",
-      "verify_next": "Find the exact call site and show the input and output."
-    },
-    {
-      "id": "Q50",
-      "category": "Code-specific follow-ups",
-      "difficulty": "Intermediate",
-      "question": "Why does server/main.py import intelligence/pipeline.py?",
-      "answer": "server/main.py:2 imports intelligence.pipeline, which resolves to intelligence/pipeline.py. This proves a reference, not that every exported function is called.",
-      "explain_like_im_10": "One file borrows a tool from another file. Point at the borrowing line and find where the tool is actually used.",
-      "evidence": [
-        {
-          "path": "server/main.py",
-          "line": 2
-        }
-      ],
-      "status": "supported",
-      "verify_next": "Find the exact call site and show the input and output."
-    },
-    {
-      "id": "Q51",
-      "category": "Code-specific follow-ups",
-      "difficulty": "Intermediate",
-      "question": "Why does server/main.py import storage/db.py?",
-      "answer": "server/main.py:3 imports storage.db, which resolves to storage/db.py. This proves a reference, not that every exported function is called.",
-      "explain_like_im_10": "One file borrows a tool from another file. Point at the borrowing line and find where the tool is actually used.",
-      "evidence": [
-        {
-          "path": "server/main.py",
-          "line": 3
-        }
-      ],
-      "status": "supported",
-      "verify_next": "Find the exact call site and show the input and output."
-    },
-    {
-      "id": "Q52",
-      "category": "Code-specific follow-ups",
-      "difficulty": "Intermediate",
-      "question": "Why does ui/components/App.jsx import ui/components/StatusBadge.jsx?",
-      "answer": "ui/components/App.jsx:1 imports ./StatusBadge, which resolves to ui/components/StatusBadge.jsx. This proves a reference, not that every exported function is called.",
-      "explain_like_im_10": "One file borrows a tool from another file. Point at the borrowing line and find where the tool is actually used.",
       "evidence": [
         {
           "path": "ui/components/App.jsx",
           "line": 1
+        },
+        {
+          "path": "server/main.py",
+          "line": 1
+        },
+        {
+          "path": "infra/settings.py",
+          "line": 1
         }
       ],
+      "verify_next": "Source walkthrough only. Run the sample separately with explicit authorization to check runtime behavior.",
+      "viva_question": "What are its main components?",
+      "viva_answer": "There are website components, an API, a placeholder intelligence helper, a storage placeholder and infrastructure settings. The website does not call the API.",
+      "components": [
+        {
+          "id": "ui",
+          "name": "Website",
+          "description": "Displays a heading and demo badge.",
+          "files": [
+            "ui/components/App.jsx",
+            "ui/components/StatusBadge.jsx",
+            "ui/style.css"
+          ],
+          "evidence": [
+            {
+              "path": "ui/components/App.jsx",
+              "line": 1
+            }
+          ]
+        },
+        {
+          "id": "api",
+          "name": "API",
+          "description": "Returns the status JSON.",
+          "files": [
+            "server/main.py"
+          ],
+          "evidence": [
+            {
+              "path": "server/main.py",
+              "line": 6
+            }
+          ]
+        },
+        {
+          "id": "intelligence",
+          "name": "Demo intelligence",
+          "description": "Returns a placeholder vector, not a model prediction.",
+          "files": [
+            "intelligence/pipeline.py",
+            "intelligence/embed.py"
+          ],
+          "evidence": [
+            {
+              "path": "intelligence/pipeline.py",
+              "line": 3
+            }
+          ]
+        },
+        {
+          "id": "storage",
+          "name": "Storage placeholder",
+          "description": "Returns zero without a database.",
+          "files": [
+            "storage/db.py"
+          ],
+          "evidence": [
+            {
+              "path": "storage/db.py",
+              "line": 1
+            }
+          ]
+        },
+        {
+          "id": "infra",
+          "name": "Settings",
+          "description": "Imports the API application and marks the example as a demo.",
+          "files": [
+            "infra/settings.py"
+          ],
+          "evidence": [
+            {
+              "path": "infra/settings.py",
+              "line": 1
+            }
+          ]
+        }
+      ],
+      "directories": [
+        {
+          "path": "ui",
+          "description": "Website components and styles.",
+          "evidence": [
+            {
+              "path": "ui/components/App.jsx",
+              "line": 1
+            }
+          ]
+        },
+        {
+          "path": "ui/components",
+          "description": "Small reusable parts of the website.",
+          "evidence": [
+            {
+              "path": "ui/components/StatusBadge.jsx",
+              "line": 1
+            }
+          ]
+        },
+        {
+          "path": "server",
+          "description": "The status API.",
+          "evidence": [
+            {
+              "path": "server/main.py",
+              "line": 1
+            }
+          ]
+        },
+        {
+          "path": "storage",
+          "description": "A placeholder for data access.",
+          "evidence": [
+            {
+              "path": "storage/db.py",
+              "line": 1
+            }
+          ]
+        },
+        {
+          "path": "intelligence",
+          "description": "Educational answer and vector helpers.",
+          "evidence": [
+            {
+              "path": "intelligence/pipeline.py",
+              "line": 1
+            }
+          ]
+        },
+        {
+          "path": "infra",
+          "description": "Demo application settings.",
+          "evidence": [
+            {
+              "path": "infra/settings.py",
+              "line": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "GUIDE_WORKFLOW",
+      "category": "Architecture",
+      "difficulty": "beginner",
+      "question": "How does a user get a result?",
+      "answer": "Request /status from the API. It reads a placeholder count, calls the demo answer helper and returns both in JSON. The website is a separate display-only component.",
+      "explain_like_im_10": "Request /status from the API. It reads a placeholder count, calls the demo answer helper and returns both in JSON. The website is a separate display-only component.",
       "status": "supported",
-      "verify_next": "Find the exact call site and show the input and output."
+      "evidence": [
+        {
+          "path": "server/main.py",
+          "line": 6
+        },
+        {
+          "path": "ui/components/App.jsx",
+          "line": 2
+        }
+      ],
+      "verify_next": "Source walkthrough only. Run the sample separately with explicit authorization to check runtime behavior.",
+      "viva_question": "How does a user get a result?",
+      "viva_answer": "Request /status from the API. It reads a placeholder count, calls the demo answer helper and returns both in JSON. The website is a separate display-only component.",
+      "flow": {
+        "nodes": [
+          {
+            "id": "start",
+            "label": "Open an API client",
+            "kind": "start",
+            "evidence": [
+              {
+                "path": "server/main.py",
+                "line": 6
+              }
+            ]
+          },
+          {
+            "id": "request",
+            "label": "Request /status",
+            "kind": "action",
+            "evidence": [
+              {
+                "path": "server/main.py",
+                "line": 6
+              }
+            ]
+          },
+          {
+            "id": "read",
+            "label": "Read count and demo answer",
+            "kind": "action",
+            "evidence": [
+              {
+                "path": "server/main.py",
+                "line": 6
+              }
+            ]
+          },
+          {
+            "id": "end",
+            "label": "Finish",
+            "kind": "end",
+            "evidence": [
+              {
+                "path": "server/main.py",
+                "line": 6
+              }
+            ]
+          }
+        ],
+        "edges": [
+          {
+            "source": "start",
+            "target": "request",
+            "evidence": [
+              {
+                "path": "server/main.py",
+                "line": 6
+              }
+            ]
+          },
+          {
+            "source": "request",
+            "target": "read",
+            "evidence": [
+              {
+                "path": "server/main.py",
+                "line": 6
+              }
+            ]
+          },
+          {
+            "source": "read",
+            "target": "end",
+            "evidence": [
+              {
+                "path": "server/main.py",
+                "line": 6
+              }
+            ]
+          }
+        ]
+      },
+      "demonstration": [
+        {
+          "action": "Request /status from the running sample API.",
+          "expected": "The handler returns a count and a demo answer object.",
+          "evidence": [
+            {
+              "path": "server/main.py",
+              "line": 6
+            }
+          ]
+        },
+        {
+          "action": "Inspect the returned values.",
+          "expected": "The count is zero. The vector represents the length of “hello”, not a real embedding.",
+          "evidence": [
+            {
+              "path": "storage/db.py",
+              "line": 2
+            },
+            {
+              "path": "intelligence/embed.py",
+              "line": 2
+            },
+            {
+              "path": "server/main.py",
+              "line": 8
+            }
+          ]
+        },
+        {
+          "action": "Inspect the website component.",
+          "expected": "It displays a demo badge. It does not request /status.",
+          "evidence": [
+            {
+              "path": "ui/components/App.jsx",
+              "line": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "GUIDE_VALIDATION",
+      "category": "Data",
+      "difficulty": "beginner",
+      "question": "How are inputs checked?",
+      "answer": "The status handler accepts no user fields. It sends the fixed text “hello” to the demo helper, so this route does not demonstrate form validation.",
+      "explain_like_im_10": "The status handler accepts no user fields. It sends the fixed text “hello” to the demo helper, so this route does not demonstrate form validation.",
+      "status": "supported",
+      "evidence": [
+        {
+          "path": "server/main.py",
+          "line": 7
+        }
+      ],
+      "verify_next": "Source walkthrough only. Run the sample separately with explicit authorization to check runtime behavior.",
+      "viva_question": "How are inputs checked?",
+      "viva_answer": "The status handler accepts no user fields. It sends the fixed text “hello” to the demo helper, so this route does not demonstrate form validation."
+    },
+    {
+      "id": "GUIDE_STORAGE",
+      "category": "Data",
+      "difficulty": "beginner",
+      "question": "Where is the data stored?",
+      "answer": "The storage helper returns zero. It does not connect to a database or save records.",
+      "explain_like_im_10": "The storage helper returns zero. It does not connect to a database or save records.",
+      "status": "supported",
+      "evidence": [
+        {
+          "path": "storage/db.py",
+          "line": 1
+        }
+      ],
+      "verify_next": "Source walkthrough only. Run the sample separately with explicit authorization to check runtime behavior.",
+      "viva_question": "Where is the data stored?",
+      "viva_answer": "The storage helper returns zero. It does not connect to a database or save records."
+    },
+    {
+      "id": "GUIDE_ERRORS",
+      "category": "Quality",
+      "difficulty": "beginner",
+      "question": "What happens if something fails?",
+      "answer": "The inspected status handler has no custom error recovery. This example does not show retries or a user-facing error screen.",
+      "explain_like_im_10": "The inspected status handler has no custom error recovery. This example does not show retries or a user-facing error screen.",
+      "status": "supported",
+      "evidence": [
+        {
+          "path": "server/main.py",
+          "line": 6
+        }
+      ],
+      "verify_next": "Source walkthrough only. Run the sample separately with explicit authorization to check runtime behavior.",
+      "viva_question": "What happens if something fails?",
+      "viva_answer": "The inspected status handler has no custom error recovery. This example does not show retries or a user-facing error screen."
+    },
+    {
+      "id": "GUIDE_INTEGRATIONS",
+      "category": "Architecture",
+      "difficulty": "beginner",
+      "question": "Which outside services does it use?",
+      "answer": "The inspected request path calls local Python helpers. It does not call an AI provider or another remote service.",
+      "explain_like_im_10": "The inspected request path calls local Python helpers. It does not call an AI provider or another remote service.",
+      "status": "supported",
+      "evidence": [
+        {
+          "path": "server/main.py",
+          "line": 7
+        },
+        {
+          "path": "intelligence/pipeline.py",
+          "line": 3
+        }
+      ],
+      "verify_next": "Source walkthrough only. Run the sample separately with explicit authorization to check runtime behavior.",
+      "viva_question": "Which outside services does it use?",
+      "viva_answer": "The inspected request path calls local Python helpers. It does not call an AI provider or another remote service."
+    },
+    {
+      "id": "GUIDE_LIMITS",
+      "category": "Quality",
+      "difficulty": "beginner",
+      "question": "What are its limitations?",
+      "answer": "The embedding is just the text length, the stored count is always zero, and the interface is not connected to the API. This is a source example, not a complete application.",
+      "explain_like_im_10": "The embedding is just the text length, the stored count is always zero, and the interface is not connected to the API. This is a source example, not a complete application.",
+      "status": "supported",
+      "evidence": [
+        {
+          "path": "intelligence/embed.py",
+          "line": 2
+        },
+        {
+          "path": "storage/db.py",
+          "line": 2
+        },
+        {
+          "path": "README.md",
+          "line": 3
+        }
+      ],
+      "verify_next": "Source walkthrough only. Run the sample separately with explicit authorization to check runtime behavior.",
+      "viva_question": "What are its limitations?",
+      "viva_answer": "The embedding is just the text length, the stored count is always zero, and the interface is not connected to the API. This is a source example, not a complete application."
     }
-  ]
+  ],
+  "workflow": {
+    "kind": "guided-v1",
+    "reviewed": {
+      "GUIDE_PURPOSE": "7f20aa76eca7c317a09a2746f7cdb3521a79a92a0d25557df1385ca4604df666",
+      "GUIDE_ENTRY": "039de83777cdd997b3f65f173f31961e0a2d20c359126e15c8887b3b38ad1ba5",
+      "GUIDE_DEPENDENCIES": "e5c89340e6b7772ddacc95fb8ed2bf62a9f3bad7a5b6ebe4b67e4cc4660124b8",
+      "GUIDE_MODULES": "38685a7149f1c5cae78da5b436031385d2a5f0517e646ab59ce64d1ab64a4747",
+      "GUIDE_WORKFLOW": "4fe2798706edcb1a05f7091f207818d0fa6d5e2c34efac5e43ddbb1b08f790cf",
+      "GUIDE_VALIDATION": "0a9ea9de561aef67aa26b05c5ccc92d087bb9167af76fd3f5c96b31cf18a884d",
+      "GUIDE_STORAGE": "bc252667ae665adb53ca0ec27a3a3454717cdcc4448cf40ba8c3a6421bca00e9",
+      "GUIDE_ERRORS": "4e56d33177cd16adf036a1bdcf1bfe0f4d6fbc552f3f40e2df4f4d410418d2fd",
+      "GUIDE_INTEGRATIONS": "2473c040a0d28b546b3716632612ac390dad998d6f399e3646f7f110464fabc5",
+      "GUIDE_LIMITS": "35300a47f612033dbbd222361e63ab65ea27bf97dcd5d74572eff17a5ddee4e2"
+    }
+  }
 }

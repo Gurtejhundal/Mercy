@@ -10,6 +10,7 @@ import stat
 import tempfile
 
 from .scanner import _safe_line, scan_project
+from .presentation import validate_presentation, study_aids
 from .questions import GUIDE_TOPICS, make_guided_questions
 
 
@@ -111,8 +112,11 @@ def validate_questions(report: dict, questions: list[dict]) -> None:
             path, line = ref.get('path'), ref.get('line')
             if not isinstance(path, str) or path not in known or type(line) is not int or not 1 <= line <= known[path]:
                 raise ValueError('Evidence reference not present in scanned files: '+repr(ref))
+        validate_presentation(q, known)
         if q['status'] == 'supported' and not q['evidence']:
             raise ValueError('Supported claims require a source reference: '+q['id'])
+
+    study_aids(report, questions, [])
 
 
 def _current_report(report: dict, project: str | Path) -> dict:
@@ -188,6 +192,13 @@ def next_question(source: str | Path, project: str | Path) -> dict:
     result.update({'review_template':{'questions':[question]},
                    'candidate_files':[{'path':f['path'],'lines':f['lines']} for f in candidates],
                    'source_excerpts':excerpts,
+                   'answer_contract':{'viva_question':'At most 14 words; ask one thing.', 'viva_answer':'At most 45 words, 1–2 sentences, simple spoken language. Keep necessary conditions. Put depth in answer.', 'study_aids':'On MODULES add cited components and directories; on WORKFLOW add cited flow and demonstration. See docs/STUDY_FORMAT.md. Never derive user flow from imports.'},
+                   'study_aid_fields':{
+                       'evidence':'Every aid, flow node and edge needs evidence: [{path: indexed relative file, line: integer}]. Source trace only, never claim execution.',
+                       'components':'Array of {id, name (6 words), description (25 words), files: [indexed paths], evidence}. IDs unique across report; a file belongs to one component.',
+                       'directories':'Array of {path: indexed directory, description (25 words), evidence}. Explain what is inside in plain words.',
+                       'flow':'Object {nodes: [{id, label (12 words), kind: start|action|decision|end, evidence}], edges: [{source: node ID, target: node ID, label: branch text, evidence}]}. All nodes reachable from start and able to reach end; decisions need at least two named branches.',
+                       'demonstration':'Array of {action (20 words), expected (30 words), evidence}. User steps and expected outcomes from source, not fabricated screenshots or completed runs. Omit unknown aids.'},
                    'action':'Inspect relevant code, using context for missing bodies/callers. Replace the answer and simple explanation. Cite inspected lines; keep runtime claims not_verified. Explain inspected scope and a concrete next check for unknowns. Submit the complete record with review, then call next again. Candidates are lexical hints, not proof of relevance.'})
     return result
 
@@ -210,6 +221,8 @@ def apply_review(source: str | Path, review: str | Path, project: str | Path) ->
         for q in patch['questions']:
             if q['answer'] == 'Not reviewed. Inspect source for this topic.' or q['explain_like_im_10'] == 'Not reviewed. Add a plain-language explanation.':
                 raise ValueError('Replace both starter explanations before submitting: '+q['id'])
+            if not q.get('viva_answer') or not q.get('viva_question'):
+                raise ValueError('Guided review needs viva_question (14 words) and viva_answer (45 words): '+q['id'])
             if q['status']=='not_verified' and not q.get('verify_next','').strip():
                 raise ValueError('Unverified guided answers need a concrete next check: '+q['id'])
             data['workflow']['reviewed'][q['id']] = _question_digest(q)
