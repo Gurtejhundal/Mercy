@@ -30,6 +30,23 @@ def validate_presentation(question: dict, known: dict[str, int]) -> None:
         if not isinstance(value, str) or not re.fullmatch(r'[A-Za-z0-9_-]{1,64}', value):
             raise ValueError('Study aid IDs need letters, digits, underscores or hyphens.')
 
+    def resources(value):
+        for resource in records(value, 'resources', 6):
+            text(resource.get('label'), 'Resource label', 8)
+            url = resource.get('url')
+            if not isinstance(url, str) or len(url) > 2048 or re.search(r'[\s\\<>"\x00-\x1f]', url):
+                raise ValueError('Resources need a safe HTTPS URL.')
+            parsed = urlsplit(url)
+            if parsed.scheme != 'https' or not parsed.hostname or parsed.username or parsed.password:
+                raise ValueError('Resources need a safe HTTPS URL.')
+
+    resources(question.get('resources', []))
+    if 'overview' in question and type(question['overview']) is not bool:
+        raise ValueError('overview must be a boolean.')
+    for item in records(question.get('connections', []), 'connections', 30):
+        identifier(item.get('source')); identifier(item.get('target'))
+        text(item.get('label'), 'Connection label', 6)
+        refs(item.get('evidence'))
     for key, maximum in [('viva_question', 14), ('viva_answer', 45)]:
         if key in question:
             text(question[key], key, maximum)
@@ -74,14 +91,7 @@ def validate_presentation(question: dict, known: dict[str, int]) -> None:
                     or not (path in known or any(p.startswith(path.rstrip('/') + '/') for p in known))):
                 raise ValueError('Technology location is outside the saved scan.')
         refs(item.get('evidence'))
-        for resource in records(item.get('resources', []), 'resources', 6):
-            text(resource.get('label'), 'Resource label', 8)
-            url = resource.get('url')
-            if not isinstance(url, str) or len(url) > 2048 or re.search(r'[\s\\<>"\x00-\x1f]', url):
-                raise ValueError('Resources need a safe HTTPS URL.')
-            parsed = urlsplit(url)
-            if parsed.scheme != 'https' or not parsed.hostname or parsed.username or parsed.password:
-                raise ValueError('Resources need a safe HTTPS URL.')
+        resources(item.get('resources', []))
     for item in records(question.get('demonstration', []), 'demonstration', 10):
         text(item.get('action'), 'Demo action', 20)
         text(item.get('expected'), 'Demo expectation', 30)
@@ -160,13 +170,22 @@ def study_aids(report: dict, questions: list[dict], clusters: list[dict]) -> dic
         a, b = membership.get(edge['source']), membership.get(edge['target'])
         if a and b and a != b:
             connections.setdefault((a,b), []).append(edge)
+    reviewed = [item for q in questions for item in q.get('connections', [])]
+    pairs = set()
+    for edge in reviewed:
+        pair = (edge['source'], edge['target'])
+        if any(node not in ids for node in pair) or pair[0] == pair[1] or pair in pairs:
+            raise ValueError('Connections need distinct known components and unique directed pairs.')
+        pairs.add(pair)
+    if len(reviewed) > 30:
+        raise ValueError('Use at most 30 reviewed connections across the report.')
     stack = [item for q in questions for item in q.get('stack', [])]
     if len({item['id'] for item in stack}) != len(stack):
         raise ValueError('Technology IDs must be unique across the report.')
     notes = [item for q in questions for item in q.get('file_notes', [])]
     if len({item['path'] for item in notes}) != len(notes):
         raise ValueError('Use one explanation per source file.')
-    return {'components':components, 'stack':stack, 'file_notes':notes,
+    return {'components':components, 'connections':reviewed, 'stack':stack, 'file_notes':notes,
             'component_edges':[{'source':a, 'target':b, 'imports':edges} for (a,b),edges in connections.items()],
             'flows':[{'id':q['id'], 'name':q.get('viva_question', q['question']), **q['flow']}
                      for q in questions if q.get('flow')],

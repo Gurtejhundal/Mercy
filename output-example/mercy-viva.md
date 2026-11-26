@@ -141,14 +141,6 @@ Submit a question to /ask. The handler passes it to the model helper and returns
 
 </details>
 
-#### Demo
-
-1. **Request /health from the running sample API.** The handler returns a JSON status of “ok”. (app.py:5)
-
-2. **Submit POST /ask?question=What%20is%20Python.** With a working provider setup, the handler sends the question to the model and returns answer text. (app.py:9, rag.py:7)
-
-3. **Explain why this is not RAG.** The helper sends the question directly to the model. It does not retrieve project documents. (rag.py:5, README.md:3)
-
 #### User flow (source trace)
 
 - Prepare a question → Submit to /ask — app.py:9

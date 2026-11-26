@@ -37,11 +37,8 @@ def export_markdown(report, questions, output):
         if q['explain_like_im_10'] not in {answer, q['answer']}:
             lines += [q['explain_like_im_10'], '']
         if q.get('verify_next'): lines += [f"**Check:** {q['verify_next']}", '']
+        lines += [f"- [{r['label']}]({r['url']})" for r in q.get('resources', [])]
         lines += ['</details>', '']
-        if q.get('demonstration'):
-            lines += ['#### Demo', '']
-            for i, step in enumerate(q['demonstration'], 1):
-                lines += [f"{i}. **{step['action']}** {step['expected']} ({fmt_evidence(step['evidence'])})", '']
         if q.get('flow'):
             lines += ['#### User flow (source trace)', '']
             labels = {n['id']:n['label'] for n in q['flow']['nodes']}
@@ -153,25 +150,28 @@ def export_pdf(report, questions, output):
 
 
 def export_architecture(report, output, questions=()):
-    """Component dependencies remain resolved imports, never runtime calls."""
+    """Export reviewed source connections, falling back to resolved imports."""
     from .presentation import study_aids
     aids = study_aids(report, list(questions), [])
     def label(value):
         return str(value).replace('"', "'").replace('[', '(').replace(']', ')').replace('`', "'").replace('\n', ' ')[:110]
     components = aids['components']
     names = {c['id']:f'N{i}' for i,c in enumerate(components)}
+    edges = aids['connections'] or aids['component_edges']
     lines = [f'# Architecture: {report["project"]}', '',
-             '> Source analysis. Arrows aggregate resolved imports, not runtime calls.', '',
+             '> Source analysis, not runtime proof. Reviewed relationships take precedence over import-only connections.', '',
              '```mermaid', 'flowchart LR']
     lines += [f'    {names[c["id"]]}["{label(c["name"])}"]' for c in components]
-    lines += [f'    {names[e["source"]]} --> {names[e["target"]]}' for e in aids['component_edges']]
+    lines += [f'    {names[e["source"]]} -->'+(f'|"{label(e["label"])}"|' if e.get('label') else '')+f' {names[e["target"]]}' for e in edges]
     if not components:
         lines += ['    X["No reviewed components; add components to the module question"]']
     lines += ['```', '']
     for c in components:
         lines += [f'## {c["name"]}', '', c['description'], '',
                   f'Source: {fmt_evidence(c["evidence"])}', '']
-    for edge in aids['component_edges']:
+    for edge in edges:
+        if edge.get('evidence'):
+            lines += [f"- {edge['source']} → {edge['target']}: {edge['label']} ({fmt_evidence(edge['evidence'])})"]
         lines += [f'- `{e["source"]}:{e["line"]}` imports `{e["target"]}`'
-                  for e in edge['imports']]
+                  for e in edge.get('imports', [])]
     Path(output).write_text('\n'.join(lines).rstrip()+'\n', encoding='utf-8')

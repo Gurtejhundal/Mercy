@@ -122,7 +122,8 @@ class StudyFormatTests(unittest.TestCase):
         text=out.read_text()
         self.assertIn(self.q['viva_answer'],text)
         self.assertIn(self.q['answer'],text)
-        self.assertIn('Inspect the app import.',text)
+        self.assertNotIn('#### Demo',text)
+        self.assertEqual(self.q['demonstration'][0]['action'],'Inspect the app import.')
         self.assertIn('Ask for an answer → Receive answer',text)
 
     def test_legacy_questions_keep_full_answers_and_get_no_fabricated_flow(self):
@@ -133,3 +134,20 @@ class StudyFormatTests(unittest.TestCase):
         self.assertEqual(atlas['demonstrations'],[])
         self.assertEqual(atlas['questions'],q)
         validate_questions(self.report,json.loads(json.dumps(q)))
+
+    def test_reviewed_connections_and_overview_validate_without_inventing_imports(self):
+        self.q.update(overview=True, connections=[{'source':'logic','target':'screen','label':'HTTP result','evidence':[self.ref]}],
+                      resources=[{'label':'Paper','url':'https://example.com/paper'}])
+        validate_questions(self.report,[self.q])
+        atlas=build_atlas(self.report,[self.q])
+        self.assertEqual(atlas['connections'],self.q['connections'])
+        self.assertEqual(atlas['component_edges'][0]['source'],'screen')
+        variants=[]
+        for changes in [dict(overview='yes'),dict(resources=[{'label':'Bad','url':'javascript:alert(1)'}]),
+                        dict(connections=[{'source':'logic','target':'unknown','label':'Call','evidence':[self.ref]}]),
+                        dict(connections=self.q['connections']*2),
+                        dict(connections=[{'source':'logic','target':'logic','label':'Call','evidence':[self.ref]}]),
+                        dict(connections=[{'source':'logic','target':'screen','label':'Call','evidence':[]}])]:
+            q=copy.deepcopy(self.q);q.update(changes);variants.append(q)
+        for q in variants:
+            with self.subTest(q=q),self.assertRaises(ValueError):validate_questions(self.report,[q])

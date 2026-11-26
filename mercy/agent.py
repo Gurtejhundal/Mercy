@@ -192,7 +192,7 @@ def next_question(source: str | Path, project: str | Path) -> dict:
     result.update({'review_template':{'questions':[question]},
                    'candidate_files':[{'path':f['path'],'lines':f['lines']} for f in candidates],
                    'source_excerpts':excerpts,
-                   'answer_contract':{'viva_question':'At most 14 words; ask one thing.', 'viva_answer':'At most 45 words, 1–2 sentences, simple spoken language. Keep necessary conditions. Put depth in answer.', 'study_aids':'On DEPENDENCIES add stack locations, logos and model sources; on MODULES add cited components, directories and file_notes; on WORKFLOW add cited flow and demonstration. See docs/STUDY_FORMAT.md. Never derive user flow from imports.'},
+                   'answer_contract':{'viva_question':'At most 14 words; ask one thing.', 'viva_answer':'At most 45 words, 1–2 sentences, simple spoken language. Keep necessary conditions. Put depth in answer.', 'study_aids':'On DEPENDENCIES add stack locations, logos and model sources; on MODULES add cited components, directories and file_notes; on WORKFLOW add cited user flow. Mark key viva records overview=true; cover data, training/inference, algorithms, parameters, formulas with proof, evaluation, chunking/RAG, CSV/classes, full forms, benefit, idea and output only as relevant. Unknowns stay explicit. See docs/STUDY_FORMAT.md. Never derive user flow from imports.'},
                    'study_aid_fields':{
                        'evidence':'Every aid, flow node and edge needs evidence: [{path: indexed relative file, line: integer}]. Source trace only, never claim execution.',
                        'components':'Array of {id, name (6 words), description (25 words), files: [indexed paths], evidence}. IDs unique across report; a file belongs to one component.',
@@ -200,7 +200,8 @@ def next_question(source: str | Path, project: str | Path) -> dict:
                        'file_notes':'Array of {path: indexed file, description (45 words), evidence}. Explain each important file in plain language; never use filenames alone as proof of responsibilities.',
                        'directories':'Array of {path: indexed directory, description (25 words), evidence}. Explain what is inside in plain words.',
                        'flow':'Object {nodes: [{id, label (12 words), kind: start|action|decision|end, evidence}], edges: [{source: node ID, target: node ID, label: branch text, evidence}]}. All nodes reachable from start and able to reach end; decisions need at least two named branches.',
-                       'demonstration':'Array of {action (20 words), expected (30 words), evidence}. User steps and expected outcomes from source, not fabricated screenshots or completed runs. Omit unknown aids.'},
+                       'connections':'Array of {source: component ID, target: component ID, label (6 words), evidence}. Inspect actual handlers/call sites, including browser HTTP. This is source analysis, never proof of an executed request.',
+                       'overview':'Boolean. Include this short question/answer in Project Overview, grouped by category. Add resources: [{label (8 words), url: HTTPS}] for authoritative training/model/formula evidence. Do not invent metrics or personal inspiration.'},
                    'action':'Inspect relevant code, using context for missing bodies/callers. Replace the answer and simple explanation. Cite inspected lines; keep runtime claims not_verified. Explain inspected scope and a concrete next check for unknowns. Submit the complete record with review, then call next again. Candidates are lexical hints, not proof of relevance.'})
     return result
 

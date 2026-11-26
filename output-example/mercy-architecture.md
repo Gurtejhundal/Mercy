@@ -1,6 +1,6 @@
 # Architecture: mini-rag
 
-> Source analysis. Arrows aggregate resolved imports, not runtime calls.
+> Source analysis, not runtime proof. Reviewed relationships take precedence over import-only connections.
 
 ```mermaid
 flowchart LR

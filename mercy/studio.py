@@ -1,7 +1,7 @@
 """Export a standalone, interactive, offline HTML atlas from grounded scan metadata.
 
-The output never executes repository code and never includes raw source bodies.
-Every edge is a statically resolved local import; no fake runtime arrows.
+The output never executes repository code. Redacted source is explicit opt-in.
+Reviewed component connections remain distinct from resolved imports.
 """
 from __future__ import annotations
 
@@ -11,10 +11,11 @@ from importlib import resources
 from pathlib import Path
 import json
 import base64
+import hashlib
 import re
 
-from .agent import _source, review_progress
-from .scanner import _ignore_name
+from .agent import _source, _numbered_excerpt, _current_report, review_progress
+from .scanner import _ignore_name, CODE_SUFFIX
 from .presentation import study_aids
 
 ROLE_LABELS = {
@@ -190,7 +191,7 @@ def build_atlas(report: dict, questions: list[dict], root: str | Path | None = N
         'questions':questions, 'glossary':[{**c,'detected':concept_status.get(c['term'],False)} for c in GLOSSARY],
         'signals':signals, 'datasets':report['datasets'],
         'disclaimers':[
-            'All links represent statically resolved imports, not verified runtime calls or data flow.',
+            'Architecture uses cited source relationships when reviewed; otherwise arrows show resolved imports. Neither proves a runtime call.',
             'File roles are heuristics derived from file type/name. Real architecture may differ.',
             'Question evidence is a code clue, not proof that a feature is working in production.',
             'No repository source code is embedded. This HTML contains paths, module names, and scan metadata; review before sharing.',
@@ -198,8 +199,28 @@ def build_atlas(report: dict, questions: list[dict], root: str | Path | None = N
     }
 
 
-def export_studio(report: dict, questions: list[dict], output: str | Path, root: str | Path | None = None, *, workflow=None) -> dict:
+def export_studio(report: dict, questions: list[dict], output: str | Path, root: str | Path | None = None, *, workflow=None, include_source=False) -> dict:
     atlas = build_atlas(report, questions, root)
+    if include_source:
+        if root is None:
+            raise ValueError('Embedding source needs an explicit project directory.')
+        _current_report(report, root)
+        source_root = Path(root).expanduser().resolve()
+        snapshots, budget = {}, 2_000_000
+        for file in report['files']:
+            if (_ignore_name(Path(file['path']).name)
+                    or Path(file['path']).suffix.lower() not in CODE_SUFFIX | {'.html', '.css', '.scss', '.sql', '.sh'}):
+                continue
+            raw = _source(source_root, file['path'])
+            if hashlib.sha256(raw.encode()).hexdigest() != file.get('sha256'):
+                raise ValueError('Source changed since scanning: '+file['path'])
+            budget -= len(raw.encode())
+            if budget < 0:
+                raise ValueError('Source preview exceeds the 2 MB read budget; omit --include-source.')
+            lines = raw.splitlines()
+            snapshots[file['path']] = _numbered_excerpt(lines, 1, len(lines))
+        atlas['source_previews'] = snapshots
+        atlas['disclaimers'][-1] = 'This report includes redacted, line-numbered source previews (lines capped at 160 characters). Review it before sharing; redaction is not a confidentiality guarantee.'
     if workflow is not None:
         atlas['review'] = review_progress({'questions':questions,'workflow':workflow})
     payload = json.dumps(atlas, ensure_ascii=False, separators=(',',':'))

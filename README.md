@@ -33,7 +33,7 @@ The included [`mini-rag`](examples/mini-rag) example is deliberately misleading.
 
 
 
-Open **Project Overview** to see the frontend, backend, model origins and resource links. Use **Questions** for short spoken answers. Expand **Details** for the full explanation and citations. Practise the source-traced demo, follow the user flowchart, then explain the component diagram. The original marker headings, ink borders and paper background stay, with one violet highlighter accent.
+Open **Project Overview** to see the frontend, backend, model origins and resource links. Use **Questions** for short spoken answers. Expand **Details** for the full explanation and citations. Follow the user flowchart, then explain the whole-system component diagram. The original marker headings, ink borders and paper background stay, with one violet highlighter accent.
 
 The report is one self-contained HTML file. Its artwork, font and interactions are embedded. Keep the editable evidence JSON and Markdown companion beside it.
 
@@ -51,7 +51,6 @@ The report is one self-contained HTML file. Its artwork, font and interactions a
 |---|---|
 | **Project Overview** | Locate frontend/backend code and understand model sources with logos and resources. |
 | **Questions** | Search, filter and hide answers to rehearse. |
-| **Demo** | Practise user actions and expected source behavior. |
 | **Flowchart** | Follow reviewed user actions and decisions. |
 | **Architecture** | Explain components and resolved import connections. |
 | **Folders** | Expand a nested explorer; read a folder or file explanation beside it. |
@@ -152,7 +151,7 @@ Ordinary analysis reads source. It does not run your application, database or pr
 
 **Does the graph prove how requests flow?**
 
-Its architecture arrows are resolved imports. File groups are heuristic roles. Runtime behavior needs separate evidence.
+Architecture uses reviewed, cited source relationships when provided, including HTTP connections. Otherwise it labels its resolved-import view. Runtime behavior needs separate evidence.
 
 **Does it invent missing details?**
 
@@ -209,14 +208,15 @@ Open `output-example/mercy-studio.html` in any modern desktop browser. The examp
 |---|---|---|
 | **Project Overview** | Find frontend/backend paths, model origins, logos and resources | Source analysis, not runtime proof |
 | **Questions** | Search, filter and rehearse with answer toggles | Reviewed content, with explicit unknowns |
-| **Demo** | Follow actions and expected results | A source walkthrough, not an executed recording |
 | **Flowchart** | Follow user steps and named decision branches | Authored from handlers and call sites, not imports |
 | **Architecture** | Choose one component and follow its direct dependencies | A → B aggregates resolved imports; fallback groups are heuristic |
 | **Folders** | Open folders and files in an explorer with a right-hand explanation pane | The scan may cover only part of the repository |
 
 The responsive notebook keeps the teacher and embedded handwritten font, with a readable sans-serif body and one violet highlighter accent. Ordinary wheel/two-finger trackpad scrolling moves diagrams; Ctrl+wheel and trackpad pinch zoom them. Buttons provide +, − and Fit. No CDN, browser storage or new dependency is required. Project colour sampling remains metadata rather than overriding legible study colours.
 
-Guided submissions use questions of at most 14 words and answers of at most 45 words. Full analysis remains editable under Details. See [the study format](docs/STUDY_FORMAT.md) for components, user flows, demonstrations and folder descriptions. Structural checks help smaller host models follow the contract; they cannot guarantee 100% accuracy.
+Set `overview: true` on key viva records to group their short answers in Project Overview. Include data/model provenance, algorithms, parameters, formulas and code, evaluation, relevant fundamentals, users, idea and output; identify unknowns rather than inventing results. Optional `resources` link to authoritative proof.
+
+Guided submissions use questions of at most 14 words and answers of at most 45 words. Full analysis remains editable under Details. See [the study format](docs/STUDY_FORMAT.md) for overview questions, component connections, user flows and folder descriptions. Structural checks help smaller host models follow the contract; they cannot guarantee 100% accuracy.
 
 ## Install and run (Ubuntu/Linux/macOS)
 
@@ -233,10 +233,10 @@ Open `/path/to/your/repository/mercy-output/mercy-studio.html` **directly in you
 
 Generated files:
 
-- `mercy-studio.html` — **primary deliverable:** Project Overview, concise questions, demo, user flowchart, focused components and file explorer.
+- `mercy-studio.html` — **primary deliverable:** Project Overview, concise overview questions, user flowchart, system architecture and file explorer.
 - `mercy-evidence.json` — editable and machine-readable scan evidence + Q&A; source for regeneration.
 - `mercy-viva.md` — text alternative with the complete question answers.
-- `mercy-architecture.md` — reviewed components with Mermaid-style resolved import connections.
+- `mercy-architecture.md` — reviewed components with Mermaid-style source connections (resolved imports as fallback).
 
 A legacy PDF is **off by default** and ReportLab is not required for HTML. If you specifically want PDF, first install the optional extra from the Mercy checkout (`pip install -e '.[pdf]'`), then pass `--pdf`:
 
@@ -244,7 +244,7 @@ A legacy PDF is **off by default** and ReportLab is not required for HTML. If yo
 mercy prepare --project . --pdf
 ```
 
-The HTML includes file paths, exported symbols, framework names, routes and question answers. Review it before you share it with anyone, especially if the underlying project is confidential. No raw project source bodies are embedded by this exporter.
+The HTML includes file paths, exported symbols, framework names, routes and question answers. Review it before you share it with anyone, especially if the underlying project is confidential. Source bodies are absent by default. When requested, use `mercy render --input REPORT/mercy-evidence.json --project PROJECT --include-source` to embed redacted indexed code/styles in the file inspector. Source fingerprints must match the saved scan; the read budget is 2 MB, each file is at most 90 KB, and lines are shortened to 160 characters. Data/configuration JSON, model files and datasets are not embedded. Redaction is best-effort; keep private reports private.
 
 ## Enable Mercy inside Claude Code and Codex
 
@@ -314,7 +314,7 @@ Mercy does **not** execute imported project code, launch a server, open database
 - File groups contain only indexed paths; no groups are fabricated.
 - File roles are heuristic (path, extension, source code clue), not guaranteed service boundaries.
 - Component links aggregate statically resolved imports; they do not prove runtime calls.
-- User flowcharts and demos require cited source traces, separate from import connections.
+- User flowcharts and reviewed architecture connections require cited source traces, separate from import connections.
 - Dataset-like files and AI API libraries are **clues**, not proof of training, retrieval, accuracy or inference deployment.
 - The scanner is bounded and skips several high-risk/large files; the map may be incomplete.
 
@@ -352,7 +352,7 @@ Mercy/
 
 ## Boundaries and next release
 
-This version provides a **native Codex/Claude coaching workflow and an offline study report**. The host model performs reasoning; the CLI provides bounded source access and validated report updates. It is not a runtime architecture verifier or a full AST call graph. Future work: approved runtime traces, end-to-end frontend/API/backend/storage mapping, AST symbol graphs across more languages, semantic search over code, and project-theme adapters that understand design tokens. Details in [`docs/ROADMAP.md`](docs/ROADMAP.md).
+This version provides a **native Codex/Claude coaching workflow and an offline study report**. The host model performs reasoning; the CLI provides bounded source access and validated report updates. It is not a runtime architecture verifier or a full AST call graph. Future work: approved runtime traces, deeper automatic frontend/API/backend/storage mapping, AST symbol graphs across more languages, semantic search over code, and project-theme adapters that understand design tokens. Details in [`docs/ROADMAP.md`](docs/ROADMAP.md).
 
 Mercy distinguishes source clues, host reasoning and runtime proof. A citation validates a location, not the truth of every sentence an AI writes.
 

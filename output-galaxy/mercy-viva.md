@@ -176,14 +176,6 @@ Request /status from the API. It reads a placeholder count, calls the demo answe
 
 </details>
 
-#### Demo
-
-1. **Request /status from the running sample API.** The handler returns a count and a demo answer object. (server/main.py:6)
-
-2. **Inspect the returned values.** The count is zero. The vector represents the length of “hello”, not a real embedding. (storage/db.py:2, intelligence/embed.py:2, server/main.py:8)
-
-3. **Inspect the website component.** It displays a demo badge. It does not request /status. (ui/components/App.jsx:2)
-
 #### User flow (source trace)
 
 - Open an API client → Request /status — server/main.py:6

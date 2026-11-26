@@ -78,7 +78,9 @@ def main(argv=None):
     render.add_argument('--input',required=True,help='mercy-evidence.json (editable question answers)')
     render.add_argument('--out',default=None,help='Output directory; defaults to JSON directory')
     render.add_argument('--pdf',action='store_true',help='Also export legacy PDF')
-    render.add_argument('--project',default=None,help='Optional local project directory to re-detect its color palette')
+    render.add_argument('--project',default=None,help='Local project directory for palette detection and optional source previews')
+    for command in (prep, render):
+        command.add_argument('--include-source', action='store_true', help='Embed redacted indexed source in HTML; render also needs --project')
     inspect=sub.add_parser('inspect',help='Print source map JSON, with no PDF')
     inspect.add_argument('--project',default='.')
     context=sub.add_parser('context',help='Read bounded, redacted source excerpts for the host agent')
@@ -123,13 +125,15 @@ def main(argv=None):
             audit,qs=data['report'],data['questions']
             validate_questions(audit,qs)
             review_progress(data)
+            if args.include_source and not args.project:
+                raise ValueError('--include-source requires --project when rendering.')
             if args.project: audit['studio_theme'] = extract_theme(args.project,audit)
             out=Path(args.out).expanduser().resolve() if args.out else source.parent
             out.mkdir(parents=True,exist_ok=True)
             workflow=data.get('workflow')
             export_json(audit,qs,out/'mercy-evidence.json',workflow=workflow)
             export_markdown(audit,qs,out/'mercy-viva.md')
-            export_studio(audit,qs,out/'mercy-studio.html',root=args.project,workflow=workflow)
+            export_studio(audit,qs,out/'mercy-studio.html',root=args.project,workflow=workflow,include_source=args.include_source)
             if args.pdf: export_pdf(audit,qs,out/'mercy-viva.pdf')
             export_architecture(audit,out/'mercy-architecture.md',qs)
             print(f'Re-rendered {len(qs)} questions and interactive HTML into {out}')
@@ -158,7 +162,7 @@ def main(argv=None):
         out.mkdir(parents=True,exist_ok=True)
         export_json(audit,qs,out/'mercy-evidence.json',workflow=workflow)
         export_markdown(audit,qs,out/'mercy-viva.md')
-        export_studio(audit,qs,out/'mercy-studio.html',root=project,workflow=workflow)
+        export_studio(audit,qs,out/'mercy-studio.html',root=project,workflow=workflow,include_source=args.include_source)
         if args.pdf: export_pdf(audit,qs,out/'mercy-viva.pdf')
         export_architecture(audit,out/'mercy-architecture.md',qs)
         print(f'MERCY | {audit["project"]} | {len(qs)} questions | {audit["summary"]["read_files"]} files read')

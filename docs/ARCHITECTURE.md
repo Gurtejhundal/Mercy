@@ -25,7 +25,7 @@ flowchart LR
     D --> E
     E --> F[Self-contained HTML Studio]
     D --> G[Markdown Q&A]
-    D --> H[Component import map]
+    D --> H[Cited component connections]
     D --> I[Optional PDF if --pdf]
     D -. Explicit permission only .-> J[Optional API rewording]
     J --> E
@@ -37,7 +37,7 @@ flowchart LR
 - `mercy/scanner.py`: discover bounded, local regular files; skip symlinks, secret-prone names and dependency directories; parse Python AST for imports/symbols, detect supported routes and tech clues conservatively; export normalized `files`, `edges`, `signals`, `frameworks`, `datasets` and warnings.
 - `mercy/questions.py`: make the question bank with compact viva answers, fifth-grade explanations, `status`, `verify_next` and `file:line` citations. Optional user-provided question list is not certified as real PYQs.
 - `mercy/studio.py`: classify indexed files into heuristic roles, produce only populated clusters, preserve actual scanner import edges, sample CSS accent colors safely, serialize atlas JSON into an inert `application/json` script tag.
-- `mercy/assets/studio.html`: self-contained CSS + JS; Project Overview, concise question cards, source-traced demo/user flowcharts, component import diagram and nested folder/file explorer. No external assets/network/browser storage.
+- `mercy/assets/studio.html`: self-contained CSS + JS; Project Overview, concise question cards, source-traced user flowcharts, whole-system component diagram and nested folder/file explorer. No external assets/network/browser storage.
 - `mercy/renderer.py`: JSON, Markdown, legacy optional PDF and static Mermaid architecture clues.
 - `mercy/llm.py`: optional external answer-language rewrite using a reduced metadata digest; invoked only with explicit `--ai`.
 - `mercy/cli.py`: `prepare`, `inspect`, `context`, `next`, `review`, `render`, `install`. `prepare` writes HTML by default; `--pdf` adds the old PDF, not a replacement.
@@ -67,9 +67,9 @@ The above is **schema illustration only**, not a claim about any specific reposi
 
 ## Honest visual topology
 
-Architecture nodes are reviewed components whose membership is validated against indexed files. Their arrows aggregate only actual resolved imports between member files. If reviewed components are absent, name/type-based role groups are explicitly labelled suggested; they are not verified service tiers.
+Architecture nodes are reviewed components whose membership is validated against indexed files. Reviewed `connections` describe cited source relationships, including HTTP and calls. Without them arrows aggregate resolved imports between member files; source relationships never certify execution. If reviewed components are absent, name/type-based role groups are explicitly labelled suggested; they are not verified service tiers.
 
-User flowcharts are separate reviewed records with cited actions, start/end nodes, decision diamonds and named branches. They are traced from source handlers and call sites, not inferred from import chains. Demonstrations describe user actions and expected source outcomes, not recorded runs. Missing flows or demos are left empty with a specific next step. See `STUDY_FORMAT.md`.
+User flowcharts are separate reviewed records with cited actions, start/end nodes, decision diamonds and named branches. They are traced from source handlers and call sites, not inferred from import chains. Legacy demonstration records remain in JSON; the Demo section is removed. Missing user flows remain explicitly unreviewed. See `STUDY_FORMAT.md`.
 
 ## Offline HTML security
 
@@ -77,7 +77,7 @@ The report exporter escapes `<`, `>`, `&` and Unicode separator sequences in JSO
 
 ## Evidence and edit loop
 
-`mercy prepare` outputs `mercy-evidence.json`, `mercy-studio.html`, `mercy-viva.md`, `mercy-architecture.md`. The source of truth for answer wording is evidence JSON. A coding agent can inspect actual project code, update verified answers while retaining accurate citations, and call `mercy render --input ...`. Rendering validates question schema and citation path/line against the original scan. Passing `--project` during render additionally re-samples safe project palette hints; the other paths are not re-scanned. If project source changed, rerun `prepare` for fresh evidence.
+`mercy prepare` outputs `mercy-evidence.json`, `mercy-studio.html`, `mercy-viva.md`, `mercy-architecture.md`. The source of truth for answer wording is evidence JSON. A coding agent can inspect actual project code, update verified answers while retaining accurate citations, and call `mercy render --input ...`. Rendering validates question schema and citation path/line against the original scan. Passing `--project` during render additionally re-samples safe project palette hints; source is re-scanned and fingerprint-checked when `--include-source` is requested. This explicit option embeds redacted indexed code/styles, never executes them and skips data/configuration JSON and datasets. Without that option, source bodies are absent. If project source changed, rerun `prepare` for fresh evidence.
 
 ## Install and permissions
 
@@ -93,4 +93,4 @@ The report exporter escapes `<`, `>`, `&` and Unicode separator sequences in JSO
 - Host-model reasoning is not automatically verified by citation bounds. Source hashes reject stale input, not semantic mistakes in an answer.
 
 
-Version 3 includes reviewed components, aggregated import connections, source-traced flows, demo steps, directory/file explanations and a technology/model-source overview. These are validated in `mercy/presentation.py`; authoring fields are documented in `STUDY_FORMAT.md`. Guided review requires bounded `viva_question` and `viva_answer` fields. Old evidence still renders.
+Version 3 includes reviewed components, aggregated import connections, optional cited relationships and overview questions, source-traced flows, legacy demonstration data, directory/file explanations and a technology/model-source overview. Optional source previews require explicit opt-in. These are validated in `mercy/presentation.py`; authoring fields are documented in `STUDY_FORMAT.md`. Guided review requires bounded `viva_question` and `viva_answer` fields. Old evidence still renders.

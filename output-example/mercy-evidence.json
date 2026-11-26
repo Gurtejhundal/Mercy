@@ -510,7 +510,8 @@
             }
           ]
         }
-      ]
+      ],
+      "overview": true
     },
     {
       "id": "GUIDE_VALIDATION",
@@ -550,7 +551,8 @@
       ],
       "verify_next": "Source walkthrough only. Run the sample separately with explicit authorization to check runtime behavior.",
       "viva_question": "Where is the data stored?",
-      "viva_answer": "The inspected request path sends the question to the provider and returns the response. It does not save the conversation or read a document store."
+      "viva_answer": "The inspected request path sends the question to the provider and returns the response. It does not save the conversation or read a document store.",
+      "overview": true
     },
     {
       "id": "GUIDE_ERRORS",
@@ -590,7 +592,8 @@
       ],
       "verify_next": "Source walkthrough only. Run the sample separately with explicit authorization to check runtime behavior.",
       "viva_question": "Which outside services does it use?",
-      "viva_answer": "The helper calls OpenAI chat completions with the configured model name. A source call does not prove credentials, network access or model availability."
+      "viva_answer": "The helper calls OpenAI chat completions with the configured model name. A source call does not prove credentials, network access or model availability.",
+      "overview": true
     },
     {
       "id": "GUIDE_LIMITS",
@@ -612,7 +615,8 @@
       ],
       "verify_next": "Source walkthrough only. Run the sample separately with explicit authorization to check runtime behavior.",
       "viva_question": "What are its limitations?",
-      "viva_answer": "This sample has no retrieval, embedding store, training pipeline or accuracy measurement. It also lacks custom error handling and a complete runnable setup."
+      "viva_answer": "This sample has no retrieval, embedding store, training pipeline or accuracy measurement. It also lacks custom error handling and a complete runnable setup.",
+      "overview": true
     }
   ],
   "workflow": {
@@ -622,12 +626,12 @@
       "GUIDE_ENTRY": "8a28645c369443e0accb9ab470667222f868623c5e6376681921b2a1ec113dec",
       "GUIDE_DEPENDENCIES": "b2f17786ea5a5171399ba16367c826037d8009d1ee19a3492354a43bb18d534e",
       "GUIDE_MODULES": "d6175cb9678dc055878c3b0c408aae03d69ae607512b1b7e238df6e274c909ba",
-      "GUIDE_WORKFLOW": "1e54adf5bbee0841774275dbca41f7c474aad163ef19ecac1f765b3da9478a5b",
+      "GUIDE_WORKFLOW": "0e7b305b6e0c3350fa84e667ad914127bc507c25382d8150e17ecdf44c45197b",
       "GUIDE_VALIDATION": "eff0dbc1d53df984330398b69bb551e6470356115f1128b6f776704e492b75fb",
-      "GUIDE_STORAGE": "e518381fff6a0d959c4886c758eab8687e9a6d18bd954e542de3f74de450189f",
+      "GUIDE_STORAGE": "2b536d64e82c86757079677912d894c466485941b4ad98c106bccd968b56bbe5",
       "GUIDE_ERRORS": "bf885ae32dbf16edeae0b3bce23fd4d5b7f86b1179cba585832b4aa35e1958e2",
-      "GUIDE_INTEGRATIONS": "08f04fb90b89f6ebb770045c779af8d1fa11edc5208849895eddb22f437fb6b7",
-      "GUIDE_LIMITS": "364d587df301287a1b232cc19292f5d23f7950dceef471460ab13f8bcd47f91b"
+      "GUIDE_INTEGRATIONS": "cd6edb9417ffaa3315aa7e80505daea1cc2074796b745c171d44cbd989133b68",
+      "GUIDE_LIMITS": "1d57463dfb6e09801d42d423f6b42de764d9d5927f9622e0239a2a80ffbe691f"
     }
   }
 }

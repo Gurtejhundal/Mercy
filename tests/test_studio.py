@@ -185,3 +185,26 @@ def test_theme_refresh_skips_missing_and_outside_styles(tmp_path):
     theme=extract_theme(root,report)
     assert theme['source']==[]
     assert theme['source_type']=='Mercy-fallback'
+
+
+def test_source_previews_are_opt_in_redacted_inert_and_match_snapshot(tmp_path):
+    import pytest
+    source=tmp_path/'app.py'
+    source.write_text('def result():\n    return "</script><script>bad()</script>"\nPASSWORD = "hidden-value"\n')
+    (tmp_path/'settings.json').write_text('{"usernote":"private-personal-data"}')
+    report=scan_project(tmp_path);questions=make_questions(report);out=tmp_path/'report.html'
+    atlas=export_studio(report,questions,out,root=tmp_path)
+    assert 'source_previews' not in atlas
+    atlas=export_studio(report,questions,out,root=tmp_path,include_source=True)
+    assert 'settings.json' not in atlas['source_previews']
+    assert 'private-personal-data' not in out.read_text()
+    preview=atlas['source_previews']['app.py']
+    assert preview[1]['text'].startswith('    return')
+    assert preview[2]['text']=='[redacted: potentially sensitive line]'
+    assert 'hidden-value' not in out.read_text()
+    assert '</script><script>bad()' not in out.read_text()
+    with pytest.raises(ValueError,match='explicit project'):
+        export_studio(report,questions,out,include_source=True)
+    source.write_text('print("changed")\n')
+    with pytest.raises(ValueError,match='Source'):
+        export_studio(report,questions,out,root=tmp_path,include_source=True)

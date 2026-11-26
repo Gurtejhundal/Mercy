@@ -25,13 +25,13 @@ On the module question, add `components` and `directories` when source supports 
 }
 ```
 
-Paths above are illustrative; use indexed project paths. Each component needs an ID, a name (6 words), a description (25 words), files and evidence. At most 12 components across the report. IDs are unique across the report and each file belongs to only one component. The diagram aggregates **resolved imports** between those files. It never invents runtime edges. External integrations can be discussed in answers; a diagram does not invent local files for external services.
+Paths above are illustrative; use indexed project paths. Each component needs an ID, a name (6 words), a description (25 words), files and evidence. At most 12 components across the report. IDs are unique across the report and each file belongs to only one component. Add optional `connections: [{source, target, label, evidence}]` between those component IDs: at most 30 directed pairs, short labels (6 words), no self-loops or duplicates. Inspect handlers/call sites, including browser HTTP. The whole-system diagram uses these source-traced relationships; without them it falls back to **resolved imports**. Neither proves execution. External integrations can be discussed in answers; a diagram does not invent local files for external services.
 
 Directory descriptions are at most 25 words. Explain actual contents, e.g. “Website pages and styles,” rather than merely saying “frontend.” Do not assume every `public` folder contains only media. Without reviewed components or directory descriptions, the report labels its name/type-based suggestions as heuristic.
 
-## User flow and demonstration
+## User flow
 
-On the workflow question, add `flow` and `demonstration`:
+On the workflow question, add `flow`. Legacy `demonstration` records still validate and remain in JSON, but no Demo section is displayed:
 
 ```json
 {
@@ -72,4 +72,12 @@ Project Overview replaces the chapter reader. On the dependencies question, add 
 
 On the module question, add `file_notes`: up to 400 `{path, description, evidence}` records. Paths must be indexed files and unique across the report; descriptions are at most 45 words. Explain what a file is about rather than repeating its name. Directory descriptions remain separate. Unreviewed files show their indexed symbols or an explicit gap; no purpose is fabricated from a filename.
 
-The Folders view has a nested explorer on the left and the selected item’s explanation on the right. Architecture focuses one component’s direct imports at a time. The user flowchart stays a separate source-traced user journey.
+The Folders view has a nested explorer on the left and the selected item’s explanation on the right. Architecture opens the whole system; component tabs focus its incoming and outgoing reviewed relationships (or imports as fallback). The user flowchart stays a separate source-traced user journey.
+
+## Viva foundations in Project Overview
+
+Add `overview: true` to selected question records; the existing category groups them in the overview. The same answers remain searchable in Questions. Use short, project-specific answers for the user problem, target users, benefits, data types/sources, training versus inference, weight formats/locations, algorithms, meaningful parameters, formulas and their code, evaluation, chunk counts, RAG, CSV purpose, classification labels versus code classes, full forms, inspiration and output. Include only relevant concepts; say when a requested item is absent or unverified. Never manufacture the author’s personal story.
+
+A question may include `resources: [{label, url}]` with the same safe HTTPS rules as stack entries. Identify upstream facts as upstream; their datasets and benchmark numbers are not local training or measured application accuracy. Separate a formula’s implementation, its reference, a numerical example and actual empirical validation.
+
+When the user requests embedded code, `--include-source --project PATH` adds redacted indexed source to the right-hand inspector. Ordinary path buttons open folders; source citations open and highlight the selected line. This option checks the saved snapshot and reads only code/styles, with a 2 MB total budget, 90 KB file limit and 160-character line cap. It skips datasets, model weights and JSON/text settings. Source is inert text; it is never executed. Reports without source opt-in still show explanations and citations. Do not publish private source previews merely to obtain a browser screenshot.

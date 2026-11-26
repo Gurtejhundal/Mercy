@@ -128,3 +128,13 @@ These are source, CLI and DOM checks. Browser local-file navigation was blocked 
 The published synthetic Galaxy sample was subsequently checked in the browser: marker typography and violet highlights rendered; nested `ui/components` expansion selected the correct right-hand explanations; a file selection displayed its reviewed purpose; the focused architecture drew direct dependencies without crossing unrelated components. This did not expose or run the local PeakCut application. Local-file access and physical gesture checks remain outside this browser evidence.
 
 A follow-up keeps the desktop explorer stable on selection and returns the page to the top when changing sections. The local suites then passed **32 unittest cases and 13 Node checks**. Release/version metadata now checks that the current version has matching plugin manifests and release notes. The first release attempt built and smoke-tested the installed wheel successfully but stopped publishing because its notes file was missing; the notes and trigger are included in the follow-up.
+
+
+## Overview and architecture revision — 2026-11-26
+
+- Local Python suite: 64 tests and 54 subtests passed, including optional PDF export. Node: 16 tests passed. Packaged plugin skill validation and whitespace checks passed.
+- Added validation checks for overview flags, safe question resources, source-connected component IDs/citations, duplicate/self edges, opt-in source previews, snapshot changes, source redaction, inert HTML text and omission of JSON/settings bodies.
+- DOM checks cover whole-system/default architecture, incoming/outgoing HTTP connections, missing metadata, short overview cards, explorer links, highlighted code lines, native scrolling, Ctrl-wheel/pinch logic and reduced-motion styles. These are logic checks with a DOM double, not pixel or physical-input verification.
+- Regenerated both public synthetic examples and the private PeakCut report. Private report has 47 review records, 29 overview questions and six reviewed components. Its original user flow is unchanged. A report-level DOM check verified folder/source navigation and code-line highlighting. No private PeakCut code was published.
+- Built wheel/sdist and installed the wheel in a temporary environment; the installed CLI generated an offline report with source previews. Source remains explicit opt-in, redacted, line-capped and restricted to indexed code/styles. This is not a confidentiality guarantee.
+- Local browser preview remains blocked by browser policy; it was not bypassed. Real desktop/mobile rendering, physical gestures and screen-reader behavior remain unverified. The scanned application and providers were not run, and no model accuracy was measured.
