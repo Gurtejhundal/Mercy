@@ -6,6 +6,8 @@ import sys
 import tempfile
 import unittest
 
+from mercy import __version__
+
 ROOT = Path(__file__).resolve().parents[1]
 
 
@@ -28,7 +30,6 @@ class PluginTests(unittest.TestCase):
 
     def test_release_version_has_notes_and_matching_plugin_manifests(self):
         import re
-        from mercy import __version__
         metadata=(ROOT/'pyproject.toml').read_text()
         version=re.search(r'^version = "([^"]+)"',metadata,re.M).group(1)
         self.assertEqual(version,__version__)
@@ -74,6 +75,8 @@ class PluginTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             project=Path(tmp);(project/'app.py').write_text('def hello(): return "hi"\n')
             command=[sys.executable,'-I',str(ROOT/'scripts/mercy.py')]
+            version=subprocess.run(command+['--version'],cwd=project,check=True,capture_output=True,text=True)
+            self.assertEqual(version.stdout.strip(),'Mercy '+__version__)
             subprocess.run(command+['prepare','--guided','--project','.'],cwd=project,capture_output=True,text=True,check=True)
             evidence=project/'mercy-output/mercy-evidence.json'
             result=subprocess.run(command+['next','--project','.','--input',str(evidence)],cwd=project,capture_output=True,text=True,check=True)
@@ -81,6 +84,30 @@ class PluginTests(unittest.TestCase):
             self.assertEqual(task['progress']['total'],10)
             self.assertFalse(task['ready_to_render'])
             self.assertTrue(task['source_excerpts'])
+
+
+class GeneratedReportTests(unittest.TestCase):
+    def test_fresh_scan_and_legacy_render_use_current_report_system(self):
+        import re
+        with tempfile.TemporaryDirectory() as tmp:
+            project=Path(tmp);(project/'app.py').write_text('def hello(): return "hi"\n')
+            command=[sys.executable,'-I',str(ROOT/'scripts/mercy.py')]
+            version=subprocess.run(command+['--version'],cwd=project,check=True,capture_output=True,text=True)
+            self.assertEqual(version.stdout.strip(),'Mercy '+__version__)
+            subprocess.run(command+['prepare','--guided','--project','.'],cwd=project,check=True,capture_output=True,text=True)
+            evidence=project/'mercy-output/mercy-evidence.json'
+            data=json.loads(evidence.read_text())
+            self.assertTrue(any(q.get('overview') for q in data['questions']))
+            data.pop('workflow');data['questions'][0]['answer']='An existing detailed explanation survives.'
+            for q in data['questions']:q.pop('overview',None)
+            evidence.write_text(json.dumps(data))
+            for operation in ('prepare','render'):
+                html=(evidence.parent/'mercy-studio.html').read_text()
+                atlas=json.loads(re.search(r'id="atlas-data">(.*?)</script>',html,re.S).group(1))
+                self.assertEqual(atlas['generator_version'],__version__)
+                self.assertEqual(set(re.findall(r'data-section="([^"]+)"',html)),{'overview','questions','flow','architecture','tree'})
+                if operation=='render':self.assertIn('An existing detailed explanation survives.',html)
+                else:subprocess.run(command+['render','--input',str(evidence)],cwd=project,check=True,capture_output=True,text=True)
 
 
 if __name__ == '__main__':

@@ -138,3 +138,12 @@ A follow-up keeps the desktop explorer stable on selection and returns the page 
 - Regenerated both public synthetic examples and the private PeakCut report. Private report has 47 review records, 29 overview questions and six reviewed components. Its original user flow is unchanged. A report-level DOM check verified folder/source navigation and code-line highlighting. No private PeakCut code was published.
 - Built wheel/sdist and installed the wheel in a temporary environment; the installed CLI generated an offline report with source previews. Source remains explicit opt-in, redacted, line-capped and restricted to indexed code/styles. This is not a confidentiality guarantee.
 - Local browser preview remains blocked by browser policy; it was not bypassed. Real desktop/mobile rendering, physical gestures and screen-reader behavior remain unverified. The scanned application and providers were not run, and no model accuracy was measured.
+
+
+## Generator routing correction — 2026-11-27
+
+The generator and installed plugin now stamp `generator_version`, expose `--version`, seed overview selections in guided records and show overview questions for older evidence without flags. Regression coverage exercises fresh generation and re-rendering edited legacy evidence from an unrelated temporary repository, preserving detailed answers and requiring the current report sections.
+
+The installed launcher was tested from inside the old checkout against a temporary fixture: it generated the current notebook through its own bundled template. No customer project was used for this check. Local standard-library suite: 34 tests passed; Node interface suite: 17 tests passed. Browser pixels, physical gestures and fresh host-model behavior were not verified.
+
+The NTFS checkout still identifies as v1.0.3: synchronization failed on a new asset with an I/O error, so partial source replacements were restored from a Linux-filesystem backup. The complete generator is in the Linux recovery checkout and installed plugin. No remote publication was attempted.

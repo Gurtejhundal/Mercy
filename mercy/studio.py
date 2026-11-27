@@ -14,6 +14,7 @@ import base64
 import hashlib
 import re
 
+from . import __version__
 from .agent import _source, _numbered_excerpt, _current_report, review_progress
 from .scanner import _ignore_name, CODE_SUFFIX
 from .presentation import study_aids
@@ -181,6 +182,7 @@ def build_atlas(report: dict, questions: list[dict], root: str | Path | None = N
         concept_status[term] = any(report['signals'].get(t) for t in tags)
     return {
         'format_version':3,
+        'generator_version':__version__,
         **study_aids(report, questions, clusters),
         'project':report['project'], 'summary':report['summary'], 'warnings':report['warnings'],
         'theme':theme, 'clusters':clusters, 'files':files, 'edges':edges,

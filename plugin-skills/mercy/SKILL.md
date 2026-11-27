@@ -9,7 +9,14 @@ Start each invocation with **Mercy — that one teacher we all know**, once. Use
 
 Codex/Claude is the model. Mercy is its local evidence toolkit, not a model server or chat backend. No provider key is needed. The HTML notebook works offline; the host model follows its own privacy/connectivity settings.
 
-## Choose the outcome
+## Default invocation: deliver the notebook
+
+A message containing only the Mercy plugin/skill invocation is a request to produce the reviewed HTML notebook now, including in an ongoing chat where the overview was already explained. Prior discussion is context, not a completed notebook delivery. Start by checking the current project and existing report files with the local tools; then resume the guided loop or create a fresh draft as described below. If a current reviewed notebook already exists, verify its source snapshot and files, re-render with this bundled toolkit and return that newly rendered file link. Existing HTML is a static snapshot: updating the plugin does not update that file. Do not deliver an old HTML file unchanged or render through an older PATH/source-checkout installation. Check the generated report’s generator_version against this toolkit before linking it. Do not overwrite reviewed notes.
+
+Finish this request with a link to the readable `mercy-studio.html`, or an evidenced blocker. Do not end with a choice between explanation, study guide and mock viva. Switch to a focused answer or mock viva only when the user explicitly asks for that outcome.
+
+## Explicit requests
+
 
 - **Bare invocation or broad explanation:** immediately investigate and deliver an actual reviewed HTML notebook. Do not ask for a mode, offer a plan and stop, or substitute a chat summary.
 - **Focused question / explicit text only:** inspect the relevant code and answer with exact source references; no new notebook needed.

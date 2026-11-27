@@ -6,7 +6,7 @@ import sys
 from importlib import resources
 from pathlib import Path
 
-from . import TAGLINE
+from . import TAGLINE, __version__
 from .scanner import scan_project
 from .agent import source_context, validate_questions, apply_review, next_question, review_progress
 from .questions import make_questions, make_guided_questions, import_user_pyqs
@@ -63,6 +63,7 @@ def _install(root: Path, platform: str, hooks: bool, force: bool):
 
 def main(argv=None):
     parser=argparse.ArgumentParser(prog='mercy', description='Mercy — '+TAGLINE+'. Source-grounded codebase understanding and viva coaching.')
+    parser.add_argument('--version', action='version', version='Mercy '+__version__)
     sub=parser.add_subparsers(dest='command',required=True)
     prep=sub.add_parser('prepare',help='Create interactive offline HTML Studio + JSON + Markdown from a project')
     prep.add_argument('--project',default='.',help='Local repository directory')

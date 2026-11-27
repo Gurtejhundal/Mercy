@@ -78,3 +78,9 @@ test('code preview is inert, line-numbered and highlights the selected source li
 test('transitions are brief and respect reduced motion',()=>{
   assert.ok(template.includes('@keyframes page-enter'));assert.ok(template.includes('220ms ease-out'));assert.ok(template.includes('@media(prefers-reduced-motion:reduce)'));assert.ok(template.includes('animation:none!important'));
 });
+
+test('legacy evidence gets an overview without manually adding presentation flags',()=>{
+  const data=reviewed(),ui=mount(data);assert.equal(ui.nodes.get('overview-questions').querySelectorAll('.question-card').length,Math.min(6,data.questions.filter(q=>q.id!=='GUIDE_PURPOSE').length));
+  assert.equal(ui.nodes.get('question-list').querySelectorAll('.question-card').length,data.questions.length);
+  data.questions.forEach(q=>q.overview=false);assert.equal(mount(data).nodes.get('overview-questions').querySelectorAll('.question-card').length,0);
+});

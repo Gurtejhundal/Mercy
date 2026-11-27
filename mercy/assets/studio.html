@@ -48,7 +48,7 @@ h1,h2,h3,p{overflow-wrap:anywhere}h1,h2,h3{font-family:Notebook,cursive;font-wei
 <section id="section-flow" class="section" aria-label="User flowchart"><div class="section-heading"><h2>Flowchart</h2><div class="tools"><select id="flow-select" aria-label="Choose user flow"></select><button id="flow-out" class="tiny" aria-label="Zoom flowchart out">−</button><button id="flow-in" class="tiny" aria-label="Zoom flowchart in">+</button><button id="flow-fit" class="tiny">Fit</button></div></div><p class="diagram-note">Source-traced user flow · Scroll to move · Ctrl + scroll or pinch to zoom</p><div id="flow-viewport" class="diagram-viewport" tabindex="0" aria-label="Scrollable user flowchart"><svg id="flow-svg" role="group" aria-label="User actions and decisions"></svg><p id="flow-empty" class="empty" hidden></p></div><div id="flow-detail" class="card diagram-detail" aria-live="polite"></div></section>
 <section id="section-architecture" class="section" aria-label="Architecture"><div class="section-heading"><h2>Architecture</h2><div class="tools"><button id="arch-out" class="tiny" aria-label="Zoom architecture out">−</button><button id="arch-in" class="tiny" aria-label="Zoom architecture in">+</button><button id="arch-fit" class="tiny">Fit</button></div></div><p class="diagram-note" id="architecture-note">Choose a component to see its direct code dependencies.</p><div id="arch-components" class="component-tabs" aria-label="Choose architecture component"></div><div id="architecture-explanation" class="architecture-explanation" aria-live="polite"></div><div id="arch-viewport" class="diagram-viewport" tabindex="0" aria-label="Scrollable component diagram"><svg id="arch-svg" role="group" aria-label="Components and source connections"></svg></div><div id="arch-detail" class="card diagram-detail" aria-live="polite"></div></section>
 <section id="section-tree" class="section" aria-label="Folders"><h2>Folders</h2><div class="explorer-layout"><nav class="explorer-sidebar" aria-label="Project files"><div class="explorer-heading">EXPLORER</div><div id="file-tree" class="file-tree"></div></nav><article id="file-detail" class="file-inspector" tabindex="-1" aria-live="polite"></article></div></section>
-<footer class="footer">Mercy · Local project guide</footer>
+<footer id="report-version" class="footer">Mercy · Local project guide</footer>
 </main></div>
 <script type="application/json" id="atlas-data">/* MERCY_ATLAS_PAYLOAD */</script>
 <script>
@@ -106,7 +106,8 @@ function expandAncestors(path){
 }
 function renderOverviewQuestions(){
   const box=$('overview-questions'),groups=new Map();
-  QUESTIONS.filter(q=>q.overview).forEach(q=>{if(!groups.has(q.category))groups.set(q.category,[]);groups.get(q.category).push(q)});
+  const selected=QUESTIONS.some(q=>typeof q.overview==='boolean')?QUESTIONS.filter(q=>q.overview):QUESTIONS.filter(q=>q.id!=='GUIDE_PURPOSE').slice(0,6);
+  selected.forEach(q=>{if(!groups.has(q.category))groups.set(q.category,[]);groups.get(q.category).push(q)});
   groups.forEach((questions,name)=>{const group=el('section',undefined,'overview-group');group.appendChild(el('h3',name));const grid=el('div',undefined,'question-grid');questions.forEach(q=>{const card=el('article',undefined,'card question-card');card.appendChild(el('h3',shortQuestion(q)));card.appendChild(el('p',shortAnswer(q),'answer-copy'));card.appendChild(details(q));grid.appendChild(card)});group.appendChild(grid);box.appendChild(group)});
 }
 function openLocation(path){if(folders.has(path))folderDetails(path,true);else fileDetails(path)}
@@ -207,6 +208,7 @@ function renderArchitecture(selected){
   drawDiagram('arch',nodes,edges,false,!source);
   $('architecture-note').textContent=(reviewed?'Source-traced connections; execution not verified. ':'Resolved imports only. ')+'Scroll to move; Ctrl + scroll or pinch to zoom.';
 }
+$('report-version').textContent='Mercy'+(ATLAS.generator_version?' v'+ATLAS.generator_version:'')+' · Local project guide';
 $('project-name').textContent=ATLAS.project;document.title='Mercy | '+ATLAS.project;$('question-count').textContent=QUESTIONS.length+' questions';document.querySelectorAll('[data-section]').forEach(n=>n.addEventListener('click',()=>showSection(n.dataset.section)));
 $('q-search').addEventListener('input',renderQuestions);$('q-status').addEventListener('change',renderQuestions);$('hide-answers').addEventListener('click',()=>{hideAnswers=!hideAnswers;$('hide-answers').textContent=hideAnswers?'Show answers':'Hide answers';$('hide-answers').setAttribute('aria-pressed',String(hideAnswers));renderQuestions()});
 renderOverviewQuestions();setupDiagram('flow');setupDiagram('arch');renderFolders();renderOverview();renderCategories();renderQuestions();renderNotes();renderFlow();renderArchitecture();showSection('overview');

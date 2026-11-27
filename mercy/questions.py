@@ -26,7 +26,8 @@ def make_guided_questions() -> list[dict]:
              'question':question, 'answer':'Not reviewed. Inspect source for this topic.',
              'explain_like_im_10':'Not reviewed. Add a plain-language explanation.',
              'status':'not_verified', 'evidence':[],
-             'verify_next':'Inspect the suggested files; record exact citations or a concrete evidence gap.'}
+             'verify_next':'Inspect the suggested files; record exact citations or a concrete evidence gap.',
+             'overview':topic in {'DEPENDENCIES','MODULES','WORKFLOW','STORAGE','INTEGRATIONS','LIMITS'}}
             for topic,category,question,_ in GUIDE_TOPICS]
 
 

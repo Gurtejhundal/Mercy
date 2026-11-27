@@ -1,4 +1,4 @@
 interface:
   display_name: "Mercy"
   short_description: "that one teacher we all know"
-  default_prompt: "Use $mercy:mercy to automatically analyze the current repository and generate a reviewed HTML notebook."
+  default_prompt: "Use $mercy:mercy to generate or resume this repository’s reviewed HTML notebook now and return its file link, even if its overview was discussed earlier."

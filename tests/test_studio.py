@@ -15,6 +15,8 @@ def test_atlas_only_scanned_groups_and_import_edges(tmp_path):
     report=scan_project(tmp_path)
     atlas=build_atlas(report,make_questions(report),tmp_path)
     assert set(c['id'] for c in atlas['clusters']) == {'backend','frontend'}
+    from mercy import __version__
+    assert atlas['generator_version']==__version__
     assert len(atlas['edges']) == 1
     e=atlas['edges'][0]
     assert (e['source'],e['target'],e['line'],e['kind'])==('main.py','helper.py',1,'import')

@@ -94,7 +94,7 @@ Start a new Codex chat. Select **Mercy** from the plugin picker by typing `@`, o
 $mercy:mercy explain this codebase and help me prepare for my viva
 ```
 
-Send **@Mercy** by itself to start immediately; no follow-up instruction is needed. Mercy reviews the source and produces the HTML notebook.
+Send **@Mercy** by itself to generate or resume the reviewed HTML notebook and receive its actual file link. This also applies after an overview was discussed earlier in the same chat; a prior explanation does not turn the invocation into a mode-selection menu. Explicitly ask for a focused answer or mock viva when that is what you want.
 
 The picker subtitle is **that one teacher we all know**. Picker availability depends on your Codex client; the namespaced skill is the explicit invocation.
 
